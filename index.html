@@ -1,1469 +1,1174 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SANG ARSITEK BANGSA - Game Sejarah Kelahiran Pancasila 1945</title>
-    
-    <!-- Tailwind CSS CDN -->
+    <title>Sang Arsitek Bangsa - Cerdas Cermat & Simulasi Pancasila 1945</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         gold: {
                             100: '#fef9c3',
                             300: '#fde047',
-                            400: '#facc15',
                             500: '#eab308',
                             600: '#ca8a04',
                             700: '#a16207',
                             800: '#854d0e',
+                            900: '#713f12',
                         },
-                        parchment: '#fcf8ee',
-                        sepiaDark: '#1c1917',
-                        sepiaCard: '#272421',
-                        emeraldGold: '#064e3b'
+                        maroon: {
+                            800: '#581c87',
+                            900: '#451a03',
+                            950: '#2a0808',
+                        }
                     },
                     fontFamily: {
-                        serif: ['Merriweather', 'Georgia', 'serif'],
-                        heading: ['Cinzel', 'Georgia', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        cursive: ['Great Vibes', 'cursive'],
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
 
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        .font-heading { font-family: 'Cinzel', serif; }
-        .font-serif-text { font-family: 'Merriweather', serif; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ca8a04;
-            border-radius: 4px;
-        }
-
-        /* Glassmorphism Effect */
+        /* Custom Styles & CSS Animations */
         .glass-panel {
-            background: rgba(39, 36, 33, 0.85);
+            background: rgba(30, 27, 75, 0.75);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(202, 138, 4, 0.25);
-        }
-        .light .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(202, 138, 4, 0.3);
+            border: 1px solid rgba(234, 179, 8, 0.25);
         }
 
-        /* Glow effects */
-        .gold-glow {
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
-        }
-        .gold-glow-lg {
-            box-shadow: 0 0 35px rgba(234, 179, 8, 0.4);
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Timer Circular Animation */
-        .timer-ring-circle {
-            transition: stroke-dashoffset 0.35s linear;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
+        .gold-border-gradient {
+            border-image: linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) 1;
         }
 
-        /* ==================== EXACT A4 LANDSCAPE PRINT CSS ==================== */
+        /* Certificate Print CSS Optimization for A4 Landscape */
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
         @media print {
-            @page {
-                size: A4 landscape;
-                margin: 0;
-            }
-            html, body {
-                width: 297mm !important;
-                height: 210mm !important;
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                overflow: hidden !important;
-                background: #fcf8ee !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            body > *:not(#certificate-modal) {
+
+            .no-print {
                 display: none !important;
             }
-            header, footer, nav, .no-print {
-                display: none !important;
+
+            .print-only-container {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+                background: #fff;
             }
-            #certificate-modal {
-                position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
+
+            /* Standard A4 Landscape Dimensions: 297mm x 210mm */
+            .certificate-a4-print {
                 width: 297mm !important;
                 height: 210mm !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: none !important;
-                backdrop-filter: none !important;
-                display: block !important;
-                z-index: 99999 !important;
-            }
-            #printable-certificate-wrapper {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 297mm !important;
-                height: 210mm !important;
+                max-width: 297mm !important;
+                max-height: 210mm !important;
+                margin: 0 auto !important;
+                padding: 10mm !important;
                 box-sizing: border-box !important;
-                margin: 0 !important;
-                padding: 10mm 14mm !important;
-                border: 10px double #854d0e !important;
-                background: #fcf8ee !important;
-                color: #1c1917 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
                 box-shadow: none !important;
+                border: 8px double #854d0e !important;
+                background: #fffdf5 !important;
+                color: #1a1a1a !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
-                page-break-after: avoid !important;
-                page-break-inside: avoid !important;
             }
-            #cert-user-name {
-                display: none !important;
+
+            .cert-border-inner {
+                border: 2px solid #ca8a04 !important;
+                padding: 8mm !important;
+                height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
             }
-            #cert-display-name {
-                display: block !important;
-            }
+        }
+
+        /* On-Screen Certificate Preview Frame */
+        .cert-preview-frame {
+            aspect-ratio: 297 / 210;
+            width: 100%;
+            max-width: 1000px;
+            background: #fffdf7;
+            color: #1e1b18;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 10px solid #713f12;
+            position: relative;
+        }
+
+        /* Timer Circular Animation */
+        .timer-circle {
+            transition: stroke-dashoffset 1s linear;
         }
     </style>
 </head>
-<body class="bg-sepiaDark text-stone-100 min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-gold-500 selection:text-slate-950">
 
-    <!-- Navigation Bar -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-gold-600/30 shadow-lg no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            
-            <!-- Logo & Title -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('main-menu')">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold-700 via-gold-500 to-amber-300 flex items-center justify-center text-stone-900 shadow-md font-bold text-xl border-2 border-gold-300">
-                    <i class="fa-solid me-0.5 fa-monument"></i>
+    <!-- NAVIGATION BAR -->
+    <nav class="no-print sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-gold-600/30 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-700 to-gold-300 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
+                    <i class="fa-solid fa-monument"></i>
                 </div>
                 <div>
-                    <h1 class="font-heading font-bold text-lg sm:text-xl tracking-wider bg-gradient-to-r from-amber-200 via-gold-400 to-amber-100 bg-clip-text text-transparent">
-                        SANG ARSITEK BANGSA
-                    </h1>
-                    <p class="text-xs text-stone-400 font-medium">Kelahiran Pancasila 1945</p>
+                    <h1 class="font-cinzel font-bold text-lg gold-gradient-text leading-none">SANG ARSITEK BANGSA</h1>
+                    <p class="text-xs text-slate-400">Simulasi Sidang & Cerdas Cermat Pancasila 1945</p>
                 </div>
             </div>
 
-            <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-semibold">
-                <button onclick="switchTab('main-menu')" class="nav-btn px-3 py-2 rounded-lg transition hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-compass"></i> Menu Utama
+            <!-- Navigation Links -->
+            <div class="flex items-center gap-2 overflow-x-auto py-1 text-sm font-medium">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg bg-gold-500 text-slate-950 font-semibold shadow">
+                    <i class="fa-solid fa-compass mr-1.5"></i>Beranda
                 </button>
-                <button onclick="startRPGSimulation()" class="nav-btn px-3 py-2 rounded-lg transition hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-landmark"></i> Simulasi Sidang
+                <button onclick="switchTab('simulation')" id="nav-simulation" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
+                    <i class="fa-solid fa-gavel mr-1.5"></i>Simulasi Sidang
                 </button>
-                <button onclick="startQuizMode()" class="nav-btn px-3 py-2 rounded-lg transition hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap"></i> Cerdas Cermat
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
+                    <i class="fa-solid fa-trophy mr-1.5"></i>Cerdas Cermat
                 </button>
-                <button onclick="switchTab('gallery')" class="nav-btn px-3 py-2 rounded-lg transition hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-book-bookmark"></i> Galeri & Rumusan
+                <button onclick="switchTab('matrix')" id="nav-matrix" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
+                    <i class="fa-solid fa-scroll mr-1.5"></i>Matriks Evolusi
                 </button>
-                <button onclick="switchTab('achievements')" class="nav-btn px-3 py-2 rounded-lg transition hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-2">
-                    <i class="fa-solid fa-award"></i> Lencana
+                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
+                    <i class="fa-solid fa-users-viewfinder mr-1.5"></i>Galeri Tokoh
                 </button>
-            </nav>
-
-            <!-- Quick Controls (Audio, Theme, Certificate) -->
-            <div class="flex items-center space-x-2">
-                <button id="sound-toggle-btn" onclick="toggleSound()" class="w-10 h-10 rounded-lg bg-stone-800/80 border border-gold-600/30 hover:border-gold-400 text-gold-400 flex items-center justify-center transition" title="Suara Web Audio API">
-                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
-                </button>
-                <button id="theme-toggle-btn" onclick="toggleTheme()" class="w-10 h-10 rounded-lg bg-stone-800/80 border border-gold-600/30 hover:border-gold-400 text-amber-300 flex items-center justify-center transition" title="Ubah Mode Gelap/Terang">
-                    <i id="theme-icon" class="fa-solid fa-moon"></i>
-                </button>
-                <button onclick="openCertificateModal()" class="hidden sm:flex px-3 py-2 rounded-lg bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-500 hover:to-amber-500 text-stone-950 font-bold text-xs items-center gap-1.5 shadow-md">
-                    <i class="fa-solid fa-certificate"></i> Sertifikat (A4)
-                </button>
-                <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-lg bg-stone-800 border border-gold-600/30 text-gold-400 flex items-center justify-center">
-                    <i class="fa-solid fa-bars"></i>
+                <button onclick="switchTab('certificate')" id="nav-certificate" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 border border-gold-500/40 text-gold-400">
+                    <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikat & Rapor
                 </button>
             </div>
         </div>
+    </nav>
 
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 border-t border-gold-600/20 bg-stone-900/95 space-y-2">
-            <button onclick="switchTab('main-menu'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-compass me-2"></i> Menu Utama</button>
-            <button onclick="startRPGSimulation(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-landmark me-2"></i> Simulasi Sidang 1945</button>
-            <button onclick="startQuizMode(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-graduation-cap me-2"></i> Cerdas Cermat Tantangan</button>
-            <button onclick="switchTab('gallery'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-book-bookmark me-2"></i> Galeri Tokoh & Ensiklopedia</button>
-            <button onclick="switchTab('achievements'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-award me-2"></i> Lencana & Pencapaian</button>
-            <button onclick="openCertificateModal(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-amber-300 font-semibold"><i class="fa-solid fa-certificate me-2"></i> Sertifikat Kelulusan (A4)</button>
-        </div>
-    </header>
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow container mx-auto px-4 py-6 max-w-7xl">
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-
-        <!-- ==================== TAB 1: MAIN MENU ==================== -->
-        <section id="tab-main-menu" class="space-y-12">
+        <!-- TAB 1: DASHBOARD / BERANDA -->
+        <section id="tab-dashboard" class="tab-content space-y-8">
             <!-- Hero Banner -->
-            <div class="relative rounded-3xl overflow-hidden border border-gold-600/40 p-8 sm:p-12 text-center bg-gradient-to-b from-stone-900 via-stone-900/90 to-stone-950 shadow-2xl gold-glow">
-                <div class="absolute inset-0 bg-[radial-gradient(#ca8a04_1px,transparent_1px)] [background-size:16px_16px] opacity-15"></div>
-                
-                <div class="relative z-10 max-w-3xl mx-auto space-y-6">
-                    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-gold-500/20 text-gold-300 border border-gold-500/40">
-                        <i class="fa-solid fa-star me-1"></i> Edisi Spesial Sejarah Kebangsaan 1945
+            <div class="relative overflow-hidden rounded-2xl glass-panel p-8 md:p-12 border border-gold-500/30">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-gold-500 text-9xl pointer-events-none">
+                    <i class="fa-solid fa-landmark"></i>
+                </div>
+                <div class="max-w-3xl relative z-10 space-y-4">
+                    <span class="px-3 py-1 bg-gold-500/10 border border-gold-500/30 text-gold-400 rounded-full text-xs font-semibold uppercase tracking-wider">
+                        Aplikasi Edukasi Kebangsaan
                     </span>
-                    <h2 class="text-3xl sm:text-5xl font-heading font-black tracking-wide text-amber-100 leading-tight">
-                        PONDASI REPUBLIK: <br/>
-                        <span class="bg-gradient-to-r from-gold-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent">SEJARAH KELAHIRAN PANCASILA</span>
+                    <h2 class="text-3xl md:text-5xl font-cinzel font-black gold-gradient-text leading-tight">
+                        Penyusunan & Perumusan Pancasila 1945
                     </h2>
-                    <p class="text-stone-300 text-base sm:text-lg font-serif-text leading-relaxed">
-                        Selami perdebatan sengit, kompromi luhur, dan pemikiran besar para Pendiri Bangsa dalam merumuskan Jiwa dan Dasar Negara Indonesia pada tahun 1945.
+                    <p class="text-slate-300 text-base md:text-lg leading-relaxed font-serif">
+                        Rasakan atmosfer historis Gedung Chuo Sangi In (BPUPKI) dan Gedung Pejambon (PPKI). Buat keputusan kritis diplomasi kebangsaan atau uji wawasan sejarah Anda dalam mode Cerdas Cermat interaktif.
                     </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                        <button onclick="startRPGSimulation()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-gold-500 via-amber-500 to-gold-600 hover:from-gold-400 hover:to-amber-500 text-stone-950 font-black text-lg transition shadow-lg hover:scale-105 flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-gavel text-xl"></i> Mulai Simulasi Sidang (RPG)
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="switchTab('simulation')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-slate-950 font-bold hover:brightness-110 transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Mulai Simulasi Sidang RPG
                         </button>
-                        <button onclick="startQuizMode()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-gold-300 font-bold text-lg border border-gold-500/40 transition hover:scale-105 flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-bolt text-xl"></i> Mode Cerdas Cermat
+                        <button onclick="switchTab('quiz')" class="px-6 py-3 rounded-xl bg-slate-800 border border-gold-500/40 text-gold-300 font-bold hover:bg-slate-700 transition flex items-center gap-2">
+                            <i class="fa-solid fa-stopwatch"></i> Tantangan Cerdas Cermat
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Two Mode Cards Showcase -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Mode 1 Card -->
-                <div class="glass-panel rounded-2xl p-6 sm:p-8 hover:border-gold-400 transition cursor-pointer group flex flex-col justify-between" onclick="startRPGSimulation()">
-                    <div class="space-y-4">
-                        <div class="w-14 h-14 rounded-xl bg-amber-500/20 text-gold-400 border border-gold-500/40 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-                            <i class="fa-solid fa-users-rectangle"></i>
-                        </div>
-                        <h3 class="text-2xl font-heading font-bold text-gold-300">Simulasi Sidang Historis 1945</h3>
-                        <p class="text-stone-300 text-sm leading-relaxed">
-                            Ambil peran sebagai Anggota Muda BPUPKI/PPKI. Terlibat dalam dialog interaktif bersama Ir. Sukarno, Moh. Yamin, Prof. Soepomo, Moh. Hatta, dan KH. Wahid Hasyim dalam 3 babak krusial perumusan bangsa.
-                        </p>
-                        <ul class="text-xs text-stone-400 space-y-1.5 font-medium">
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Sidang BPUPKI I (29 Mei - 1 Juni 1945)</li>
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Rapat Panitia Sembilan (Piagam Jakarta)</li>
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Sidang PPKI (18 Agustus 1945)</li>
-                        </ul>
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('simulation')">
+                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
+                        <i class="fa-solid fa-gavel"></i>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-stone-800 flex justify-between items-center text-gold-400 font-bold text-sm">
-                        <span>Masuk Simulasi RPG</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition"></i>
+                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">3 Babak Sidang Historis</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        Navigasi perdebatan BPUPKI I (29 Mei–1 Juni), Panitia Sembilan (22 Juni), dan PPKI (18 Agustus 1945). Pertahankan keseimbangan Persatuan & Akurasi Sejarah.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('quiz')">
+                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">Cerdas Cermat & Lifelines</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        10 Pertanyaan berbobot dengan timer melingkar interaktif, pengganda skor (streak combo), audio efek synthesizer, serta 3 Bantuan (50:50, Petunjuk, +15s).
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('certificate')">
+                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
+                        <i class="fa-solid fa-file-certificate"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">Sertifikat & Rapor A4</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        Dapatkan sertifikat resmi lengkap dengan Transkrip Nilai/Hasil Penilaian Evaluasi sub-kompetensi yang siap dicetak pas ukuran A4 Landscape PDF.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SIMULASI SIDANG HISTORIS (RPG MODE) -->
+        <section id="tab-simulation" class="tab-content hidden space-y-6">
+            <!-- Game Header Stats -->
+            <div class="glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4 border-l-4 border-l-gold-500">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center font-bold" id="sim-step-badge">1/6</span>
+                    <div>
+                        <h3 class="font-bold text-gold-300 text-sm md:text-base" id="sim-stage-title">BABAK I: BPUPKI (29 Mei - 1 Juni 1945)</h3>
+                        <p class="text-xs text-slate-400" id="sim-stage-subtitle">Gedung Chuo Sangi In, Jakarta</p>
                     </div>
                 </div>
 
-                <!-- Mode 2 Card -->
-                <div class="glass-panel rounded-2xl p-6 sm:p-8 hover:border-gold-400 transition cursor-pointer group flex flex-col justify-between" onclick="startQuizMode()">
-                    <div class="space-y-4">
-                        <div class="w-14 h-14 rounded-xl bg-amber-500/20 text-gold-400 border border-gold-500/40 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-                            <i class="fa-solid fa-stopwatch"></i>
+                <!-- Live Meters -->
+                <div class="flex items-center gap-6 text-sm">
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs gap-2">
+                            <span class="text-slate-400"><i class="fa-solid fa-handshake text-emerald-400 mr-1"></i>Persatuan Bangsa:</span>
+                            <span class="font-bold text-emerald-400" id="meter-unity-text">80%</span>
                         </div>
-                        <h3 class="text-2xl font-heading font-bold text-gold-300">Cerdas Cermat Tantangan</h3>
-                        <p class="text-stone-300 text-sm leading-relaxed">
-                            Uji pemahaman sejarah nasional Anda dengan waktu terbatas, combo bonus, efek suara sintetis realistis, dan 3 bantuan (Lifelines) taktis.
-                        </p>
-                        <ul class="text-xs text-stone-400 space-y-1.5 font-medium">
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Timer Melingkar & Combo Multiplier</li>
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Lifelines: 50:50, Hint Sejarah, +15 Detik</li>
-                            <li><i class="fa-solid fa-check text-gold-400 me-2"></i> Efek Suara Palu Sidang & Sorak Kemenangan</li>
-                        </ul>
+                        <div class="w-28 md:w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div id="meter-unity-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 80%;"></div>
+                        </div>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-stone-800 flex justify-between items-center text-gold-400 font-bold text-sm">
-                        <span>Mulai Cerdas Cermat</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition"></i>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs gap-2">
+                            <span class="text-slate-400"><i class="fa-solid fa-book-bookmark text-amber-400 mr-1"></i>Akurasi Historis:</span>
+                            <span class="font-bold text-amber-400" id="meter-accuracy-text">80%</span>
+                        </div>
+                        <div class="w-28 md:w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div id="meter-accuracy-bar" class="h-full bg-amber-500 transition-all duration-500" style="width: 80%;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Access Modules -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div onclick="switchTab('gallery')" class="p-5 rounded-xl bg-stone-900/60 border border-stone-800 hover:border-gold-500/50 cursor-pointer transition flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/10 text-gold-400 flex items-center justify-center text-xl shrink-0">
-                        <i class="fa-solid fa-user-tie"></i>
-                    </div>
+            <!-- RPG Scenario Card -->
+            <div class="glass-panel p-6 md:p-8 rounded-2xl relative space-y-6">
+                <!-- Speaker Identity -->
+                <div class="flex items-center gap-4 pb-4 border-b border-slate-700/60">
+                    <img id="sim-speaker-img" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80" alt="Tokoh" class="w-16 h-16 rounded-full border-2 border-gold-500 object-cover shadow-lg">
                     <div>
-                        <h4 class="font-bold text-stone-200">Galeri Tokoh</h4>
-                        <p class="text-xs text-stone-400">Profil 9 Tokoh Perumus</p>
+                        <span class="text-xs font-semibold px-2 py-0.5 bg-gold-500/20 text-gold-300 rounded" id="sim-speaker-role">Ketua BPUPKI</span>
+                        <h4 class="text-xl font-bold font-cinzel text-slate-100" id="sim-speaker-name">Dr. K.R.T. Radjiman Wedyodiningrat</h4>
                     </div>
                 </div>
-                <div onclick="switchTab('gallery'); switchGallerySubtab('matrix');" class="p-5 rounded-xl bg-stone-900/60 border border-stone-800 hover:border-gold-500/50 cursor-pointer transition flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/10 text-gold-400 flex items-center justify-center text-xl shrink-0">
-                        <i class="fa-solid fa-diagram-project"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-stone-200">Matriks Rumusan</h4>
-                        <p class="text-xs text-stone-400">Evolusi Teks Pancasila</p>
-                    </div>
+
+                <!-- Scenario Text -->
+                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                    <p class="text-base md:text-lg text-slate-200 leading-relaxed font-serif italic" id="sim-scenario-text">
+                        "Paduka Tuan-Tuan sekalian, kita berkumpul di sini untuk merumuskan pondasi mendasar bagi Indonesia Merdeka. Apakah 'Dasar Negara' yang hendak kita tempatkan di bawah pondasi bangunan Republik?"
+                    </p>
                 </div>
-                <div onclick="openCertificateModal()" class="p-5 rounded-xl bg-stone-900/60 border border-stone-800 hover:border-gold-500/50 cursor-pointer transition flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/10 text-gold-400 flex items-center justify-center text-xl shrink-0">
-                        <i class="fa-solid fa-file-contract"></i>
-                    </div>
+
+                <!-- Choices -->
+                <div class="space-y-3" id="sim-choices-container">
+                    <!-- Dynamic Choices rendered via JS -->
+                </div>
+
+                <!-- Historical Context Note -->
+                <div class="p-4 bg-amber-950/30 border border-amber-600/30 rounded-xl text-xs md:text-sm text-amber-200/90 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-400 text-lg mt-0.5"></i>
                     <div>
-                        <h4 class="font-bold text-stone-200">Sertifikat Resmi (A4)</h4>
-                        <p class="text-xs text-stone-400">Cetak Hasil Studi Anda</p>
+                        <strong class="block font-semibold mb-1 text-amber-300">Catatan Konteks Historis:</strong>
+                        <span id="sim-history-note">Sidang BPUPKI I mendengarkan pidato dari Mohammad Yamin, Soepomo, dan Soekarno untuk merumuskan konsep filsafat dasar negara (Philosofische Grondslag).</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== TAB 2: RPG SIMULATION ==================== -->
-        <section id="tab-rpg" class="hidden space-y-6">
-            <!-- RPG Top Status Bar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-wrap items-center justify-between gap-4 border-gold-600/40">
-                <div class="flex items-center space-x-3">
-                    <span id="rpg-act-badge" class="px-3 py-1 rounded-md bg-gold-500/20 text-gold-300 font-bold text-xs uppercase border border-gold-500/30">
-                        Babak 1: BPUPKI
-                    </span>
-                    <h3 id="rpg-act-title" class="font-heading font-bold text-base sm:text-lg text-amber-100">
-                        Sidang Pertama BPUPKI (29 Mei - 1 Juni 1945)
-                    </h3>
-                </div>
-
-                <!-- Meters -->
-                <div class="flex items-center space-x-6 text-xs font-bold">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-heart text-red-500"></i>
-                        <span>Persatuan:</span>
-                        <div class="w-24 bg-stone-800 h-3 rounded-full overflow-hidden border border-stone-700">
-                            <div id="meter-unity" class="bg-gradient-to-r from-red-500 to-emerald-400 h-full transition-all duration-500" style="width: 75%"></div>
-                        </div>
-                        <span id="meter-unity-text" class="text-gold-400">75%</span>
+        <!-- TAB 3: CERDAS CERMAT (QUIZ MODE) -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <!-- Quiz Scoreboard Bar -->
+            <div class="glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
+                        <span class="text-xs text-slate-400 block">Soal</span>
+                        <span class="text-lg font-bold text-gold-400" id="quiz-progress">1 / 10</span>
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-book text-amber-400"></i>
-                        <span>Akurasi:</span>
-                        <div class="w-24 bg-stone-800 h-3 rounded-full overflow-hidden border border-stone-700">
-                            <div id="meter-accuracy" class="bg-gradient-to-r from-amber-500 to-gold-300 h-full transition-all duration-500" style="width: 80%"></div>
-                        </div>
-                        <span id="meter-accuracy-text" class="text-gold-400">80%</span>
+                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
+                        <span class="text-xs text-slate-400 block">Skor</span>
+                        <span class="text-lg font-bold text-emerald-400" id="quiz-score">0</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- RPG Dialogue Screen Window -->
-            <div class="glass-panel rounded-2xl overflow-hidden border border-gold-600/40 shadow-2xl relative min-h-[480px] flex flex-col justify-between bg-stone-950">
-                <!-- Visual Scene Backdrop -->
-                <div id="rpg-backdrop" class="absolute inset-0 bg-cover bg-center opacity-25 transition-all duration-700" style="background-image: url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1200&auto=format&fit=crop');"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent"></div>
-
-                <!-- Speaker Header -->
-                <div class="relative z-10 p-6 flex items-start justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div id="rpg-speaker-avatar" class="w-16 h-16 rounded-full border-2 border-gold-400 bg-stone-800 flex items-center justify-center text-3xl shadow-lg shrink-0">
-                            🏛️
-                        </div>
-                        <div>
-                            <h4 id="rpg-speaker-name" class="font-heading font-bold text-xl text-gold-300">Dr. K.R.T. Radjiman Wedyodiningrat</h4>
-                            <p id="rpg-speaker-role" class="text-xs text-stone-400 font-medium">Ketua BPUPKI - Gedung Chuo Sangi In, Jakarta</p>
-                        </div>
-                    </div>
-                    <button onclick="playGavelSound()" class="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-gold-400 text-xs border border-gold-500/30 flex items-center gap-1.5">
-                        <i class="fa-solid fa-gavel"></i> Ketuk Palu
-                    </button>
-                </div>
-
-                <!-- RPG Narrative Box -->
-                <div class="relative z-10 p-6 sm:p-8 space-y-6 flex-grow flex flex-col justify-center">
-                    <div class="bg-stone-900/90 border border-gold-600/30 rounded-xl p-6 shadow-xl backdrop-blur-md">
-                        <p id="rpg-dialogue-text" class="text-stone-200 text-base sm:text-lg font-serif-text leading-relaxed">
-                            "Para anggota sidang yang terhormat, kita berkumpul di sini untuk menjawab satu pertanyaan yang amat fundamental: Apakah dasar negara dari Indonesia merdeka yang akan kita bentuk bersama ini?"
-                        </p>
-                    </div>
-
-                    <!-- RPG Decision Choices -->
-                    <div id="rpg-choices-container" class="grid grid-cols-1 gap-3">
-                        <!-- Choices will be rendered via JS -->
+                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
+                        <span class="text-xs text-slate-400 block">Combo Multiplier</span>
+                        <span class="text-lg font-bold text-amber-400" id="quiz-streak">x1.0</span>
                     </div>
                 </div>
 
-                <!-- Historical Context Tooltip Footer -->
-                <div class="relative z-10 px-6 py-3 bg-stone-900/90 border-t border-stone-800 text-xs text-stone-400 flex items-center justify-between">
-                    <span id="rpg-historical-hint"><i class="fa-solid fa-circle-info text-amber-400 me-1"></i> Tip Historis: Gagasan dasar negara disampaikan oleh Yamin, Soepomo, dan Sukarno.</span>
-                    <span class="text-stone-500">Langkah <span id="rpg-step-indicator">1</span> dari <span id="rpg-total-steps">6</span></span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==================== TAB 3: QUIZ MODE ==================== -->
-        <section id="tab-quiz" class="hidden space-y-6">
-            <!-- Quiz HUD Bar -->
-            <div class="glass-panel p-4 rounded-xl flex items-center justify-between border-gold-600/40">
-                <div class="flex items-center space-x-4">
-                    <div class="text-stone-400 text-xs">
-                        Pertanyaan: <span id="quiz-current-num" class="text-gold-300 font-bold text-base">1</span>/<span id="quiz-total-num">10</span>
-                    </div>
-                    <div class="text-stone-400 text-xs">
-                        Skor: <span id="quiz-score" class="text-amber-400 font-bold text-base">0</span>
-                    </div>
-                    <div class="text-stone-400 text-xs hidden sm:block">
-                        Streak Combo: <span id="quiz-streak" class="text-emerald-400 font-bold text-base">x1.0</span>
-                    </div>
+                <!-- Circular Timer Ring -->
+                <div class="relative w-16 h-16 flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="quiz-timer-ring" class="text-gold-500 timer-circle" stroke-dasharray="100, 100" stroke-dashoffset="0" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <span class="absolute font-mono font-bold text-base text-gold-300" id="quiz-timer-text">20</span>
                 </div>
 
                 <!-- Lifelines -->
-                <div class="flex items-center space-x-2">
-                    <button id="lifeline-5050" onclick="useLifeline('5050')" class="px-3 py-1.5 rounded-lg bg-stone-800 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/20 transition flex items-center gap-1">
-                        <i class="fa-solid fa-scissors"></i> 50:50
+                <div class="flex items-center gap-2">
+                    <button id="lifeline-5050" onclick="useLifeline('5050')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
+                        <i class="fa-solid fa-square-half-stroke"></i> 50:50
                     </button>
-                    <button id="lifeline-hint" onclick="useLifeline('hint')" class="px-3 py-1.5 rounded-lg bg-stone-800 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/20 transition flex items-center gap-1">
-                        <i class="fa-solid fa-lightbulb"></i> Hint
+                    <button id="lifeline-hint" onclick="useLifeline('hint')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
+                        <i class="fa-solid fa-lightbulb"></i> Petunjuk
                     </button>
-                    <button id="lifeline-time" onclick="useLifeline('time')" class="px-3 py-1.5 rounded-lg bg-stone-800 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/20 transition flex items-center gap-1">
+                    <button id="lifeline-time" onclick="useLifeline('time')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
                         <i class="fa-solid fa-clock-rotate-left"></i> +15s
                     </button>
                 </div>
             </div>
 
-            <!-- Main Quiz Card -->
-            <div class="glass-panel rounded-2xl p-6 sm:p-10 border border-gold-600/40 shadow-2xl relative">
-                <!-- Circular Ring Timer & Category -->
-                <div class="flex justify-between items-center mb-6 border-b border-stone-800 pb-4">
-                    <span id="quiz-category-tag" class="px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 font-bold text-xs uppercase border border-gold-500/30">
-                        Kategori: BPUPKI
+            <!-- Quiz Card -->
+            <div class="glass-panel p-6 md:p-8 rounded-2xl space-y-6">
+                <div class="space-y-2">
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-gold-500/10 text-gold-400 border border-gold-500/30 rounded-full" id="quiz-category">
+                        Kategori: Sidang BPUPKI
                     </span>
-
-                    <!-- Circular Timer Display -->
-                    <div class="relative w-14 h-14 flex items-center justify-center">
-                        <svg class="w-full h-full" viewBox="0 0 36 36">
-                            <path class="text-stone-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path id="quiz-timer-ring" class="timer-ring-circle text-gold-400" stroke-width="3" stroke-dasharray="100, 100" stroke-dashoffset="0" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        </svg>
-                        <span id="quiz-timer-seconds" class="absolute font-bold text-sm text-gold-300">20</span>
-                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold font-serif text-slate-100 leading-snug" id="quiz-question-text">
+                        Siapakah tokoh yang mengusulkan istilah "Pancasila" atas saran seorang ahli bahasa pada pidato tanggal 1 Juni 1945?
+                    </h3>
                 </div>
 
-                <!-- Question Text -->
-                <h3 id="quiz-question-text" class="text-xl sm:text-2xl font-serif-text font-bold text-stone-100 leading-snug mb-8">
-                    Siapakah ketua Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan Indonesia (BPUPKI) yang memimpin sidang perumusan Dasar Negara pada Mei–Juni 1945?
-                </h3>
-
-                <!-- Hint Alert (Hidden by default) -->
-                <div id="quiz-hint-box" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm flex items-start gap-3">
-                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg mt-0.5"></i>
-                    <p id="quiz-hint-text">Beliau adalah seorang dokter bangsawan Jawa yang berpandangan luas dan dihormati semua pihak.</p>
+                <!-- Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="quiz-options-container">
+                    <!-- Dynamic Options -->
                 </div>
 
-                <!-- Answer Options Grid -->
-                <div id="quiz-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Options inserted dynamically via JS -->
+                <!-- Hint Box -->
+                <div id="quiz-hint-box" class="hidden p-4 bg-blue-950/40 border border-blue-500/40 rounded-xl text-sm text-blue-200 flex items-center gap-3">
+                    <i class="fa-solid fa-circle-question text-blue-400 text-xl"></i>
+                    <span id="quiz-hint-text">Petunjuk akan muncul di sini...</span>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== TAB 4: GALLERY & ENCYCLOPEDIA ==================== -->
-        <section id="tab-gallery" class="hidden space-y-8">
-            <!-- Gallery Header Sub-navigation -->
-            <div class="flex items-center justify-between border-b border-stone-800 pb-4">
+        <!-- TAB 4: MATRIKS EVOLUSI RUMUSAN -->
+        <section id="tab-matrix" class="tab-content hidden space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-2xl md:text-3xl font-cinzel font-bold gold-gradient-text">Matriks Evolusi Rumusan Pancasila 1945</h2>
+                <p class="text-sm text-slate-400">Perbandingan pergeseran usulan rumusan dari 29 Mei 1945 hingga pengesahan final 18 Agustus 1945.</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-x-auto p-4 border border-gold-500/30">
+                <table class="w-full text-left text-xs md:text-sm border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="border-b border-gold-500/40 text-gold-300 font-cinzel">
+                            <th class="p-3 bg-slate-900/80">Sila</th>
+                            <th class="p-3 bg-slate-900/80">29 Mei (M. Yamin)</th>
+                            <th class="p-3 bg-slate-900/80">31 Mei (Soepomo)</th>
+                            <th class="p-3 bg-slate-900/80">1 Juni (Soekarno)</th>
+                            <th class="p-3 bg-slate-900/80">22 Juni (Piagam Jkt)</th>
+                            <th class="p-3 bg-slate-900/80 text-emerald-400">18 Ags (Sah / Final)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 text-slate-300 font-serif">
+                        <tr>
+                            <td class="p-3 font-bold text-gold-400">Sila 1</td>
+                            <td class="p-3">Peri Kebangsaan</td>
+                            <td class="p-3">Persatuan</td>
+                            <td class="p-3">Kebangsaan Indonesia</td>
+                            <td class="p-3 text-amber-300 font-sans text-xs">Ketuhanan dengan kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya</td>
+                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Ketuhanan Yang Maha Esa</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-gold-400">Sila 2</td>
+                            <td class="p-3">Peri Kemanusiaan</td>
+                            <td class="p-3">Kekeluargaan</td>
+                            <td class="p-3">Internasionalisme / Peri Kemanusiaan</td>
+                            <td class="p-3">Kemanusiaan yang adil dan beradab</td>
+                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Kemanusiaan yang adil dan beradab</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-gold-400">Sila 3</td>
+                            <td class="p-3">Peri Ketuhanan</td>
+                            <td class="p-3">Keseimbangan Lahir dan Batin</td>
+                            <td class="p-3">Mufakat atau Demokrasi</td>
+                            <td class="p-3">Persatuan Indonesia</td>
+                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Persatuan Indonesia</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-gold-400">Sila 4</td>
+                            <td class="p-3">Peri Kerakyatan</td>
+                            <td class="p-3">Musyawarah</td>
+                            <td class="p-3">Kesejahteraan Sosial</td>
+                            <td class="p-3">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
+                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-gold-400">Sila 5</td>
+                            <td class="p-3">Kesejahteraan Rakyat</td>
+                            <td class="p-3">Keadilan Rakyat</td>
+                            <td class="p-3">Ketuhanan yang Berkebudayaan</td>
+                            <td class="p-3">Keadilan sosial bagi seluruh rakyat Indonesia</td>
+                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Keadilan sosial bagi seluruh rakyat Indonesia</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 5: GALERI TOKOH -->
+        <section id="tab-gallery" class="tab-content hidden space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-2xl md:text-3xl font-cinzel font-bold gold-gradient-text">Tokoh-Tokoh Pendiri Bangsa</h2>
+                <p class="text-sm text-slate-400">Para arsitek di balik perumusan dasar negara BPUPKI & PPKI 1945.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-cards-container">
+                <!-- Dynamic Person Cards rendered via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 6: SERTIFIKAT DIGITAL & RAPOR PENILAIAN LENGKAP (A4 PRINT OPTIMIZED) -->
+        <section id="tab-certificate" class="tab-content hidden space-y-6">
+            <!-- Control Bar -->
+            <div class="no-print glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <h2 class="font-heading text-2xl sm:text-3xl font-bold text-amber-100">Galeri Tokoh & Ensiklopedia</h2>
-                    <p class="text-xs text-stone-400">Arsip Dokumentasi Perumus Pancasila dan Evolusi Rumusan 1945</p>
+                    <h3 class="font-bold text-gold-300 text-lg">Pratinjau Sertifikat & Rapor Hasil Penilaian</h3>
+                    <p class="text-xs text-slate-400">Dioptimalkan secara presisi untuk pencetakan dokumen A4 Landscape (297mm x 210mm).</p>
                 </div>
-                <div class="flex bg-stone-900 rounded-lg p-1 border border-stone-800">
-                    <button id="subtab-btn-figures" onclick="switchGallerySubtab('figures')" class="px-4 py-2 rounded-md font-bold text-xs bg-gold-500 text-stone-950 transition">
-                        Tokoh Perumus
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="updateCertDataPrompt()" class="px-4 py-2 bg-slate-800 border border-gold-500/40 hover:bg-slate-700 text-gold-300 font-semibold text-xs rounded-lg transition flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square"></i> Perbarui Data Sertifikat
                     </button>
-                    <button id="subtab-btn-matrix" onclick="switchGallerySubtab('matrix')" class="px-4 py-2 rounded-md font-bold text-xs text-stone-400 hover:text-gold-300 transition">
-                        Evolusi Rumusan
+                    <button onclick="window.print()" class="px-5 py-2 bg-gradient-to-r from-gold-600 to-gold-400 text-slate-950 font-bold text-xs rounded-lg hover:brightness-110 shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF (A4)
                     </button>
                 </div>
             </div>
 
-            <!-- SUBTAB 1: TOKOH PERUMUS -->
-            <div id="gallery-subtab-figures" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Figures cards rendered via JS -->
-            </div>
+            <!-- ON-SCREEN PREVIEW FRAME -->
+            <div class="flex justify-center overflow-x-auto py-4">
+                <!-- CERTIFICATE A4 CONTAINER -->
+                <div id="certificate-node" class="certificate-a4-print cert-preview-frame rounded-sm p-6 flex flex-col justify-between relative text-slate-900 font-sans border-8 border-double border-gold-800 bg-[#fffdf5]">
+                    
+                    <!-- Certificate Inner Golden Border -->
+                    <div class="cert-border-inner border-2 border-gold-600/80 p-5 h-full flex flex-col justify-between relative bg-[radial-gradient(#fef08a_1px,transparent_1px)] [background-size:16px_16px] [background-opacity:0.2]">
+                        
+                        <!-- Header Section -->
+                        <div class="text-center space-y-1 border-b-2 border-gold-700/30 pb-3">
+                            <div class="flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-monument text-gold-700 text-2xl"></i>
+                                <span class="font-cinzel text-xs font-bold tracking-widest text-gold-900 uppercase">PANITIA PENYELENGGARA SIMULASI HISTORY & CERDAS CERMAT PANCASILA</span>
+                                <i class="fa-solid fa-monument text-gold-700 text-2xl"></i>
+                            </div>
+                            <h2 class="font-cinzel text-2xl font-black text-slate-900 tracking-wider">SERTIFIKAT KELULUSAN & RAPOR PENILAIAN</h2>
+                            <p class="font-serif text-xs text-slate-600 italic">Nomor Registrasi Resmi: <span id="cert-number-text" class="font-mono font-bold text-slate-800">BPUPKI-PPKI/1945/CERT-8842</span></p>
+                        </div>
 
-            <!-- SUBTAB 2: EVOLUSI RUMUSAN MATRIKS -->
-            <div id="gallery-subtab-matrix" class="hidden space-y-6">
-                <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-gold-600/30">
-                    <h3 class="font-heading font-bold text-xl text-gold-300 mb-4">Perbandingan Matriks 5 Tahap Rumusan Pancasila</h3>
-                    <p class="text-stone-300 text-sm mb-6 leading-relaxed">
-                        Pancasila tidak lahir dalam sekejap, melainkan melalui proses dialektika pemikiran para pahlawan bangsa sejak 29 Mei 1945 hingga disahkan secara resmi pada 18 Agustus 1945.
-                    </p>
+                        <!-- Recipient Name Section -->
+                        <div class="text-center space-y-1 my-2">
+                            <p class="text-xs uppercase tracking-widest font-semibold text-slate-600">Diberikan Kepada Tokoh Muda Kebangsaan:</p>
+                            <h3 id="cert-user-name" class="font-cursive text-4xl font-bold text-gold-900 my-1 drop-shadow-sm">Moh. Joharul Yusuf</h3>
+                            <p class="text-xs text-slate-700 font-serif max-w-2xl mx-auto">
+                                Dinyatakan telah menyelesaikan seluruh rangkaian **Simulasi Sidang Historis BPUPKI-PPKI** serta Ujian **Cerdas Cermat Kebangsaan Perumusan Pancasila 1945** dengan hasil penilaian evaluasi sebagai berikut:
+                            </p>
+                        </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                            <thead>
-                                <tr class="bg-stone-900 border-b border-gold-600/40 text-gold-300 font-heading">
-                                    <th class="p-3 border-r border-stone-800">Sila</th>
-                                    <th class="p-3 border-r border-stone-800 min-w-[200px]">Moh. Yamin (29 Mei)</th>
-                                    <th class="p-3 border-r border-stone-800 min-w-[200px]">Prof. Soepomo (31 Mei)</th>
-                                    <th class="p-3 border-r border-stone-800 min-w-[200px]">Ir. Sukarno (1 Juni)</th>
-                                    <th class="p-3 border-r border-stone-800 min-w-[220px]">Piagam Jakarta (22 Juni)</th>
-                                    <th class="p-3 min-w-[220px] bg-gold-900/30 text-amber-200">Sah PPKI (18 Agustus 1945)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-stone-800 text-stone-300">
-                                <tr>
-                                    <td class="p-3 font-bold text-gold-400 border-r border-stone-800">1</td>
-                                    <td class="p-3 border-r border-stone-800">Peri Kebangsaan</td>
-                                    <td class="p-3 border-r border-stone-800">Persatuan</td>
-                                    <td class="p-3 border-r border-stone-800">Kebangsaan Indonesia</td>
-                                    <td class="p-3 border-r border-stone-800">Ketuhanan dengan kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya</td>
-                                    <td class="p-3 font-semibold text-amber-100 bg-gold-900/20">Ketuhanan Yang Maha Esa</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-bold text-gold-400 border-r border-stone-800">2</td>
-                                    <td class="p-3 border-r border-stone-800">Peri Kemanusiaan</td>
-                                    <td class="p-3 border-r border-stone-800">Kekeluargaan</td>
-                                    <td class="p-3 border-r border-stone-800">Internasionalisme / Peri-Kemanusiaan</td>
-                                    <td class="p-3 border-r border-stone-800">Kemanusiaan yang adil dan beradab</td>
-                                    <td class="p-3 font-semibold text-amber-100 bg-gold-900/20">Kemanusiaan yang adil dan beradab</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-bold text-gold-400 border-r border-stone-800">3</td>
-                                    <td class="p-3 border-r border-stone-800">Peri Ketuhanan</td>
-                                    <td class="p-3 border-r border-stone-800">Keseimbangan Lahir dan Batin</td>
-                                    <td class="p-3 border-r border-stone-800">Mufakat atau Demokrasi</td>
-                                    <td class="p-3 border-r border-stone-800">Persatuan Indonesia</td>
-                                    <td class="p-3 font-semibold text-amber-100 bg-gold-900/20">Persatuan Indonesia</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-bold text-gold-400 border-r border-stone-800">4</td>
-                                    <td class="p-3 border-r border-stone-800">Peri Kerakyatan</td>
-                                    <td class="p-3 border-r border-stone-800">Musyawarah</td>
-                                    <td class="p-3 border-r border-stone-800">Kesejahteraan Sosial</td>
-                                    <td class="p-3 border-r border-stone-800">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
-                                    <td class="p-3 font-semibold text-amber-100 bg-gold-900/20">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-bold text-gold-400 border-r border-stone-800">5</td>
-                                    <td class="p-3 border-r border-stone-800">Kesejahteraan Rakyat</td>
-                                    <td class="p-3 border-r border-stone-800">Keadilan Rakyat</td>
-                                    <td class="p-3 border-r border-stone-800">Ketuhanan yang Berkebudayaan</td>
-                                    <td class="p-3 border-r border-stone-800">Keadilan sosial bagi seluruh rakyat Indonesia</td>
-                                    <td class="p-3 font-semibold text-amber-100 bg-gold-900/20">Keadilan sosial bagi seluruh rakyat Indonesia</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- EVALUATION / ASSESSMENT MATRIX TABLE (HASIL PENILAIAN) -->
+                        <div class="my-2 bg-amber-50/80 border border-gold-600/40 rounded-md p-3">
+                            <h4 class="font-cinzel text-xs font-bold text-gold-900 uppercase tracking-wider mb-2 border-b border-gold-300 pb-1 flex justify-between items-center">
+                                <span><i class="fa-solid fa-chart-line mr-1.5"></i> Transkrip & Matriks Penilaian Hasil Evaluasi</span>
+                                <span id="cert-predikat-badge" class="px-2 py-0.5 bg-gold-600 text-white rounded text-[10px] font-bold">PREDIKAT: SANGAT MEMUASKAN</span>
+                            </h4>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-xs mb-2">
+                                <div class="bg-white p-1.5 rounded border border-amber-200">
+                                    <span class="text-[10px] text-slate-500 block uppercase">Skor Cerdas Cermat</span>
+                                    <strong id="cert-score-quiz" class="text-sm font-bold text-gold-800">850 / 1000</strong>
+                                </div>
+                                <div class="bg-white p-1.5 rounded border border-amber-200">
+                                    <span class="text-[10px] text-slate-500 block uppercase">Akurasi Jawaban</span>
+                                    <strong id="cert-accuracy-quiz" class="text-sm font-bold text-emerald-700">90%</strong>
+                                </div>
+                                <div class="bg-white p-1.5 rounded border border-amber-200">
+                                    <span class="text-[10px] text-slate-500 block uppercase">Indeks Persatuan (Unity)</span>
+                                    <strong id="cert-unity-sim" class="text-sm font-bold text-blue-800">85%</strong>
+                                </div>
+                                <div class="bg-white p-1.5 rounded border border-amber-200">
+                                    <span class="text-[10px] text-slate-500 block uppercase">Akurasi Historis Sidang</span>
+                                    <strong id="cert-accuracy-sim" class="text-sm font-bold text-amber-800">92%</strong>
+                                </div>
+                            </div>
+
+                            <!-- Detailed Competency Breakdown Table -->
+                            <table class="w-full text-left text-[11px] border-collapse bg-white rounded border border-amber-200">
+                                <thead>
+                                    <tr class="bg-amber-100 text-slate-800 font-semibold border-b border-amber-300">
+                                        <th class="p-1.5">Bidang Evaluasi Sub-Kompetensi</th>
+                                        <th class="p-1.5 text-center">Tingkat Capaian</th>
+                                        <th class="p-1.5 text-center">Nilai Mutu</th>
+                                        <th class="p-1.5">Keterangan Evaluasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-amber-100 text-slate-700">
+                                    <tr>
+                                        <td class="p-1.5 font-medium">1. Pemahaman Latar Belakang & Pembentukan BPUPKI</td>
+                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-1">Sangat Baik (92)</td>
+                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-1">A</td>
+                                        <td class="p-1.5 text-[10px]" id="sub-ket-1">Menguasai konteks sejarah Janji Koiso & pembentukan Chuo Sangi In.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5 font-medium">2. Penguasaan Konsep Rumusan Sila (Yamin, Soepomo, Soekarno)</td>
+                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-2">Sangat Baik (90)</td>
+                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-2">A</td>
+                                        <td class="p-1.5 text-[10px]" id="sub-ket-2">Memahami perbedaan Philosofische Grondslag dan Pancasila 1 Juni.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5 font-medium">3. Dinamika Kompromi Kebangsaan Sidang PPKI 18 Agustus</td>
+                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-3">Sangat Baik (88)</td>
+                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-3">A-</td>
+                                        <td class="p-1.5 text-[10px]" id="sub-ket-3">Mampu menavigasi perubahan 7 kata Piagam Jakarta demi integritas NKRI.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Footer Signatures & Official Wax Seal -->
+                        <div class="flex justify-between items-end pt-2 border-t border-gold-700/30">
+                            <!-- Left Signature -->
+                            <div class="text-center font-serif text-xs space-y-1">
+                                <p class="text-slate-500">Wakil Ketua PPKI 1945,</p>
+                                <div class="font-cursive text-2xl text-slate-800 h-8 flex items-center justify-center">M. Hatta</div>
+                                <p class="font-bold border-t border-slate-400 pt-0.5 text-slate-800">Drs. Mohammad Hatta</p>
+                            </div>
+
+                            <!-- Center Wax Seal Badge & QR Code -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 rounded-full bg-red-800 border-2 border-gold-500 shadow-md flex items-center justify-center text-gold-300 font-cinzel font-black text-[9px] text-center p-1 leading-tight uppercase">
+                                    SEAL OF 1945 OFFICIAL
+                                </div>
+                                <div class="text-center">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=VALIDATED-PANCASILA-1945-CERTIFICATE" alt="QR Validation" class="w-12 h-12 border border-slate-300 p-0.5 bg-white">
+                                    <span class="text-[8px] text-slate-500 block mt-0.5">Kode Autentik</span>
+                                </div>
+                            </div>
+
+                            <!-- Right Signature -->
+                            <div class="text-center font-serif text-xs space-y-1">
+                                <p class="text-slate-500">Jakarta, <span id="cert-date-text">18 Agustus 1945</span></p>
+                                <p class="text-slate-500">Ketua PPKI 1945,</p>
+                                <div class="font-cursive text-2xl text-slate-800 h-8 flex items-center justify-center">Ir. Soekarno</div>
+                                <p class="font-bold border-t border-slate-400 pt-0.5 text-slate-800">Ir. Soekarno</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- ==================== TAB 5: ACHIEVEMENTS ==================== -->
-        <section id="tab-achievements" class="hidden space-y-6">
-            <div class="border-b border-stone-800 pb-4">
-                <h2 class="font-heading text-2xl sm:text-3xl font-bold text-amber-100">Lencana & Pencapaian</h2>
-                <p class="text-xs text-stone-400">Penghargaan Digital atas Pemahaman Sejarah Kelahiran Pancasila</p>
-            </div>
-
-            <div id="achievements-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Badges dynamically rendered via JS -->
             </div>
         </section>
 
     </main>
 
-    <!-- ==================== MODAL: OFFICIAL CERTIFICATE (OPTIMIZED FOR A4 LANDSCAPE) ==================== -->
-    <div id="certificate-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-        <div class="relative w-full max-w-5xl my-4">
-            <!-- Modal Actions Bar -->
-            <div class="flex justify-between items-center mb-3 no-print">
-                <div class="text-stone-200 font-bold text-sm">
-                    <i class="fa-solid fa-certificate text-gold-400 me-2"></i> Sertifikat Resmi BPUPKI / PPKI (Presisi A4 Landscape)
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="window.print()" class="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-stone-950 font-bold text-xs flex items-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF (A4)
-                    </button>
-                    <button onclick="closeCertificateModal()" class="w-9 h-9 rounded-lg bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- CERTIFICATE DISPLAY BOX (Aspect Ratio ~297/210 A4 Landscape) -->
-            <div id="printable-certificate-wrapper" class="bg-parchment text-stone-900 p-6 sm:p-10 rounded-xl shadow-2xl border-8 border-double border-gold-800 relative overflow-hidden font-serif-text mx-auto w-full max-w-[960px] aspect-[297/210] flex flex-col justify-between">
-                <!-- Ornate Border Frames -->
-                <div class="absolute inset-2 border-2 border-amber-900/40 pointer-events-none"></div>
-                <div class="absolute inset-3 border border-amber-900/20 pointer-events-none"></div>
-
-                <!-- Watermark Garuda/Shield -->
-                <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                    <i class="fa-solid fa-shield-halved text-[260px] text-amber-950"></i>
-                </div>
-
-                <!-- Certificate Header -->
-                <div class="text-center space-y-2 relative z-10">
-                    <div class="inline-block w-12 h-12 rounded-full bg-amber-900 text-gold-300 border-2 border-gold-500 p-2 shadow-md">
-                        <i class="fa-solid fa-monument text-2xl"></i>
-                    </div>
-                    <h2 class="font-heading text-xl sm:text-3xl font-bold tracking-widest text-amber-950 uppercase">
-                        BADAN PENYELIDIK USAHA-USAHA PERSIAPAN KEMERDEKAAN
-                    </h2>
-                    <p class="text-[10px] sm:text-xs font-bold text-amber-900 tracking-wider">
-                        PIAGAM PENGHARGAAN KETATANEGARAAN REPUBLIK INDONESIA
-                    </p>
-                    <div class="w-28 h-0.5 bg-gradient-to-r from-transparent via-gold-700 to-transparent mx-auto my-2"></div>
-                </div>
-
-                <!-- Body Text -->
-                <div class="text-center my-2 space-y-3 relative z-10">
-                    <p class="text-xs text-stone-700 italic">Dengan ini menyatakan bahwa:</p>
-                    
-                    <!-- Screen input -->
-                    <input id="cert-user-name" type="text" value="SUTAN MAHMUD" oninput="saveCertName(this.value)" class="text-center text-xl sm:text-2xl font-heading font-bold text-amber-950 bg-transparent border-b-2 border-gold-700/50 focus:border-gold-700 focus:outline-none px-4 py-1 w-full max-w-md mx-auto block no-print" placeholder="Masukkan Nama Anda...">
-                    
-                    <!-- Displayed Name for Print & View -->
-                    <div id="cert-display-name" class="hidden text-xl sm:text-2xl font-heading font-bold text-amber-950 border-b-2 border-gold-700/50 pb-1 max-w-md mx-auto">SUTAN MAHMUD</div>
-
-                    <p class="text-[11px] sm:text-xs text-stone-800 max-w-2xl mx-auto leading-relaxed">
-                        Telah berhasil menyelesaikan pembelajaran mendalam, ujian wawasan kebangsaan, serta simulasi perumusan Dasar Negara dalam <span class="font-bold">Mode Simulasi Sidang Historis 1945 & Cerdas Cermat Kelahiran Pancasila</span> dengan predikat kehormatan:
-                    </p>
-
-                    <div id="cert-grade-badge" class="inline-block px-5 py-1.5 rounded-lg bg-amber-900 text-gold-300 font-heading font-bold text-sm sm:text-base tracking-widest border border-gold-600 shadow-inner">
-                        ARSITEK KONSTITUSI UNGULAN (GRADE A)
-                    </div>
-                </div>
-
-                <!-- Signatures & Official Stamp -->
-                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-amber-900/20 relative z-10 text-[10px] sm:text-xs text-amber-950">
-                    <div class="text-center space-y-6">
-                        <p class="font-semibold">Jakarta, 18 Agustus 1945</p>
-                        <div class="italic font-bold font-serif-text text-sm text-stone-900 border-b border-amber-900/40 pb-0.5 max-w-[140px] mx-auto">
-                            Radjiman W.
-                        </div>
-                        <div>
-                            <p class="font-bold">Dr. K.R.T. Radjiman Wedyodiningrat</p>
-                            <p class="text-[9px] text-stone-600">Ketua BPUPKI</p>
-                        </div>
-                    </div>
-
-                    <!-- Center Seal -->
-                    <div class="flex items-center justify-center relative">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-red-800 via-red-600 to-amber-600 text-gold-300 flex items-center justify-center border-4 border-gold-500 shadow-xl opacity-90 rotate-12">
-                            <div class="text-[8px] sm:text-[9px] font-bold text-center uppercase tracking-tighter leading-tight">
-                                SEGEL RESMI<br/>PPKI<br/>18 AGUSTUS 1945
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center space-y-6">
-                        <p class="font-semibold">Atas Nama Bangsa Indonesia</p>
-                        <div class="italic font-bold font-serif-text text-sm text-stone-900 border-b border-amber-900/40 pb-0.5 max-w-[140px] mx-auto">
-                            Ir. Sukarno & Moh. Hatta
-                        </div>
-                        <div>
-                            <p class="font-bold">Ir. Sukarno & Drs. Moh. Hatta</p>
-                            <p class="text-[9px] text-stone-600">Ketua & Wakil PPKI</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Unique Certificate Verification Footer -->
-                <div class="mt-4 pt-2 border-t border-stone-300 flex justify-between items-center text-[9px] text-stone-600">
-                    <div>No. Verifikasi: <span id="cert-id-code" class="font-mono font-bold text-amber-900">BPUPKI-1945-8921-OK</span></div>
-                    <div>Verifikasi Digital QR: <span class="font-mono">PANCASILA-ABADI-1945</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="border-t border-gold-600/20 glass-panel mt-12 py-6 no-print">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-stone-400 space-y-2">
-            <p class="font-medium text-stone-300">Aplikasi Game Edukasi "Sang Arsitek Bangsa - Kelahiran Pancasila 1945"</p>
-            <p>Dirancang dengan Web Audio API Synthesizer, Dual Game Mode, dan Sistem Sertifikasi Ketatanegaraan (Optimasi Cetak A4 Landscape).</p>
-        </div>
+    <!-- FOOTER -->
+    <footer class="no-print border-t border-gold-600/30 bg-slate-900 py-4 text-center text-xs text-slate-500">
+        <p>Aplikasi Edukasi Kebangsaan Sejarah Pancasila 1945 &copy; 2026. Dioptimalkan untuk Pembelajaran Interaktif & Cetak A4 Landscape.</p>
     </footer>
 
+    <!-- APPLICATION LOGIC & SOUND SYNTHESIZER SCRIPT -->
     <script>
-        // Global Application State
-        const state = {
-            activeTab: 'main-menu',
-            soundEnabled: true,
-            isDarkMode: true,
-            userName: localStorage.getItem('pancasila_user_name') || 'SUTAN MAHMUD',
-            
-            // RPG Mode State
-            rpg: {
-                currentStep: 0,
-                unity: 75,
-                accuracy: 80,
-            },
-
-            // Quiz Mode State
-            quiz: {
-                currentIndex: 0,
-                score: 0,
-                streak: 1.0,
-                timer: 20,
-                timerInterval: null,
-                lifelines: {
-                    fiftyFifty: true,
-                    hint: true,
-                    time: true
+        /* ------------------------------------------------------------------
+           1. AUDIO SYNTHESIZER (Web Audio API)
+           ------------------------------------------------------------------ */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                 }
-            },
-
-            // Achievements
-            achievements: JSON.parse(localStorage.getItem('pancasila_achievements')) || {
-                architect: false,
-                unityKeeper: false,
-                bpupkiExpert: false,
-                diplomat: false,
-                scholar: false,
-                historian: false
             }
-        };
-
-        // Web Audio API Synthesizer (No external audio files required!)
-        let audioCtx = null;
-
-        function getAudioContext() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
-        }
-
-        // Sound 1: Gavel Sound (Ketukan Palu Sidang)
-        function playGavelSound() {
-            if (!state.soundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
+            playGavel() { // Ketukan Palu Sidang
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(120, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.15);
-
-                gain.gain.setValueAtTime(1.0, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-
+                osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
                 osc.connect(gain);
-                gain.connect(ctx.destination);
-
+                gain.connect(this.ctx.destination);
                 osc.start();
-                osc.stop(ctx.currentTime + 0.2);
-            } catch(e) {}
-        }
-
-        // Sound 2: Correct Answer Chime
-        function playCorrectSound() {
-            if (!state.soundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                const now = ctx.currentTime;
-                
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+            playCorrect() { // Chime Benar
+                this.init();
+                const now = this.ctx.currentTime;
                 [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    
-                    gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.1, now + idx * 0.08);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-                    
                     osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    
+                    gain.connect(this.ctx.destination);
                     osc.start(now + idx * 0.08);
                     osc.stop(now + idx * 0.08 + 0.3);
                 });
-            } catch(e) {}
-        }
-
-        // Sound 3: Wrong Answer Buzzer
-        function playWrongSound() {
-            if (!state.soundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
+            }
+            playWrong() { // Buzzer Salah
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, ctx.currentTime);
-                osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
-
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(110, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
                 osc.connect(gain);
-                gain.connect(ctx.destination);
-
+                gain.connect(this.ctx.destination);
                 osc.start();
-                osc.stop(ctx.currentTime + 0.3);
-            } catch(e) {}
-        }
-
-        // Sound 4: Clock Tick
-        function playTickSound() {
-            if (!state.soundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                
-                gain.gain.setValueAtTime(0.05, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start();
-                osc.stop(ctx.currentTime + 0.03);
-            } catch(e) {}
-        }
-
-        // Sound 5: Victory Applause Simulation
-        function playApplauseSound() {
-            if (!state.soundEnabled) return;
-            try {
-                const ctx = getAudioContext();
-                const bufferSize = ctx.sampleRate * 1.5;
-                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-
-                const noise = ctx.createBufferSource();
-                noise.buffer = buffer;
-
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.value = 1000;
-
-                const gain = ctx.createGain();
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(ctx.destination);
-
-                noise.start();
-                noise.stop(ctx.currentTime + 1.5);
-            } catch(e) {}
-        }
-
-        const rpgSteps = [
-            {
-                act: "Babak 1: BPUPKI",
-                title: "Sidang Pertama BPUPKI (29 Mei 1945)",
-                speaker: "Mr. Muhammad Yamin",
-                role: "Anggota BPUPKI / Tokoh Pemikir",
-                avatar: "📜",
-                backdrop: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1200&auto=format&fit=crop",
-                dialogue: "Saudara-saudara sidang! Indonesia merdeka membutuhkan 5 Asas Dasar: 1. Peri Kebangsaan, 2. Peri Kemanusiaan, 3. Peri Ketuhanan, 4. Peri Kerakyatan, dan 5. Kesejahteraan Rakyat. Bagaimana pandangan Anda sebagai wakil pemuda?",
-                hint: "Moh. Yamin menyampaikan pidato lisan dan draf tertulis mengenai gagasan 5 Dasar Negara.",
-                choices: [
-                    {
-                        text: "Mendukung penuh 5 Asas Yamin karena mencakup sila Kebangsaan dan Ketuhanan.",
-                        unityDelta: +10,
-                        accuracyDelta: +10,
-                        response: "Bagus! Pidato Yamin menjadi fondasi awal penting dalam dialektika dasar negara."
-                    },
-                    {
-                        text: "Menolak usulan Yamin dan menuntut pemisahan total tanpa gagasan Ketuhanan.",
-                        unityDelta: -15,
-                        accuracyDelta: -10,
-                        response: "Langkah ini memicu perdebatan sengit dan mengurangi rasa saling percaya antarfraksi."
-                    }
-                ]
-            },
-            {
-                act: "Babak 1: BPUPKI",
-                title: "Sidang BPUPKI (31 Mei 1945)",
-                speaker: "Mr. Prof. Soepomo",
-                role: "Pakar Hukum & Konstitusi",
-                avatar: "⚖️",
-                backdrop: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop",
-                dialogue: "Negara yang kita bentuk bukan negara perseorangan (individualis) dan bukan negara kelas, melainkan Negara Integralistik (Paham Kekeluargaan) yang menyatu dengan seluruh rakyat.",
-                hint: "Soepomo menekankan teori Negara Integralistik dan keseimbangan lahir batin.",
-                choices: [
-                    {
-                        text: "Menyertakan paham kekeluargaan Soepomo sebagai pilar persatuan antar suku dan golongan.",
-                        unityDelta: +10,
-                        accuracyDelta: +10,
-                        response: "Tepat! Paham Kekeluargaan memperkuat ikatan persatuan bangsa Indonesia yang majemuk."
-                    },
-                    {
-                        text: "Mengabaikan prinsip kesatuan Soepomo demi mementingkan kepentingan kelompok sendiri.",
-                        unityDelta: -20,
-                        accuracyDelta: -10,
-                        response: "Keputusan egois ini mengancam keutuhan sidang BPUPKI."
-                    }
-                ]
-            },
-            {
-                act: "Babak 1: BPUPKI",
-                title: "Pidato Lahirnya Pancasila (1 Juni 1945)",
-                speaker: "Ir. Sukarno",
-                role: "Anggota BPUPKI / Proklamator",
-                avatar: "🇮🇩",
-                backdrop: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1200&auto=format&fit=crop",
-                dialogue: "Namanya bukan Panca Dharma, tetapi PANCASILA. Sila artinya asas atau dasar; dan di atas kelima dasar itulah kita mendirikan negara Indonesia yang kekal dan abadi!",
-                hint: "Pada 1 Juni 1945, Sukarno memperkenalkan istilah Pancasila untuk pertama kalinya secara resmi.",
-                choices: [
-                    {
-                        text: "Menyambut gembira istilah 'Pancasila' dan mendukung perumusan Panitia Sembilan.",
-                        unityDelta: +15,
-                        accuracyDelta: +15,
-                        response: "Luar biasa! Sidang secara aklamasi menerima pidato 1 Juni sebagai momen bersejarah."
-                    },
-                    {
-                        text: "Menolak nama Pancasila dan meminta penundaan sidang tanpa batas.",
-                        unityDelta: -25,
-                        accuracyDelta: -20,
-                        response: "Penundaan akan berakibat fatal bagi persiapan kemerdekaan Indonesia."
-                    }
-                ]
-            },
-            {
-                act: "Babak 2: Panitia Sembilan",
-                title: "Rapat Rumah Pegangsaan (22 Juni 1945)",
-                speaker: "Drs. Mohammad Hatta",
-                role: "Wakil Ketua Panitia Sembilan",
-                avatar: "👓",
-                backdrop: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=1200&auto=format&fit=crop",
-                dialogue: "Kita telah menyusun Rancangan Pembukaan UUD (Piagam Jakarta). Namun ada perdebatan mengenai 7 kata pada Sila Pertama. Bagaimana solusi diplomatik kita?",
-                hint: "Panitia Sembilan merumuskan Piagam Jakarta yang memuat 7 kata sensitif bagi persatuan nasional.",
-                choices: [
-                    {
-                        text: "Mendukung kompromi nasional dan menjaga dialog terbuka antara tokoh kebangsaan dan Islam.",
-                        unityDelta: +10,
-                        accuracyDelta: +10,
-                        response: "Semangat kebangsaan dan kompromi luhur berhasil melahirkan Piagam Jakarta 22 Juni 1945."
-                    },
-                    {
-                        text: "Menolak berkompromi dan memaksakan kehendak satu pihak.",
-                        unityDelta: -20,
-                        accuracyDelta: -10,
-                        response: "Keretakan hubungan nasionalisme dan keagamaan memuncak."
-                    }
-                ]
-            },
-            {
-                act: "Babak 3: PPKI",
-                title: "Detik-detik Pengesahan (18 Agustus 1945)",
-                speaker: "K.H. A. Wahid Hasyim & Ki Bagus Hadikusumo",
-                role: "Tokoh Islam & Anggota PPKI",
-                avatar: "☪️",
-                backdrop: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1200&auto=format&fit=crop",
-                dialogue: "Demi menjaga persatuan saudara-saudara kita dari Indonesia Timur dan keutuhan Negara Kesatuan Republik Indonesia, apakah kita bersedia mengubah 7 kata menjadi 'Ketuhanan Yang Maha Esa'?",
-                hint: "Pengorbanan dan jiwa besar para tokoh Islam demi menjaga keutuhan Sabang sampai Merauke.",
-                choices: [
-                    {
-                        text: "Setuju demi persatuan Indonesia: Mengesahkan 'Ketuhanan Yang Maha Esa'.",
-                        unityDelta: +20,
-                        accuracyDelta: +15,
-                        response: "Keputusan paling bersejarah! Pancasila sah menjadi dasar negara yang menyatukan seluruh Nusantara."
-                    },
-                    {
-                        text: "Menolak perubahan dan membiarkan Indonesia Timur memisahkan diri.",
-                        unityDelta: -40,
-                        accuracyDelta: -25,
-                        response: "Negara Kesatuan Republik Indonesia terancam bubar sebelum berdiri!"
-                    }
-                ]
+                osc.stop(this.ctx.currentTime + 0.3);
             }
-        ];
+        }
+        const sound = new SoundFX();
 
-        const quizQuestions = [
+        /* ------------------------------------------------------------------
+           2. DATA TOKOH GALERI
+           ------------------------------------------------------------------ */
+        const historicalFigures = [
             {
-                category: "BPUPKI",
-                question: "Siapakah Ketua BPUPKI yang memimpin sidang perumusan dasar negara pada 29 Mei - 1 Juni 1945?",
-                options: ["Ir. Sukarno", "Dr. K.R.T. Radjiman Wedyodiningrat", "Drs. Mohammad Hatta", "Mr. Moh. Yamin"],
-                answer: 1,
-                hint: "Beliau adalah seorang dokter bangsawan yang dihormati semua kalangan sidang."
-            },
-            {
-                category: "Pidato 1 Juni",
-                question: "Istilah 'Pancasila' pertama kali diusulkan oleh Ir. Sukarno dalam pidatonya pada tanggal...",
-                options: ["29 Mei 1945", "1 Juni 1945", "22 Juni 1945", "18 Agustus 1945"],
-                answer: 1,
-                hint: "Tanggal ini kini diperingati sebagai Hari Lahir Pancasila."
-            },
-            {
-                category: "Panitia Sembilan",
-                question: "Dokumen rancangan Pembukaan UUD yang dihasilkan oleh Panitia Sembilan pada 22 Juni 1945 dikenal dengan nama...",
-                options: ["Teks Proklamasi", "Piagam Jakarta (Jakarta Charter)", "Dekrit Presiden", "Sumpah Pemuda"],
-                answer: 1,
-                hint: "Dinamai oleh Mr. Muhammad Yamin."
-            },
-            {
-                category: "Sidang PPKI",
-                question: "Perubahan 7 kata pada sila pertama Piagam Jakarta disepakati pada sidang PPKI tanggal...",
-                options: ["17 Agustus 1945", "18 Agustus 1945", "19 Agustus 1945", "20 Agustus 1945"],
-                answer: 1,
-                hint: "Satu hari setelah Proklamasi Kemerdekaan Indonesia."
-            },
-            {
-                category: "Tokoh Perumus",
-                question: "Siapakah tokoh pemikir yang menyampaikan gagasan 'Negara Integralistik / Kekeluargaan' pada sidang BPUPKI tanggal 31 Mei 1945?",
-                options: ["Prof. Mr. Dr. Soepomo", "Mr. A.A. Maramis", "K.H. Agus Salim", "Mr. Achmad Soebardjo"],
-                answer: 0,
-                hint: "Seorang pakar hukum adat dan konstitusi terkemuka."
-            },
-            {
-                category: "Panitia Sembilan",
-                question: "Siapakah salah satu anggota Panitia Sembilan yang mewakili golongan Kristen / Indonesia Timur?",
-                options: ["Mr. A.A. Maramis", "Abikoesno Tjokrosoejoso", "H. Agus Salim", "K.H. Wahid Hasyim"],
-                answer: 0,
-                hint: "Inisial nama beliau adalah A.A. Maramis."
-            },
-            {
-                category: "Konsep Sukarno",
-                question: "Jika Pancasila diperas menjadi tiga dasar (Trisila), tiga pilar tersebut adalah...",
-                options: ["Socio-nationalisme, Socio-demokratie, Ketuhanan", "Ketuhanan, Kemanusiaan, Keadilan", "Persatuan, Kerakyatan, Keadilan", "Kebangsaan, Kemerdekaan, Mufakat"],
-                answer: 0,
-                hint: "Mencakup sosio-nasionalisme, sosio-demokrasi, dan ketuhanan."
-            },
-            {
-                category: "Pancasila Final",
-                question: "Rumusan resmi Pancasila yang berlaku sah hingga hari ini tercantum pada Pembukaan UUD 1945 alinea ke-...",
-                options: ["Alinea Pertama", "Alinea Kedua", "Alinea Ketiga", "Alinea Keempat"],
-                answer: 3,
-                hint: "Alinea terakhir Pembukaan UUD 1945."
-            }
-        ];
-
-        const figuresData = [
-            {
-                name: "Ir. Sukarno",
-                role: "Proklamator & Pengusul Pancasila",
-                icon: "🇮🇩",
-                quote: "Pancasila adalah meja statis dan bintang penuntun (leitstar) dinamis bagi perjalanan bangsa.",
-                desc: "Menyampaikan pidato monumental pada 1 Juni 1945 yang memperkenalkan nama 'Pancasila'."
+                name: "Ir. Soekarno",
+                role: "Anggota BPUPKI / Ketua PPKI",
+                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80",
+                desc: "Pengusul nama 'Pancasila' pada pidato 1 Juni 1945 serta Ketua Panitia Sembilan."
             },
             {
                 name: "Drs. Mohammad Hatta",
-                role: "Wakil Presiden I & Diplomat Ulung",
-                icon: "👓",
-                quote: "Membangun persatuan bangsa membutuhkan jiwa besar dan kesediaan berkorban.",
-                desc: "Memimpin kompromi historis pengubahan 7 kata demi keutuhan Sabang sampai Merauke pada 18 Agustus 1945."
+                role: "Wakil Ketua PPKI / Panitia Sembilan",
+                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
+                desc: "Tokoh kunci penjelas rumusan Sila 1 Piagam Jakarta untuk menjaga keutuhan NKRI."
             },
             {
-                name: "Mr. Prof. Soepomo",
-                role: "Arsitek Konstitusi / Pakar Hukum",
-                icon: "⚖️",
-                quote: "Negara Indonesia merdeka adalah negara kekeluargaan yang menyatu dengan rakyatnya.",
-                desc: "Penyusun gagasan Negara Integralistik dalam sidang BPUPKI tanggal 31 Mei 1945."
+                name: "Mr. Mohammad Yamin",
+                role: "Anggota BPUPKI / Panitia Sembilan",
+                img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
+                desc: "Penyampai 5 azas dasar negara pada hari pertama sidang BPUPKI 29 Mei 1945."
             },
             {
-                name: "Mr. Muhammad Yamin",
-                role: "Sastrawan & Pemikir Ketatanegaraan",
-                icon: "📜",
-                quote: "Cita-cita Indonesia merdeka berdiri di atas peradaban dan sejarah luhur Nusantara.",
-                desc: "Penyampai 5 Asas Dasar Negara pada 29 Mei 1945 dan memberi nama 'Piagam Jakarta'."
+                name: "Prof. Dr. Mr. Soepomo",
+                role: "Anggota BPUPKI / Perancang UUD",
+                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
+                desc: "Pengusul Teori Negara Integralistik/Kekeluargaan pada sidang 31 Mei 1945."
             },
             {
-                name: "K.H. A. Wahid Hasyim",
-                role: "Tokoh Ulama & Pemimpin Nahdlatul Ulama",
-                icon: "🕌",
-                quote: "Ketuhanan Yang Maha Esa adalah wujud moderasi beragama dan toleransi kebangsaan.",
-                desc: "Anggota Panitia Sembilan yang menjembatani aspirasi keagamaan dan kebangsaan."
+                name: "Dr. K.R.T. Radjiman W.",
+                role: "Ketua BPUPKI",
+                img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&auto=format&fit=crop&q=80",
+                desc: "Memimpin jalannya Sidang Pertama & Kedua BPUPKI dengan bijaksana."
             },
             {
-                name: "H. Agus Salim",
-                role: "The Grand Old Man / Diplomat 9 Bahasa",
-                icon: "🎓",
-                quote: "Memimpin adalah menderita dan mengabdi, bukan menguasai.",
-                desc: "Tokoh diplomasi ulung yang memperkuat argumen kebangsaan dalam Panitia Sembilan."
+                name: "KH. A. Wahid Hasjim",
+                role: "Panitia Sembilan / Tokoh Islam",
+                img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&auto=format&fit=crop&q=80",
+                desc: "Wakil kalangan Islam yang berperan penting dalam kompromi Piagam Jakarta."
             }
         ];
 
+        /* ------------------------------------------------------------------
+           3. DATA SIMULASI SIDANG RPG (6 STEPS)
+           ------------------------------------------------------------------ */
+        const simSteps = [
+            {
+                stage: "BABAK I: BPUPKI (29 Mei 1945)",
+                subtitle: "Gedung Chuo Sangi In, Jakarta",
+                speaker: "Mr. Mohammad Yamin",
+                role: "Anggota BPUPKI",
+                img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+                text: "Paduka Tuan Ketua, saya mengusulkan 5 Azas Dasar Negara: Peri Kebangsaan, Peri Kemanusiaan, Peri Ketuhanan, Peri Kerakyatan, dan Kesejahteraan Rakyat. Bagaimana sikap Anda terhadap susunan azas ini?",
+                note: "Moh. Yamin menyampaikan pidato lisan serta naskah tertulis perancangan dasar negara.",
+                choices: [
+                    { text: "Mendukung usulan Yamin karena mencakup azas kebangsaan dan ketuhanan yang selaras.", unity: +5, accuracy: +10 },
+                    { text: "Menolak seluruhnya dan menuntut negara berdasarkan agama secara murni.", unity: -15, accuracy: -10 },
+                    { text: "Menyarankan agar konsep ketuhanan diletakkan pada urutan pertama.", unity: +0, accuracy: +5 }
+                ]
+            },
+            {
+                stage: "BABAK I: BPUPKI (31 Mei 1945)",
+                subtitle: "Gedung Chuo Sangi In, Jakarta",
+                speaker: "Prof. Dr. Mr. Soepomo",
+                role: "Pakar Hukum / BPUPKI",
+                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+                text: "Negara Indonesia merdeka bukanlah negara individualis, bukan pula negara kelas, melainkan Negara Integralistik (Paham Negara Kesatuan) yang bersatu dengan seluruh rakyatnya.",
+                note: "Soepomo menekankan prinsip Kekeluargaan dan Keseimbangan Lahir Batin.",
+                choices: [
+                    { text: "Menyetujui paham Integralistik sebagai penangkal individualisme barat.", unity: +10, accuracy: +10 },
+                    { text: "Menuntut paham liberalisme pasar bebas diterapkan sepenuhnya.", unity: -20, accuracy: -15 }
+                ]
+            },
+            {
+                stage: "BABAK I: BPUPKI (1 Juni 1945)",
+                subtitle: "Gedung Chuo Sangi In, Jakarta",
+                speaker: "Ir. Soekarno",
+                role: "Anggota BPUPKI",
+                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80",
+                text: "Lima prinsip ini saya namakan 'Pancasila'. Jika diperas menjadi tiga (Socio-nationalisme, Socio-demokratie, Ketuhanan), dan diperas lagi menjadi satu, itulah 'Gotong Royong'!",
+                note: "1 Juni kini diperingati sebagai Hari Lahir Pancasila.",
+                choices: [
+                    { text: "Menerima nama Pancasila dan prinsip Gotong Royong dengan penuh antusias.", unity: +15, accuracy: +15 },
+                    { text: "Menolak nama Pancasila dan meminta nama lain yang lebih kebarat-baratan.", unity: -15, accuracy: -20 }
+                ]
+            },
+            {
+                stage: "BABAK II: PANITIA SEMBILAN (22 Juni 1945)",
+                subtitle: "Kediaman Pegangsaan Timur 56, Jakarta",
+                speaker: "Drs. Mohammad Hatta",
+                role: "Anggota Panitia Sembilan",
+                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+                text: "Kita telah merumuskan 'Piagam Jakarta'. Namun terdapat klausul khusus pada Sila Pertama tentang 'kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya'. Bagaimana kesepakatan akhir Panitia Sembilan?",
+                note: "Konsensus Piagam Jakarta menjadi jembatan antara Golongan Kebangsaan & Golongan Islam.",
+                choices: [
+                    { text: "Menandatangani Piagam Jakarta sebagai kompromi kebangsaan yang bersejarah.", unity: +10, accuracy: +15 },
+                    { text: "Membatalkan sidang dan menolak jalan kompromi.", unity: -25, accuracy: -20 }
+                ]
+            },
+            {
+                stage: "BABAK III: SIDANG PPKI (18 Agustus 1945)",
+                subtitle: "Gedung Pejambon, Jakarta",
+                speaker: "Drs. Mohammad Hatta",
+                role: "Wakil Ketua PPKI",
+                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+                text: "Utusan dari Indonesia Timur menyatakan keberatan atas 7 kata Sila 1 Piagam Jakarta. Demi menjaga keutuhan Republik yang baru merdeka kemarin, bisakah kita mengubahnya menjadi 'Ketuhanan Yang Maha Esa'?",
+                note: "Keputusan diplomasi paling krusial demi mencegah perpecahan integritas wilayah NKRI.",
+                choices: [
+                    { text: "Setuju mengubah Sila 1 menjadi 'Ketuhanan Yang Maha Esa' demi persatuan tanah air.", unity: +25, accuracy: +20 },
+                    { text: "Menolak perubahan dan membiarkan wilayah Indonesia Timur memisahkan diri.", unity: -40, accuracy: -30 }
+                ]
+            },
+            {
+                stage: "BABAK III: PENGESAHAN FINAL (18 Agustus 1945)",
+                subtitle: "Gedung Pejambon, Jakarta",
+                speaker: "Ir. Soekarno",
+                role: "Ketua PPKI",
+                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80",
+                text: "Dengan disepakatinya UUD 1945 dan Pembukaan yang memuat Pancasila sah, serta terpilihnya Presiden & Wakil Presiden, Republik Indonesia resmi berdiri di atas fondasi yang kokoh!",
+                note: "Pancasila resmi disahkan sebagai dasar negara NKRI.",
+                choices: [
+                    { text: "Ketuk Palu Sidang dan Sahkan Pembukaan UUD 1945!", unity: +10, accuracy: +10 }
+                ]
+            }
+        ];
+
+        /* ------------------------------------------------------------------
+           4. DATA CERDAS CERMAT (10 QUESTIONS)
+           ------------------------------------------------------------------ */
+        const quizQuestions = [
+            {
+                category: "Sidang BPUPKI I",
+                question: "Siapakah Ketua BPUPKI (Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan Indonesia)?",
+                options: ["Dr. K.R.T. Radjiman Wedyodiningrat", "Ir. Soekarno", "Drs. Mohammad Hatta", "Mr. Kasman Singodimedjo"],
+                answer: 0,
+                hint: "Beliau adalah seorang dokter senior berpengaruh yang memimpin sidang di Gedung Chuo Sangi In."
+            },
+            {
+                category: "Hari Lahir Pancasila",
+                question: "Pada tanggal berapakah Ir. Soekarno menyampaikan pidato bersejarah yang mengusulkan nama Pancasila?",
+                options: ["29 Mei 1945", "31 Mei 1945", "1 Juni 1945", "22 Juni 1945"],
+                answer: 2,
+                hint: "Tanggal ini kini diperingati setiap tahun sebagai Hari Lahir Pancasila."
+            },
+            {
+                category: "Panitia Sembilan",
+                question: "Dokumen bersejarah apakah yang dihasilkan oleh Panitia Sembilan pada tanggal 22 Juni 1945?",
+                options: ["Naskah Proklamasi", "Piagam Jakarta (Jakarta Charter)", "Teks Dekrit Presiden", "Sumpah Pemuda"],
+                answer: 1,
+                hint: "Dokumen ini memuat rumusan awal Pancasila dengan klausul 7 kata pada Sila Pertama."
+            },
+            {
+                category: "Sidang PPKI",
+                question: "Perubahan utama pada Sila Pertama Pancasila dalam sidang PPKI 18 Agustus 1945 adalah...",
+                options: [
+                    "Menambahkan kata Gotong Royong",
+                    "Mengubah 7 kata menjadi 'Ketuhanan Yang Maha Esa'",
+                    "Menghapus sila keadilan sosial",
+                    "Mengubah urutan Sila Pertama menjadi Sila Ketiga"
+                ],
+                answer: 1,
+                hint: "Perubahan ini disepakati atas usulan Moh. Hatta demi menjaga persatuan Indonesia Timur."
+            },
+            {
+                category: "Konsep Soepomo",
+                question: "Teori paham negara yang diusulkan oleh Prof. Dr. Mr. Soepomo pada sidang 31 Mei 1945 adalah...",
+                options: ["Paham Negara Liberal", "Paham Negara Integralistik (Kekeluargaan)", "Paham Negara Monarki", "Paham Negara Komunis"],
+                answer: 1,
+                hint: "Paham ini menekankan persatuan erat antara negara dan rakyatnya dalam asas kekeluargaan."
+            },
+            {
+                category: "Anggota Panitia Sembilan",
+                question: "Berikut ini yang BUKAN merupakan anggota Panitia Sembilan adalah...",
+                options: ["A.A. Maramis", "KH. A. Wahid Hasjim", "Sutan Sjahrir", "Mr. Achmad Soebardjo"],
+                answer: 2,
+                hint: "Tokoh ini dikenal sebagai Perdana Menteri pertama Indonesia dan pemimpin Sjahrir Group."
+            },
+            {
+                category: "Istilah Istimewa",
+                question: "Istilah bahasa Sansekerta yang digunakan Soekarno untuk menamai 5 dasar negara adalah...",
+                options: ["Pancasila", "Ekasila", "Trisila", "Sastra Jendra"],
+                answer: 0,
+                hint: "'Panca' berarti lima, dan 'Sila' berarti dasar atau alas/sendi."
+            },
+            {
+                category: "Trisila Soekarno",
+                question: "Dalam pidato 1 Juni 1945, jika Pancasila diperas menjadi Trisila, rumusal mulanya terdiri dari...",
+                options: [
+                    "Socio-nationalisme, Socio-demokratie, Ketuhanan",
+                    "Ketuhanan, Kemanusiaan, Keadilan",
+                    "Persatuan, Kerakyatan, Kesejahteraan",
+                    "Nasionalisme, Agama, Komunisme"
+                ],
+                answer: 0,
+                hint: "Dua diantaranya menggunakan awalan istilah sosial 'Socio-'."
+            },
+            {
+                category: "Lokasi Sidang",
+                question: "Di gedung manakah Sidang Resmi BPUPKI I diselenggarakan?",
+                options: ["Gedung Chuo Sangi In (Gedung Pancasila)", "Gedung Pegangsaan Timur 56", "Gedung Stovia", "Gedung Museum Nasional"],
+                answer: 0,
+                hint: "Gedung yang berlokasi di Pejambon Jakarta Pusat ini kini bernama Gedung Pancasila."
+            },
+            {
+                category: "Pengesahan UUD 1945",
+                question: "Lembaga yang secara resmi mengesahkan Pancasila dalam Pembukaan UUD 1945 pada 18 Agustus 1945 adalah...",
+                options: ["BPUPKI", "PPKI", "KNIP", "MPRS"],
+                answer: 1,
+                hint: "Lembaga ini dipimpin oleh Ir. Soekarno dan Drs. Mohammad Hatta setelah Proklamasi Kemerdekaan."
+            }
+        ];
+
+        /* ------------------------------------------------------------------
+           5. APP STATE MANAGEMENT
+           ------------------------------------------------------------------ */
+        let state = {
+            simStep: 0,
+            unityMeter: 80,
+            accuracyMeter: 80,
+            quizIndex: 0,
+            quizScore: 0,
+            quizStreak: 1.0,
+            quizCorrectCount: 0,
+            timerInterval: null,
+            timeLeft: 20,
+            userName: "Moh. Joharul Yusuf",
+            certDate: "18 Agustus 1945"
+        };
+
+        // Switch Tabs
         function switchTab(tabId) {
-            state.activeTab = tabId;
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            
-            const target = document.getElementById('tab-' + tabId);
-            if (target) target.classList.remove('hidden');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-gold-500', 'text-slate-950', 'font-semibold');
+                btn.classList.add('text-slate-300');
+            });
 
-            if (tabId === 'achievements') renderAchievements();
-            if (tabId === 'gallery') renderGalleryFigures();
-        }
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-gold-500', 'text-slate-950', 'font-semibold');
+                activeNav.classList.remove('text-slate-300');
+            }
 
-        function toggleSound() {
-            state.soundEnabled = !state.soundEnabled;
-            const icon = document.getElementById('sound-icon');
-            if (state.soundEnabled) {
-                icon.className = "fa-solid fa-volume-high";
-                playGavelSound();
-            } else {
-                icon.className = "fa-solid fa-volume-xmark text-red-400";
+            if (tabId === 'quiz' && state.quizIndex === 0) {
+                startQuizQuestion();
             }
         }
 
-        function toggleTheme() {
-            state.isDarkMode = !state.isDarkMode;
-            document.documentElement.classList.toggle('dark', state.isDarkMode);
-            document.documentElement.classList.toggle('light', !state.isDarkMode);
-            
-            const icon = document.getElementById('theme-icon');
-            if (state.isDarkMode) {
-                icon.className = "fa-solid fa-moon text-amber-300";
-            } else {
-                icon.className = "fa-solid fa-sun text-yellow-500";
-            }
-        }
+        /* ------------------------------------------------------------------
+           6. RPG SIMULASI SIDANG ENGINE
+           ------------------------------------------------------------------ */
+        function renderSimStep() {
+            const step = simSteps[state.simStep];
+            document.getElementById('sim-step-badge').innerText = `${state.simStep + 1}/${simSteps.length}`;
+            document.getElementById('sim-stage-title').innerText = step.stage;
+            document.getElementById('sim-stage-subtitle').innerText = step.subtitle;
+            document.getElementById('sim-speaker-name').innerText = step.speaker;
+            document.getElementById('sim-speaker-role').innerText = step.role;
+            document.getElementById('sim-speaker-img').src = step.img;
+            document.getElementById('sim-scenario-text').innerText = `"${step.text}"`;
+            document.getElementById('sim-history-note').innerText = step.note;
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        function startRPGSimulation() {
-            switchTab('rpg');
-            state.rpg.currentStep = 0;
-            state.rpg.unity = 75;
-            state.rpg.accuracy = 80;
-            playGavelSound();
-            renderRPGStep();
-        }
-
-        function renderRPGStep() {
-            const step = rpgSteps[state.rpg.currentStep];
-            if (!step) {
-                finishRPGSimulation();
-                return;
-            }
-
-            document.getElementById('rpg-act-badge').innerText = step.act;
-            document.getElementById('rpg-act-title').innerText = step.title;
-            document.getElementById('rpg-speaker-avatar').innerText = step.avatar;
-            document.getElementById('rpg-speaker-name').innerText = step.speaker;
-            document.getElementById('rpg-speaker-role').innerText = step.role;
-            document.getElementById('rpg-dialogue-text').innerText = step.dialogue;
-            document.getElementById('rpg-historical-hint').innerHTML = `<i class="fa-solid fa-circle-info text-amber-400 me-1"></i> Tip Historis: ${step.hint}`;
-            document.getElementById('rpg-backdrop').style.backgroundImage = `url('${step.backdrop}')`;
-
-            document.getElementById('rpg-step-indicator').innerText = state.rpg.currentStep + 1;
-            document.getElementById('rpg-total-steps').innerText = rpgSteps.length;
-
-            const container = document.getElementById('rpg-choices-container');
-            container.innerHTML = '';
+            const choicesContainer = document.getElementById('sim-choices-container');
+            choicesContainer.innerHTML = '';
 
             step.choices.forEach((choice, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full p-4 rounded-xl bg-stone-800/90 hover:bg-stone-700/90 border border-gold-600/30 hover:border-gold-400 text-left text-sm font-semibold text-stone-100 transition flex justify-between items-center group shadow-md";
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-800/80 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/30 font-medium transition duration-200 flex items-center justify-between group shadow-sm";
                 btn.innerHTML = `
-                    <span>${choice.text}</span>
-                    <i class="fa-solid fa-chevron-right text-gold-400 group-hover:translate-x-1 transition"></i>
+                    <span class="flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-full bg-gold-500/20 text-gold-300 group-hover:bg-slate-950 group-hover:text-gold-400 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
+                        <span>${choice.text}</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-50 group-hover:translate-x-1 transition"></i>
                 `;
-                btn.onclick = () => selectRPGChoice(choice);
-                container.appendChild(btn);
+                btn.onclick = () => selectSimChoice(choice);
+                choicesContainer.appendChild(btn);
             });
 
-            updateRPGMeters();
+            updateMeters();
         }
 
-        function selectRPGChoice(choice) {
-            playGavelSound();
-            state.rpg.unity = Math.min(100, Math.max(0, state.rpg.unity + choice.unityDelta));
-            state.rpg.accuracy = Math.min(100, Math.max(0, state.rpg.accuracy + choice.accuracyDelta));
-            updateRPGMeters();
+        function selectSimChoice(choice) {
+            sound.playGavel();
+            state.unityMeter = Math.max(0, Math.min(100, state.unityMeter + choice.unity));
+            state.accuracyMeter = Math.max(0, Math.min(100, state.accuracyMeter + choice.accuracy));
 
-            document.getElementById('rpg-dialogue-text').innerText = choice.response;
-            document.getElementById('rpg-choices-container').innerHTML = `
-                <button onclick="nextRPGStep()" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-stone-950 font-bold text-sm shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
-                    Lanjutkan Sidang <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            `;
-        }
-
-        function nextRPGStep() {
-            state.rpg.currentStep++;
-            renderRPGStep();
-        }
-
-        function updateRPGMeters() {
-            document.getElementById('meter-unity').style.width = state.rpg.unity + '%';
-            document.getElementById('meter-unity-text').innerText = state.rpg.unity + '%';
-            document.getElementById('meter-accuracy').style.width = state.rpg.accuracy + '%';
-            document.getElementById('meter-accuracy-text').innerText = state.rpg.accuracy + '%';
-        }
-
-        function finishRPGSimulation() {
-            playApplauseSound();
-            unlockAchievement('architect');
-            if (state.rpg.unity >= 90) unlockAchievement('unityKeeper');
-            unlockAchievement('diplomat');
-
-            openCertificateModal();
-        }
-
-        function startQuizMode() {
-            switchTab('quiz');
-            state.quiz.currentIndex = 0;
-            state.quiz.score = 0;
-            state.quiz.streak = 1.0;
-            state.quiz.lifelines = { fiftyFifty: true, hint: true, time: true };
-            
-            updateLifelineButtons();
-            renderQuizQuestion();
-        }
-
-        function renderQuizQuestion() {
-            clearInterval(state.quiz.timerInterval);
-            
-            const q = quizQuestions[state.quiz.currentIndex];
-            if (!q) {
-                finishQuizMode();
-                return;
+            if (state.simStep < simSteps.length - 1) {
+                state.simStep++;
+                renderSimStep();
+            } else {
+                alert("Selamat! Anda telah menyelesaikan seluruh Rangkaian Sidang Historis BPUPKI & PPKI 1945.");
+                updateCertificateMetrics();
+                switchTab('certificate');
             }
+        }
 
-            document.getElementById('quiz-current-num').innerText = state.quiz.currentIndex + 1;
-            document.getElementById('quiz-total-num').innerText = quizQuestions.length;
-            document.getElementById('quiz-score').innerText = state.quiz.score;
-            document.getElementById('quiz-streak').innerText = 'x' + state.quiz.streak.toFixed(1);
-            document.getElementById('quiz-category-tag').innerText = 'Kategori: ' + q.category;
+        function updateMeters() {
+            document.getElementById('meter-unity-text').innerText = `${state.unityMeter}%`;
+            document.getElementById('meter-unity-bar').style.width = `${state.unityMeter}%`;
+            document.getElementById('meter-accuracy-text').innerText = `${state.accuracyMeter}%`;
+            document.getElementById('meter-accuracy-bar').style.width = `${state.accuracyMeter}%`;
+        }
+
+        /* ------------------------------------------------------------------
+           7. CERDAS CERMAT (QUIZ) ENGINE
+           ------------------------------------------------------------------ */
+        function startQuizQuestion() {
+            clearInterval(state.timerInterval);
+            state.timeLeft = 20;
+
+            const q = quizQuestions[state.quizIndex];
+            document.getElementById('quiz-progress').innerText = `${state.quizIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quiz-category').innerText = `Kategori: ${q.category}`;
             document.getElementById('quiz-question-text').innerText = q.question;
             document.getElementById('quiz-hint-box').classList.add('hidden');
 
-            const grid = document.getElementById('quiz-options-grid');
-            grid.innerHTML = '';
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
 
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.id = 'quiz-opt-' + idx;
-                btn.className = "p-4 rounded-xl bg-stone-800/80 hover:bg-stone-700/80 border border-gold-600/30 hover:border-gold-400 text-stone-200 font-semibold text-sm text-left transition flex items-center space-x-3";
+                btn.id = `quiz-opt-${idx}`;
+                btn.className = "p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-left font-medium transition flex items-start gap-3";
                 btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-lg bg-gold-500/20 text-gold-300 font-bold flex items-center justify-center shrink-0 border border-gold-500/30">
-                        ${String.fromCharCode(65 + idx)}
-                    </span>
-                    <span>${opt}</span>
+                    <span class="w-6 h-6 rounded-full bg-slate-700 text-gold-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-slate-200 text-sm">${opt}</span>
                 `;
-                btn.onclick = () => checkQuizAnswer(idx);
-                grid.appendChild(btn);
+                btn.onclick = () => answerQuiz(idx);
+                container.appendChild(btn);
             });
 
-            state.quiz.timer = 20;
-            updateQuizTimerDisplay();
-            
-            state.quiz.timerInterval = setInterval(() => {
-                state.quiz.timer--;
-                playTickSound();
-                updateQuizTimerDisplay();
-                if (state.quiz.timer <= 0) {
-                    clearInterval(state.quiz.timerInterval);
-                    playWrongSound();
-                    nextQuizQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            updateTimerUI();
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                updateTimerUI();
+                if (state.timeLeft <= 0) {
+                    clearInterval(state.timerInterval);
+                    sound.playWrong();
+                    answerQuiz(-1); // Timeout
                 }
             }, 1000);
         }
 
-        function updateQuizTimerDisplay() {
-            document.getElementById('quiz-timer-seconds').innerText = state.quiz.timer;
-            const circle = document.getElementById('quiz-timer-ring');
-            const percent = (state.quiz.timer / 20) * 100;
-            circle.style.strokeDashoffset = 100 - percent;
+        function updateTimerUI() {
+            document.getElementById('quiz-timer-text').innerText = state.timeLeft;
+            const pct = (state.timeLeft / 20) * 100;
+            const ring = document.getElementById('quiz-timer-ring');
+            ring.style.strokeDashoffset = 100 - pct;
         }
 
-        function checkQuizAnswer(selectedIdx) {
-            clearInterval(state.quiz.timerInterval);
-            const q = quizQuestions[state.quiz.currentIndex];
+        function answerQuiz(selectedIndex) {
+            clearInterval(state.timerInterval);
+            const q = quizQuestions[state.quizIndex];
+            const isCorrect = selectedIndex === q.answer;
 
-            if (selectedIdx === q.answer) {
-                playCorrectSound();
-                const gained = Math.round(100 * state.quiz.streak);
-                state.quiz.score += gained;
-                state.quiz.streak = Math.min(3.0, state.quiz.streak + 0.2);
+            if (isCorrect) {
+                sound.playCorrect();
+                state.quizCorrectCount++;
+                const basePoin = 100;
+                const timeBonus = state.timeLeft * 2;
+                const totalGained = Math.round((basePoin + timeBonus) * state.quizStreak);
+                state.quizScore += totalGained;
+                state.quizStreak = parseFloat((state.quizStreak + 0.2).toFixed(1));
+
+                if (selectedIndex >= 0) {
+                    const btn = document.getElementById(`quiz-opt-${selectedIndex}`);
+                    if (btn) btn.classList.add('bg-emerald-950', 'border-emerald-500', 'text-emerald-300');
+                }
             } else {
-                playWrongSound();
-                state.quiz.streak = 1.0;
+                sound.playWrong();
+                state.quizStreak = 1.0;
+                if (selectedIndex >= 0) {
+                    const btn = document.getElementById(`quiz-opt-${selectedIndex}`);
+                    if (btn) btn.classList.add('bg-rose-950', 'border-rose-500', 'text-rose-300');
+                }
+                const correctBtn = document.getElementById(`quiz-opt-${q.answer}`);
+                if (correctBtn) correctBtn.classList.add('bg-emerald-950', 'border-emerald-500');
             }
 
-            nextQuizQuestion();
-        }
+            document.getElementById('quiz-score').innerText = state.quizScore;
+            document.getElementById('quiz-streak').innerText = `x${state.quizStreak}`;
 
-        function nextQuizQuestion() {
-            state.quiz.currentIndex++;
             setTimeout(() => {
-                renderQuizQuestion();
-            }, 600);
+                if (state.quizIndex < quizQuestions.length - 1) {
+                    state.quizIndex++;
+                    startQuizQuestion();
+                } else {
+                    alert(`Tantangan Cerdas Cermat Selesai!\nSkor Akhir: ${state.quizScore}`);
+                    updateCertificateMetrics();
+                    switchTab('certificate');
+                }
+            }, 1500);
         }
 
         function useLifeline(type) {
-            if (!state.quiz.lifelines[type]) return;
-            state.quiz.lifelines[type] = false;
-            updateLifelineButtons();
-
+            const q = quizQuestions[state.quizIndex];
             if (type === '5050') {
-                const q = quizQuestions[state.quiz.currentIndex];
                 let removed = 0;
-                for (let i = 0; i < q.options.length; i++) {
-                    if (i !== q.answer && removed < 2) {
-                        const optBtn = document.getElementById('quiz-opt-' + i);
-                        if (optBtn) optBtn.classList.add('opacity-20', 'pointer-events-none');
+                q.options.forEach((_, idx) => {
+                    if (idx !== q.answer && removed < 2) {
+                        const btn = document.getElementById(`quiz-opt-${idx}`);
+                        if (btn) btn.style.opacity = '0.2';
                         removed++;
                     }
-                }
+                });
+                document.getElementById('lifeline-5050').disabled = true;
+                document.getElementById('lifeline-5050').classList.add('opacity-40');
             } else if (type === 'hint') {
-                const q = quizQuestions[state.quiz.currentIndex];
+                const hintBox = document.getElementById('quiz-hint-box');
                 document.getElementById('quiz-hint-text').innerText = q.hint;
-                document.getElementById('quiz-hint-box').classList.remove('hidden');
+                hintBox.classList.remove('hidden');
+                document.getElementById('lifeline-hint').disabled = true;
+                document.getElementById('lifeline-hint').classList.add('opacity-40');
             } else if (type === 'time') {
-                state.quiz.timer += 15;
-                updateQuizTimerDisplay();
+                state.timeLeft += 15;
+                updateTimerUI();
+                document.getElementById('lifeline-time').disabled = true;
+                document.getElementById('lifeline-time').classList.add('opacity-40');
             }
         }
 
-        function updateLifelineButtons() {
-            ['fiftyFifty', 'hint', 'time'].forEach(key => {
-                const btnKey = key === 'fiftyFifty' ? '5050' : key;
-                const btn = document.getElementById('lifeline-' + btnKey);
-                if (btn) {
-                    if (!state.quiz.lifelines[key]) {
-                        btn.classList.add('opacity-30', 'line-through', 'cursor-not-allowed');
-                    }
-                }
-            });
+        /* ------------------------------------------------------------------
+           8. CERTIFICATE & ASSESSMENT BREAKDOWN ENGINE
+           ------------------------------------------------------------------ */
+        function updateCertificateMetrics() {
+            // Update Core Score Values
+            const totalQuizQuestions = quizQuestions.length;
+            const accuracyPct = Math.round((state.quizCorrectCount / totalQuizQuestions) * 100) || 85;
+
+            document.getElementById('cert-user-name').innerText = state.userName;
+            document.getElementById('cert-score-quiz').innerText = `${state.quizScore} Poin`;
+            document.getElementById('cert-accuracy-quiz').innerText = `${accuracyPct}%`;
+            document.getElementById('cert-unity-sim').innerText = `${state.unityMeter}%`;
+            document.getElementById('cert-accuracy-sim').innerText = `${state.accuracyMeter}%`;
+
+            // Calculate Predikat
+            const finalAvg = Math.round((accuracyPct + state.unityMeter + state.accuracyMeter) / 3);
+            let predikatText = "PREDIKAT: CUKUP (MEMUASKAN)";
+            let badgeBg = "bg-amber-600";
+
+            if (finalAvg >= 88) {
+                predikatText = "PREDIKAT: SANGAT MEMUASKAN (CUM LAUDE)";
+                badgeBg = "bg-emerald-700";
+            } else if (finalAvg >= 75) {
+                predikatText = "PREDIKAT: MEMUASKAN";
+                badgeBg = "bg-gold-700";
+            }
+
+            const predikatBadge = document.getElementById('cert-predikat-badge');
+            predikatBadge.innerText = predikatText;
+            predikatBadge.className = `px-2 py-0.5 text-white rounded text-[10px] font-bold ${badgeBg}`;
+
+            // Update Sub-Competency Matrix Details based on metrics
+            document.getElementById('sub-capaian-1').innerText = `${state.accuracyMeter >= 80 ? 'Sangat Baik' : 'Baik'} (${state.accuracyMeter})`;
+            document.getElementById('sub-mutu-1').innerText = state.accuracyMeter >= 85 ? 'A' : 'B+';
+
+            document.getElementById('sub-capaian-2').innerText = `${accuracyPct >= 80 ? 'Sangat Baik' : 'Cukup'} (${accuracyPct})`;
+            document.getElementById('sub-mutu-2').innerText = accuracyPct >= 85 ? 'A' : 'B';
+
+            document.getElementById('sub-capaian-3').innerText = `${state.unityMeter >= 80 ? 'Sangat Baik' : 'Baik'} (${state.unityMeter})`;
+            document.getElementById('sub-mutu-3').innerText = state.unityMeter >= 85 ? 'A' : 'B+';
         }
 
-        function finishQuizMode() {
-            playApplauseSound();
-            if (state.quiz.score >= 500) unlockAchievement('scholar');
-            if (state.quiz.score >= 800) unlockAchievement('bpupkiExpert');
-            
-            openCertificateModal();
-        }
-
-        function switchGallerySubtab(sub) {
-            const btnFig = document.getElementById('subtab-btn-figures');
-            const btnMat = document.getElementById('subtab-btn-matrix');
-            const figSec = document.getElementById('gallery-subtab-figures');
-            const matSec = document.getElementById('gallery-subtab-matrix');
-
-            if (sub === 'figures') {
-                btnFig.className = "px-4 py-2 rounded-md font-bold text-xs bg-gold-500 text-stone-950 transition";
-                btnMat.className = "px-4 py-2 rounded-md font-bold text-xs text-stone-400 hover:text-gold-300 transition";
-                figSec.classList.remove('hidden');
-                matSec.classList.add('hidden');
-            } else {
-                btnMat.className = "px-4 py-2 rounded-md font-bold text-xs bg-gold-500 text-stone-950 transition";
-                btnFig.className = "px-4 py-2 rounded-md font-bold text-xs text-stone-400 hover:text-gold-300 transition";
-                matSec.classList.remove('hidden');
-                figSec.classList.add('hidden');
+        function updateCertDataPrompt() {
+            const name = prompt("Masukkan Nama Lengkap untuk Sertifikat:", state.userName);
+            if (name) {
+                state.userName = name;
+                updateCertificateMetrics();
             }
         }
 
-        function renderGalleryFigures() {
-            const container = document.getElementById('gallery-subtab-figures');
+        /* ------------------------------------------------------------------
+           9. GALERI TOKOH RENDERER
+           ------------------------------------------------------------------ */
+        function renderGallery() {
+            const container = document.getElementById('gallery-cards-container');
             container.innerHTML = '';
-
-            figuresData.forEach(fig => {
+            historicalFigures.forEach(fig => {
                 const card = document.createElement('div');
-                card.className = "glass-panel p-6 rounded-2xl border border-gold-600/30 hover:border-gold-400 transition space-y-4 flex flex-col justify-between";
+                card.className = "glass-panel rounded-xl overflow-hidden p-5 flex items-start gap-4 hover:border-gold-500/50 transition";
                 card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 flex items-center justify-center text-2xl">
-                                ${fig.icon}
-                            </div>
-                            <div>
-                                <h4 class="font-heading font-bold text-stone-100 text-lg">${fig.name}</h4>
-                                <p class="text-xs text-amber-400 font-medium">${fig.role}</p>
-                            </div>
-                        </div>
-                        <p class="text-xs text-stone-300 leading-relaxed font-serif-text italic">"${fig.quote}"</p>
-                        <p class="text-xs text-stone-400 leading-relaxed">${fig.desc}</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            unlockAchievement('historian');
-        }
-
-        const achievementsList = [
-            { id: 'architect', title: 'Arsitek Konstitusi', desc: 'Selesaikan Simulasi RPG Sidang 1945', icon: 'fa-landmark' },
-            { id: 'unityKeeper', title: 'Penjaga Kebinekaan', desc: 'Mencapai Semangat Persatuan >= 90%', icon: 'fa-hands-holding-circle' },
-            { id: 'bpupkiExpert', title: 'Pakar BPUPKI', desc: 'Meraih skor > 800 pada Cerdas Cermat', icon: 'fa-award' },
-            { id: 'diplomat', title: 'Diplomat Panitia Sembilan', desc: 'Menuntaskan kompromi Piagam Jakarta', icon: 'fa-handshake' },
-            { id: 'scholar', title: 'Cendekiawan Pancasila', desc: 'Meraih skor kuis di atas 500 poin', icon: 'fa-graduation-cap' },
-            { id: 'historian', title: 'Sejarawan Ulung', desc: 'Membuka seluruh profil Galeri Tokoh', icon: 'fa-book-open' },
-        ];
-
-        function renderAchievements() {
-            const container = document.getElementById('achievements-grid');
-            container.innerHTML = '';
-
-            achievementsList.forEach(ach => {
-                const unlocked = state.achievements[ach.id];
-                const card = document.createElement('div');
-                card.className = `p-6 rounded-2xl border transition flex items-start space-x-4 ${
-                    unlocked ? 'glass-panel border-gold-500/50 gold-glow' : 'bg-stone-900/40 border-stone-800 opacity-50'
-                }`;
-                card.innerHTML = `
-                    <div class="w-12 h-12 rounded-xl ${unlocked ? 'bg-gold-500 text-stone-950' : 'bg-stone-800 text-stone-500'} flex items-center justify-center text-xl shrink-0 font-bold">
-                        <i class="fa-solid ${ach.icon}"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-heading font-bold text-stone-100">${ach.title}</h4>
-                        <p class="text-xs text-stone-400 mt-1">${ach.desc}</p>
-                        <span class="inline-block mt-3 text-[10px] font-bold uppercase tracking-wider ${unlocked ? 'text-emerald-400' : 'text-stone-500'}">
-                            ${unlocked ? '✓ Terbuka' : '🔒 Terkunci'}
-                        </span>
+                    <img src="${fig.img}" alt="${fig.name}" class="w-16 h-16 rounded-lg object-cover border border-gold-500/40 shrink-0">
+                    <div class="space-y-1">
+                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 bg-gold-500/20 text-gold-300 rounded">${fig.role}</span>
+                        <h4 class="font-bold font-cinzel text-slate-100 text-base">${fig.name}</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed font-serif">${fig.desc}</p>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function unlockAchievement(id) {
-            if (!state.achievements[id]) {
-                state.achievements[id] = true;
-                localStorage.setItem('pancasila_achievements', JSON.stringify(state.achievements));
-            }
-        }
-
-        function openCertificateModal() {
-            document.getElementById('cert-user-name').value = state.userName;
-            document.getElementById('cert-display-name').innerText = state.userName;
-            document.getElementById('certificate-modal').classList.remove('hidden');
-        }
-
-        function closeCertificateModal() {
-            document.getElementById('certificate-modal').classList.add('hidden');
-        }
-
-        function saveCertName(name) {
-            state.userName = name || 'SUTAN MAHMUD';
-            localStorage.setItem('pancasila_user_name', state.userName);
-            document.getElementById('cert-display-name').innerText = state.userName;
-        }
-
-        window.onload = function() {
-            switchTab('main-menu');
-        };
+        /* ------------------------------------------------------------------
+           10. INITIALIZATION
+           ------------------------------------------------------------------ */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSimStep();
+            renderGallery();
+            updateCertificateMetrics();
+        });
     </script>
 </body>
 </html>
