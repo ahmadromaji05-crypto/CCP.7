@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SANG ARSITEK BANGSA - Game Sejarah Kelahiran Pancasila</title>
+    <title>SANG ARSITEK BANGSA - Game Sejarah Kelahiran Pancasila 1945</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -92,27 +92,65 @@
             transform-origin: 50% 50%;
         }
 
-        /* Print CSS for Certificate */
+        /* ==================== EXACT A4 LANDSCAPE PRINT CSS ==================== */
         @media print {
-            body * {
-                visibility: hidden;
+            @page {
+                size: A4 landscape;
+                margin: 0;
             }
-            #printable-certificate-wrapper, #printable-certificate-wrapper * {
-                visibility: visible;
+            html, body {
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                background: #fcf8ee !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body > *:not(#certificate-modal) {
+                display: none !important;
+            }
+            header, footer, nav, .no-print {
+                display: none !important;
+            }
+            #certificate-modal {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: none !important;
+                backdrop-filter: none !important;
+                display: block !important;
+                z-index: 99999 !important;
             }
             #printable-certificate-wrapper {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 10mm 14mm !important;
+                border: 10px double #854d0e !important;
+                background: #fcf8ee !important;
+                color: #1c1917 !important;
                 box-shadow: none !important;
-                background: white !important;
-                color: black !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
             }
-            .no-print {
+            #cert-user-name {
                 display: none !important;
+            }
+            #cert-display-name {
+                display: block !important;
             }
         }
     </style>
@@ -164,7 +202,7 @@
                     <i id="theme-icon" class="fa-solid fa-moon"></i>
                 </button>
                 <button onclick="openCertificateModal()" class="hidden sm:flex px-3 py-2 rounded-lg bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-500 hover:to-amber-500 text-stone-950 font-bold text-xs items-center gap-1.5 shadow-md">
-                    <i class="fa-solid fa-certificate"></i> Sertifikat
+                    <i class="fa-solid fa-certificate"></i> Sertifikat (A4)
                 </button>
                 <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-lg bg-stone-800 border border-gold-600/30 text-gold-400 flex items-center justify-center">
                     <i class="fa-solid fa-bars"></i>
@@ -179,7 +217,7 @@
             <button onclick="startQuizMode(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-graduation-cap me-2"></i> Cerdas Cermat Tantangan</button>
             <button onclick="switchTab('gallery'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-book-bookmark me-2"></i> Galeri Tokoh & Ensiklopedia</button>
             <button onclick="switchTab('achievements'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-gold-400 font-semibold"><i class="fa-solid fa-award me-2"></i> Lencana & Pencapaian</button>
-            <button onclick="openCertificateModal(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-amber-300 font-semibold"><i class="fa-solid fa-certificate me-2"></i> Sertifikat Kelulusan</button>
+            <button onclick="openCertificateModal(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded hover:bg-stone-800 text-amber-300 font-semibold"><i class="fa-solid fa-certificate me-2"></i> Sertifikat Kelulusan (A4)</button>
         </div>
     </header>
 
@@ -193,7 +231,7 @@
                 
                 <div class="relative z-10 max-w-3xl mx-auto space-y-6">
                     <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-gold-500/20 text-gold-300 border border-gold-500/40">
-                        <i class="fa-solid fa-star me-1"></i> Edisi Spesial Sejarah Kebangsaan
+                        <i class="fa-solid fa-star me-1"></i> Edisi Spesial Sejarah Kebangsaan 1945
                     </span>
                     <h2 class="text-3xl sm:text-5xl font-heading font-black tracking-wide text-amber-100 leading-tight">
                         PONDASI REPUBLIK: <br/>
@@ -285,7 +323,7 @@
                         <i class="fa-solid fa-file-contract"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-stone-200">Sertifikat Resmi</h4>
+                        <h4 class="font-bold text-stone-200">Sertifikat Resmi (A4)</h4>
                         <p class="text-xs text-stone-400">Cetak Hasil Studi Anda</p>
                     </div>
                 </div>
@@ -542,17 +580,17 @@
 
     </main>
 
-    <!-- ==================== MODAL: OFFICIAL CERTIFICATE ==================== -->
-    <div id="certificate-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="relative w-full max-w-4xl my-8">
+    <!-- ==================== MODAL: OFFICIAL CERTIFICATE (OPTIMIZED FOR A4 LANDSCAPE) ==================== -->
+    <div id="certificate-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="relative w-full max-w-5xl my-4">
             <!-- Modal Actions Bar -->
-            <div class="flex justify-between items-center mb-4 no-print">
+            <div class="flex justify-between items-center mb-3 no-print">
                 <div class="text-stone-200 font-bold text-sm">
-                    <i class="fa-solid fa-certificate text-gold-400 me-2"></i> Sertifikat Resmi BPUPKI / PPKI
+                    <i class="fa-solid fa-certificate text-gold-400 me-2"></i> Sertifikat Resmi BPUPKI / PPKI (Presisi A4 Landscape)
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="window.print()" class="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-stone-950 font-bold text-xs flex items-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF (A4)
                     </button>
                     <button onclick="closeCertificateModal()" class="w-9 h-9 rounded-lg bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center">
                         <i class="fa-solid fa-xmark"></i>
@@ -560,76 +598,86 @@
                 </div>
             </div>
 
-            <!-- CERTIFICATE DISPLAY BOX -->
-            <div id="printable-certificate-wrapper" class="bg-parchment text-stone-900 p-8 sm:p-12 rounded-xl shadow-2xl border-8 border-double border-gold-700 relative overflow-hidden font-serif-text">
-                <!-- Ornate Border Frame -->
-                <div class="absolute inset-2 border-2 border-amber-800/40 pointer-events-none"></div>
-                <div class="absolute inset-4 border border-amber-800/20 pointer-events-none"></div>
+            <!-- CERTIFICATE DISPLAY BOX (Aspect Ratio ~297/210 A4 Landscape) -->
+            <div id="printable-certificate-wrapper" class="bg-parchment text-stone-900 p-6 sm:p-10 rounded-xl shadow-2xl border-8 border-double border-gold-800 relative overflow-hidden font-serif-text mx-auto w-full max-w-[960px] aspect-[297/210] flex flex-col justify-between">
+                <!-- Ornate Border Frames -->
+                <div class="absolute inset-2 border-2 border-amber-900/40 pointer-events-none"></div>
+                <div class="absolute inset-3 border border-amber-900/20 pointer-events-none"></div>
 
                 <!-- Watermark Garuda/Shield -->
                 <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                    <i class="fa-solid fa-shield-halved text-[300px] text-amber-950"></i>
+                    <i class="fa-solid fa-shield-halved text-[260px] text-amber-950"></i>
                 </div>
 
                 <!-- Certificate Header -->
-                <div class="text-center space-y-3 relative z-10">
-                    <div class="inline-block w-16 h-16 rounded-full bg-amber-900 text-gold-300 border-2 border-gold-500 p-3 mb-2 shadow-md">
-                        <i class="fa-solid fa-monument text-3xl"></i>
+                <div class="text-center space-y-2 relative z-10">
+                    <div class="inline-block w-12 h-12 rounded-full bg-amber-900 text-gold-300 border-2 border-gold-500 p-2 shadow-md">
+                        <i class="fa-solid fa-monument text-2xl"></i>
                     </div>
-                    <h2 class="font-heading text-2xl sm:text-4xl font-bold tracking-widest text-amber-950 uppercase">
+                    <h2 class="font-heading text-xl sm:text-3xl font-bold tracking-widest text-amber-950 uppercase">
                         BADAN PENYELIDIK USAHA-USAHA PERSIAPAN KEMERDEKAAN
                     </h2>
-                    <p class="text-xs sm:text-sm font-bold text-amber-900 tracking-wider">
+                    <p class="text-[10px] sm:text-xs font-bold text-amber-900 tracking-wider">
                         PIAGAM PENGHARGAAN KETATANEGARAAN REPUBLIK INDONESIA
                     </p>
-                    <div class="w-32 h-1 bg-gradient-to-r from-transparent via-gold-700 to-transparent mx-auto my-4"></div>
+                    <div class="w-28 h-0.5 bg-gradient-to-r from-transparent via-gold-700 to-transparent mx-auto my-2"></div>
                 </div>
 
                 <!-- Body Text -->
-                <div class="text-center my-8 space-y-4 relative z-10">
-                    <p class="text-sm text-stone-700 italic">Dengan ini menyatakan bahwa:</p>
-                    <input id="cert-user-name" type="text" value="SUTAN MAHMUD" oninput="saveCertName(this.value)" class="text-center text-2xl sm:text-3xl font-heading font-bold text-amber-950 bg-transparent border-b-2 border-gold-700/50 focus:border-gold-700 focus:outline-none px-4 py-1 w-full max-w-md mx-auto block no-print" placeholder="Masukkan Nama Anda...">
-                    <div id="cert-display-name" class="hidden text-2xl sm:text-3xl font-heading font-bold text-amber-950 border-b-2 border-gold-700/50 pb-1 max-w-md mx-auto">SUTAN MAHMUD</div>
+                <div class="text-center my-2 space-y-3 relative z-10">
+                    <p class="text-xs text-stone-700 italic">Dengan ini menyatakan bahwa:</p>
+                    
+                    <!-- Screen input -->
+                    <input id="cert-user-name" type="text" value="SUTAN MAHMUD" oninput="saveCertName(this.value)" class="text-center text-xl sm:text-2xl font-heading font-bold text-amber-950 bg-transparent border-b-2 border-gold-700/50 focus:border-gold-700 focus:outline-none px-4 py-1 w-full max-w-md mx-auto block no-print" placeholder="Masukkan Nama Anda...">
+                    
+                    <!-- Displayed Name for Print & View -->
+                    <div id="cert-display-name" class="hidden text-xl sm:text-2xl font-heading font-bold text-amber-950 border-b-2 border-gold-700/50 pb-1 max-w-md mx-auto">SUTAN MAHMUD</div>
 
-                    <p class="text-xs sm:text-sm text-stone-800 max-w-2xl mx-auto leading-relaxed pt-2">
+                    <p class="text-[11px] sm:text-xs text-stone-800 max-w-2xl mx-auto leading-relaxed">
                         Telah berhasil menyelesaikan pembelajaran mendalam, ujian wawasan kebangsaan, serta simulasi perumusan Dasar Negara dalam <span class="font-bold">Mode Simulasi Sidang Historis 1945 & Cerdas Cermat Kelahiran Pancasila</span> dengan predikat kehormatan:
                     </p>
 
-                    <div id="cert-grade-badge" class="inline-block px-6 py-2 rounded-lg bg-amber-900 text-gold-300 font-heading font-bold text-lg sm:text-xl tracking-widest border border-gold-600 shadow-inner">
+                    <div id="cert-grade-badge" class="inline-block px-5 py-1.5 rounded-lg bg-amber-900 text-gold-300 font-heading font-bold text-sm sm:text-base tracking-widest border border-gold-600 shadow-inner">
                         ARSITEK KONSTITUSI UNGULAN (GRADE A)
                     </div>
                 </div>
 
                 <!-- Signatures & Official Stamp -->
-                <div class="grid grid-cols-2 gap-8 pt-8 mt-6 border-t border-amber-900/20 relative z-10 text-xs text-amber-950">
-                    <div class="text-center space-y-10">
-                        <p class="font-semibold">Jakarta, 18 Agustus 1945 / 2026</p>
-                        <div class="italic font-bold font-serif-text text-base text-stone-900 border-b border-amber-900/40 pb-1 max-w-[180px] mx-auto">
+                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-amber-900/20 relative z-10 text-[10px] sm:text-xs text-amber-950">
+                    <div class="text-center space-y-6">
+                        <p class="font-semibold">Jakarta, 18 Agustus 1945</p>
+                        <div class="italic font-bold font-serif-text text-sm text-stone-900 border-b border-amber-900/40 pb-0.5 max-w-[140px] mx-auto">
                             Radjiman W.
                         </div>
-                        <p class="font-bold">Dr. K.R.T. Radjiman Wedyodiningrat</p>
-                        <p class="text-[10px] text-stone-600">Ketua BPUPKI</p>
+                        <div>
+                            <p class="font-bold">Dr. K.R.T. Radjiman Wedyodiningrat</p>
+                            <p class="text-[9px] text-stone-600">Ketua BPUPKI</p>
+                        </div>
                     </div>
 
-                    <div class="text-center space-y-10 relative">
-                        <!-- Red/Gold Wax Seal graphic -->
-                        <div class="absolute -top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-red-800 via-red-600 to-amber-600 text-gold-300 flex items-center justify-center border-4 border-gold-500 shadow-xl opacity-90 rotate-12">
-                            <div class="text-[9px] font-bold text-center uppercase tracking-tighter leading-tight">
-                                SEGEL RESMI<br/>BPUPKI<br/>1945
+                    <!-- Center Seal -->
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-red-800 via-red-600 to-amber-600 text-gold-300 flex items-center justify-center border-4 border-gold-500 shadow-xl opacity-90 rotate-12">
+                            <div class="text-[8px] sm:text-[9px] font-bold text-center uppercase tracking-tighter leading-tight">
+                                SEGEL RESMI<br/>PPKI<br/>18 AGUSTUS 1945
                             </div>
                         </div>
+                    </div>
 
+                    <div class="text-center space-y-6">
                         <p class="font-semibold">Atas Nama Bangsa Indonesia</p>
-                        <div class="italic font-bold font-serif-text text-base text-stone-900 border-b border-amber-900/40 pb-1 max-w-[180px] mx-auto">
-                            Ir. Sukarno
+                        <div class="italic font-bold font-serif-text text-sm text-stone-900 border-b border-amber-900/40 pb-0.5 max-w-[140px] mx-auto">
+                            Ir. Sukarno & Moh. Hatta
                         </div>
-                        <p class="font-bold">Ir. Sukarno</p>
-                        <p class="text-[10px] text-stone-600">Ketua PPKI</p>
+                        <div>
+                            <p class="font-bold">Ir. Sukarno & Drs. Moh. Hatta</p>
+                            <p class="text-[9px] text-stone-600">Ketua & Wakil PPKI</p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Unique Certificate Verification Footer -->
-                <div class="mt-8 pt-4 border-t border-stone-300 flex flex-wrap justify-between items-center text-[10px] text-stone-600">
+                <div class="mt-4 pt-2 border-t border-stone-300 flex justify-between items-center text-[9px] text-stone-600">
                     <div>No. Verifikasi: <span id="cert-id-code" class="font-mono font-bold text-amber-900">BPUPKI-1945-8921-OK</span></div>
                     <div>Verifikasi Digital QR: <span class="font-mono">PANCASILA-ABADI-1945</span></div>
                 </div>
@@ -641,7 +689,7 @@
     <footer class="border-t border-gold-600/20 glass-panel mt-12 py-6 no-print">
         <div class="max-w-7xl mx-auto px-4 text-center text-xs text-stone-400 space-y-2">
             <p class="font-medium text-stone-300">Aplikasi Game Edukasi "Sang Arsitek Bangsa - Kelahiran Pancasila 1945"</p>
-            <p>Dirancang dengan Web Audio API Synthesizer, Dual Game Mode, dan Sistem Sertifikasi Ketatanegaraan.</p>
+            <p>Dirancang dengan Web Audio API Synthesizer, Dual Game Mode, dan Sistem Sertifikasi Ketatanegaraan (Optimasi Cetak A4 Landscape).</p>
         </div>
     </footer>
 
@@ -886,7 +934,7 @@
                 hint: "Pada 1 Juni 1945, Sukarno memperkenalkan istilah Pancasila untuk pertama kalinya secara resmi.",
                 choices: [
                     {
-                        text: "Menyambut gembira istilah 'Pancasila' dan mendukung perumusanPanitia Sembilan.",
+                        text: "Menyambut gembira istilah 'Pancasila' dan mendukung perumusan Panitia Sembilan.",
                         unityDelta: +15,
                         accuracyDelta: +15,
                         response: "Luar biasa! Sidang secara aklamasi menerima pidato 1 Juni sebagai momen bersejarah."
@@ -1053,7 +1101,6 @@
             }
         ];
 
-        // Tab Switcher
         function switchTab(tabId) {
             state.activeTab = tabId;
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
@@ -1065,7 +1112,6 @@
             if (tabId === 'gallery') renderGalleryFigures();
         }
 
-        // Toggle Sound
         function toggleSound() {
             state.soundEnabled = !state.soundEnabled;
             const icon = document.getElementById('sound-icon');
@@ -1077,7 +1123,6 @@
             }
         }
 
-        // Toggle Theme
         function toggleTheme() {
             state.isDarkMode = !state.isDarkMode;
             document.documentElement.classList.toggle('dark', state.isDarkMode);
@@ -1124,7 +1169,6 @@
             document.getElementById('rpg-step-indicator').innerText = state.rpg.currentStep + 1;
             document.getElementById('rpg-total-steps').innerText = rpgSteps.length;
 
-            // Render Choices
             const container = document.getElementById('rpg-choices-container');
             container.innerHTML = '';
 
@@ -1148,7 +1192,6 @@
             state.rpg.accuracy = Math.min(100, Math.max(0, state.rpg.accuracy + choice.accuracyDelta));
             updateRPGMeters();
 
-            // Modal feedback / alert replacement
             document.getElementById('rpg-dialogue-text').innerText = choice.response;
             document.getElementById('rpg-choices-container').innerHTML = `
                 <button onclick="nextRPGStep()" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-stone-950 font-bold text-sm shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
@@ -1206,7 +1249,6 @@
             document.getElementById('quiz-question-text').innerText = q.question;
             document.getElementById('quiz-hint-box').classList.add('hidden');
 
-            // Options
             const grid = document.getElementById('quiz-options-grid');
             grid.innerHTML = '';
 
@@ -1224,7 +1266,6 @@
                 grid.appendChild(btn);
             });
 
-            // Start Timer
             state.quiz.timer = 20;
             updateQuizTimerDisplay();
             
@@ -1362,7 +1403,6 @@
             unlockAchievement('historian');
         }
 
-        // Achievements Logic
         const achievementsList = [
             { id: 'architect', title: 'Arsitek Konstitusi', desc: 'Selesaikan Simulasi RPG Sidang 1945', icon: 'fa-landmark' },
             { id: 'unityKeeper', title: 'Penjaga Kebinekaan', desc: 'Mencapai Semangat Persatuan >= 90%', icon: 'fa-hands-holding-circle' },
@@ -1405,7 +1445,6 @@
             }
         }
 
-        // Certificate Functions
         function openCertificateModal() {
             document.getElementById('cert-user-name').value = state.userName;
             document.getElementById('cert-display-name').innerText = state.userName;
