@@ -9,75 +9,6 @@ window.getCssVar = window.getCssVar || function(name) {
 };
 </script>
 
-<script id="lumi-canvas-guard">
-(function() {
-  if (window.__lumiCanvasGuard) return;
-  window.__lumiCanvasGuard = true;
-  var MAX_PX = 4096, MIN_FONT_PX = 12;
-  try {
-    var CP = HTMLCanvasElement.prototype;
-    var BOX = {width: 'clientWidth', height: 'clientHeight'}, D = {};
-    Object.keys(BOX).forEach(function(p) {
-      D[p] = Object.getOwnPropertyDescriptor(CP, p);
-    });
-    var tracking = function(el, p) {
-      var box = el[BOX[p]];
-      return !el.style[p] && box > 0 && box === D[p].get.call(el) &&
-          box === el['__lumiLast' + p];
-    };
-    var MAX = {width: 'maxWidth', height: 'maxHeight'};
-    var PAD = {width: ['paddingLeft', 'paddingRight'],
-               height: ['paddingTop', 'paddingBottom']};
-    var avail = function(el, p) {
-      var pe = el.parentElement;
-      if (!pe) return 0;
-      var cs = getComputedStyle(pe);
-      return pe[BOX[p]] - parseFloat(cs[PAD[p][0]]) -
-          parseFloat(cs[PAD[p][1]]);
-    };
-    Object.keys(BOX).forEach(function(p) {
-      var d = D[p];
-      if (!d || !d.set || !d.get) return;
-      Object.defineProperty(CP, p, {
-        configurable: true, enumerable: d.enumerable, get: d.get,
-        set: function(v) {
-          var n = +v, box = this[BOX[p]];
-          if (n > MAX_PX) n = MAX_PX;
-          if (n > box && tracking(this, p)) {
-            var el = this, pins = {};
-            Object.keys(BOX).forEach(function(q) {
-              if (tracking(el, q)) pins[q] = avail(el, q) ||
-                  el['__lumiBox' + q];
-            });
-            Object.keys(pins).forEach(function(q) {
-              el.style[q] = '100%';
-              el.style[MAX[q]] = pins[q] + 'px';
-            });
-            n = box;
-          }
-          this['__lumiBox' + p] = box;
-          this['__lumiLast' + p] = n;
-          d.set.call(this, isNaN(n) ? v : n);
-        }
-      });
-    });
-  } catch (e) {}
-  try {
-    var XP = CanvasRenderingContext2D.prototype;
-    var px = /(\d*\.?\d+)px/;
-    var floorFont = function(ctx) {
-      var f = ctx.font, m = px.exec(f);
-      if (m && +m[1] >= 4 && +m[1] < MIN_FONT_PX) ctx.font = f.replace(px, MIN_FONT_PX + 'px');
-    };
-    ['fillText', 'strokeText', 'measureText'].forEach(function(k) {
-      var o = XP[k];
-      if (typeof o !== 'function') return;
-      XP[k] = function() { floorFont(this); return o.apply(this, arguments); };
-    });
-  } catch (e) {}
-})();
-</script>
-
 <style id="lumi-runtime">
 /* luminous.css */
 /*
@@ -916,500 +847,267 @@ button.active, button.is-active, button.selected, button.is-selected, button[ari
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cerdas Cermat Sejarah Kelahiran Pancasila</title>
   <style>
-    /* Widget Custom Glue & Layout Styles */
-    *, *::before, *::after {
+    /* Widget glue & custom layout styles */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--ff-sans);
+      color: var(--on-surface);
+    }
+    .widget-container {
+      width: 100%;
+      min-height: 280px;
+      padding: var(--spacing-l);
       box-sizing: border-box;
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow-x: hidden;
-      font-family: var(--ff-sans, 'Google Sans Flex', sans-serif);
-      color: var(--on-surface);
-    }
-
-    .widget-container {
-      width: 100%;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: var(--lumi-sys-spacing--m, 12px);
-      display: flex;
-      flex-direction: column;
-      gap: var(--lumi-sys-spacing--l, 16px);
-    }
-
-        /* Start Screen Elements */
-    .hero-banner {
-      text-align: center;
-      padding: var(--lumi-sys-spacing--xl, 20px) var(--lumi-sys-spacing--l, 16px);
+    .app-card {
       background: var(--surface-bright);
-      border-radius: var(--lumi-sys-shape--medium, 12px);
       border: 1px solid var(--stroke-default);
+      border-radius: var(--r-l);
+      padding: var(--spacing-xl);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
-    .badge-pill {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: var(--r-full, 999px);
-      background: var(--accent-container);
-      color: var(--accent-fixed);
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 8px;
+    /* Screen management */
+    .screen {
+      display: none;
+    }
+    .screen.is-active {
+      display: block;
     }
 
-    .quiz-meta-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 16px 0;
-      text-align: center;
+    /* Input & Control styling */
+    .form-group {
+      margin-bottom: var(--spacing-l);
     }
-
-    .meta-box {
-      background: var(--surface-dim);
-      padding: 10px;
-      border-radius: var(--r-s, 8px);
-      border: 1px solid var(--stroke-default);
+    .form-group label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
     }
-
-    .meta-value {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--on-surface);
-    }
-
-    .meta-label {
-      font-size: 12px;
-      color: var(--on-surface-variant);
-      margin-top: 2px;
-    }
-
-    /* Input Styling */
-    .input-field {
+    .text-input {
       width: 100%;
       padding: 12px 16px;
-      border-radius: var(--r-full, 999px);
-      border: 1px solid var(--outline);
-      background: var(--surface-bright);
-      color: var(--on-surface);
-      font-family: inherit;
+      font-family: var(--ff-sans);
       font-size: 15px;
+      color: var(--on-surface);
+      background: var(--surface-dim);
+      border: 1px solid var(--stroke-default);
+      border-radius: var(--r-full);
       outline: none;
       transition: border-color 0.2s;
     }
-
-    .input-field:focus {
+    .text-input:focus {
       border-color: var(--primary);
     }
 
-    /* Controls */
-    .action-btn {
-      width: 100%;
-      padding: 12px 20px;
-      border-radius: var(--r-full, 999px);
-      border: none;
-      background: var(--primary);
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: opacity 0.15s ease, background-color 0.15s ease;
-    }
-
-    .action-btn:hover {
-      opacity: 0.92;
-    }
-
-    .action-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: var(--surface-container-high);
-      color: var(--on-surface);
-      border: 1px solid var(--stroke-default);
-    }
-
-    /* Quiz Header & Timer SVG Ring */
+    /* Question layout */
     .quiz-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 12px;
+      align-items: center;
+      padding-bottom: var(--spacing-m);
+      margin-bottom: var(--spacing-l);
       border-bottom: 1px solid var(--stroke-default);
     }
-
-    .timer-container {
-      position: relative;
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
+    .quiz-progress-badge {
+      padding: 4px 12px;
+      background: var(--surface-dim);
+      border-radius: var(--r-full);
+      font-family: var(--ff-mono);
+      font-size: 13px;
     }
-
-    .timer-svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .timer-circle-bg {
-      fill: none;
-      stroke: var(--surface-container-high);
-      stroke-width: 4;
-    }
-
-    .timer-circle-progress {
-      fill: none;
-      stroke: var(--primary);
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-dasharray: 113.097; /* 2 * PI * 18 */
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease;
-    }
-
-    .timer-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 12px;
-      font-weight: 700;
-      font-family: var(--ff-mono, monospace);
-    }
-
-    /* Question & Options */
-    .question-category {
-      font-family: var(--ff-mono, monospace);
-      font-size: 12px;
+    .timer-ring-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--ff-mono);
+      font-size: 14px;
       color: var(--on-surface-variant);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
     }
-
-    .question-text {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin: 0 0 16px 0;
-      color: var(--on-surface);
+    
+    .question-category {
+      display: inline-block;
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      background: var(--accent-container);
+      color: var(--accent-fixed);
+      border-radius: var(--r-s);
+      margin-bottom: var(--spacing-s);
     }
 
     .options-grid {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--spacing-s);
+      margin-top: var(--spacing-l);
     }
 
     .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
       width: 100%;
       padding: 12px 16px;
-      border-radius: var(--r-m, 12px);
-      border: 1px solid var(--stroke-default);
-      background: var(--surface-bright);
-      color: var(--on-surface);
       text-align: left;
-      font-size: 14px;
+      background: var(--surface-dim);
+      border: 1px solid var(--stroke-default);
+      border-radius: var(--r-m);
+      color: var(--on-surface);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.15s ease;
+      font-family: var(--ff-sans);
+      font-size: 15px;
+      transition: background-color 0.15s, border-color 0.15s;
     }
-
-    .option-btn:hover:not(:disabled) {
+    .option-btn:hover {
       background: var(--surface-container-high);
-      border-color: var(--outline);
     }
-
-    .option-key {
+    .option-prefix {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: var(--surface-dim);
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--on-surface-variant);
+      width: 24px;
+      height: 24px;
+      border-radius: var(--r-s);
+      background: var(--surface-bright);
+      font-family: var(--ff-mono);
+      font-size: 13px;
+      font-weight: 600;
       flex-shrink: 0;
     }
 
-    .option-btn.correct {
-      background: var(--positive-container) !important;
-      border-color: var(--positive) !important;
-      color: var(--on-surface) !important;
-    }
-
-    .option-btn.correct .option-key {
-      background: var(--positive);
-      color: #ffffff;
-    }
-
-    .option-btn.wrong {
-      background: var(--error-container) !important;
-      border-color: var(--error) !important;
-      color: var(--on-surface) !important;
-    }
-
-    .option-btn.wrong .option-key {
-      background: var(--error);
-      color: #ffffff;
-    }
-
-    .feedback-box {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: var(--r-s, 8px);
-      font-size: 13px;
-      line-height: 1.4;
-      display: none;
-    }
-
-    .feedback-box.correct {
-      display: block;
-      background: var(--positive-container);
-      color: var(--on-surface);
-      border: 1px solid var(--positive);
-    }
-
-    .feedback-box.wrong {
-      display: block;
-      background: var(--error-container);
-      color: var(--on-surface);
-      border: 1px solid var(--error);
-    }
-
-    /* 3D Evaluation Grid */
-    .evaluation-grid {
+    /* Dimension evaluation meters */
+    .dim-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 16px 0;
+      gap: var(--spacing-m);
+      margin: var(--spacing-l) 0;
     }
-
-    .eval-card {
-      background: var(--surface-bright);
-      padding: 12px;
-      border-radius: var(--r-m, 12px);
-      border: 1px solid var(--stroke-default);
+    @media (max-width: 540px) {
+      .dim-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .dim-card {
+      background: var(--surface-dim);
+      border-radius: var(--r-m);
+      padding: var(--spacing-m);
       text-align: center;
     }
 
-    .eval-score {
-      font-size: 22px;
-      font-weight: 800;
-      font-family: var(--ff-mono, monospace);
-    }
-
-    .eval-title {
-      font-size: 12px;
-      color: var(--on-surface-variant);
-      margin-top: 4px;
-    }
-
-    .eval-bar-bg {
-      height: 6px;
-      width: 100%;
-      background: var(--surface-container-high);
-      border-radius: 3px;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .eval-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      width: 0%;
-      transition: width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
-    }
-
-    /* Certificate Styling */
-    .certificate-wrapper {
-      position: relative;
-      background: #fffdf8;
+    /* Certificate View styling */
+    .certificate-container {
+      background: #ffffff;
       color: #1a1a1a;
-      border: 8px double #a88234;
-      padding: 24px;
+      border: 8px double #1a365d;
       border-radius: 4px;
+      padding: 32px 24px;
       text-align: center;
-      margin-top: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
+      position: relative;
+      margin-top: var(--spacing-l);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     }
-
     .cert-watermark {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg);
-      font-size: 80px;
+      transform: translate(-50%, -50%);
+      font-size: 110px;
       font-weight: 900;
-      color: rgba(168, 130, 52, 0.04);
-      white-space: nowrap;
+      color: rgba(26, 54, 93, 0.03);
       pointer-events: none;
+      white-space: nowrap;
       user-select: none;
+      font-family: serif;
     }
-
-    .cert-header-title {
-      font-family: 'Times New Roman', Georgia, serif;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #705315;
-      margin: 0;
-    }
-
-    .cert-subtitle {
-      font-size: 12px;
-      text-transform: uppercase;
+    .cert-header {
+      font-family: serif;
       letter-spacing: 2px;
-      color: #666;
+      color: #1a365d;
+      text-transform: uppercase;
+      margin: 0;
+      font-size: 20px;
+    }
+    .cert-sub {
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      color: #4a5568;
+      letter-spacing: 1px;
       margin-top: 4px;
     }
-
-    .cert-divider {
-      width: 120px;
-      height: 2px;
-      background: #a88234;
-      margin: 12px auto;
+    .cert-title {
+      font-family: serif;
+      font-size: 26px;
+      font-weight: bold;
+      color: #2b6cb0;
+      margin: 16px 0 8px 0;
     }
-
-    .cert-recipient-label {
-      font-size: 13px;
-      color: #555;
-      margin-top: 12px;
-    }
-
-    .cert-name {
+    .cert-recipient {
+      font-family: serif;
       font-size: 24px;
-      font-weight: 700;
-      color: #111;
-      border-bottom: 2px solid #a88234;
+      font-weight: bold;
+      color: #1a202c;
+      border-bottom: 2px solid #2b6cb0;
       display: inline-block;
-      padding: 2px 20px;
-      margin: 8px 0;
-      font-family: 'Times New Roman', Georgia, serif;
+      padding: 0 24px 4px 24px;
+      margin: 12px 0;
     }
-
-    .cert-text {
+    .cert-body {
       font-size: 13px;
       line-height: 1.6;
-      color: #333;
-      max-width: 500px;
-      margin: 10px auto;
+      color: #4a5568;
+      max-width: 480px;
+      margin: 0 auto 16px auto;
     }
-
-    .cert-footer-grid {
+    .cert-footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-top: 24px;
-      padding-top: 12px;
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px dashed #e2e8f0;
+      text-align: left;
     }
-
-    .cert-seal {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 2px dashed #a88234;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #705315;
-      font-weight: 700;
-      background: rgba(168, 130, 52, 0.05);
-      position: relative;
-    }
-
-    .cert-seal-star {
-      font-size: 14px;
-      color: #a88234;
-    }
-
-    .cert-signature-block {
+    .cert-sign {
       text-align: center;
     }
-
-    .cert-date {
-      font-size: 12px;
-      color: #444;
-      margin-bottom: 30px;
+    .cert-sign-line {
+      width: 160px;
+      border-bottom: 1px solid #2d3748;
+      margin: 40px auto 4px auto;
     }
 
-    .cert-signer-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: #111;
-      text-decoration: underline;
-    }
-
-    .cert-signer-title {
-      font-size: 12px;
-      color: #555;
-    }
-
-    /* Remedial Card */
-    .remedial-card {
-      background: var(--surface-bright);
-      border: 1px solid var(--error);
-      padding: 20px;
-      border-radius: var(--r-m, 12px);
-      text-align: center;
-    }
-
-    .remedial-title {
-      color: var(--error);
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    /* Confetti Canvas */
-    #confettiCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    /* Print Styles */
+    /* Print Specific Style Isolation */
     @media print {
       body * {
         visibility: hidden;
       }
-      .certificate-wrapper, .certificate-wrapper * {
+      .certificate-container, .certificate-container * {
         visibility: visible;
       }
-      .certificate-wrapper {
+      .certificate-container {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
-        border: 4px solid #a88234;
+        border: 4px double #1a365d;
+        box-shadow: none;
       }
-      .print-btn-group {
+      .no-print {
         display: none !important;
       }
+    }
+
+    .btn-group {
+      display: flex;
+      gap: var(--spacing-m);
+      flex-wrap: wrap;
+      margin-top: var(--spacing-l);
     }
   </style>
 <script id="lumi-os-theme-init">
@@ -1458,704 +1156,575 @@ button.active, button.is-active, button.selected, button.is-selected, button[ari
 </script>
 </head>
 <body>
-
-<div class="widget-container" id="appContainer">
-  <!-- START SCREEN -->
-  <div id="startScreen" class="hero-banner">
-    <span class="badge-pill">PPKN KELAS 7 • BAB 1</span>
-    <h2 class="lumi-headline-m" style="margin: 6px 0 12px 0;">Cerdas Cermat Sejarah Kelahiran Pancasila</h2>
-    <p class="lumi-body-m" style="color: var(--on-surface-variant); margin-top: 0; margin-bottom: 16px;">
-      Uji pemahaman sejarah perumusan dasar negara. Dapatkan Sertifikat Kelulusan Resmi Kab. Lumajang jika mencapai skor minimal 85!
-    </p>
-
-    <div class="quiz-meta-grid">
-      <div class="meta-box">
-        <div class="meta-value">20</div>
-        <div class="meta-label">Total Soal</div>
-      </div>
-      <div class="meta-box">
-        <div class="meta-value">85</div>
-        <div class="meta-label">Passing Grade</div>
-      </div>
-      <div class="meta-box">
-        <div class="meta-value">3 Dimensi</div>
-        <div class="meta-label">Evaluasi</div>
-      </div>
-    </div>
-
-    <div style="text-align: left; margin-bottom: 16px;">
-      <label class="lumi-body-s" style="font-weight: 600; display: block; margin-bottom: 6px;" for="userNameInput">
-        Nama Lengkap Peserta:
-      </label>
-      <input type="text" id="userNameInput" class="input-field" placeholder="Masukkan nama untuk sertifikat..." autocomplete="off">
-    </div>
-
-    <button id="startBtn" class="action-btn">
-      <span>Mulai Cerdas Cermat</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-  </div>
-
-  <!-- QUIZ SCREEN -->
-  <div id="quizScreen" class="lumi-card" style="display: none; position: relative;">
-    <div class="quiz-header">
-      <div>
-        <div class="question-category" id="qCategory">PENGETAHUAN</div>
-        <div class="lumi-body-s" style="font-weight: 700; color: var(--primary);" id="qProgress">Soal 1 dari 20</div>
-      </div>
-      <div class="timer-container">
-        <svg class="timer-svg" viewBox="0 0 40 40">
-          <circle class="timer-circle-bg" cx="20" cy="20" r="18"></circle>
-          <circle id="timerProgress" class="timer-circle-progress" cx="20" cy="20" r="18"></circle>
-        </svg>
-        <span class="timer-text" id="timerText">15</span>
-      </div>
-    </div>
-
-    <div style="margin-top: 16px;">
-      <h3 class="question-text" id="qText">Loading pertanyaan...</h3>
-      <div class="options-grid" id="optionsContainer"></div>
-    </div>
-
-    <div id="feedbackBox" class="feedback-box"></div>
-
-    <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
-      <button id="nextBtn" class="action-btn" style="width: auto; padding: 10px 24px; display: none;">
-        <span>Soal Berikutnya</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- EVALUATION / RESULT SCREEN -->
-  <div id="resultScreen" style="display: none; position: relative;">
-    <!-- Confetti Canvas -->
-    <canvas id="confettiCanvas"></canvas>
-
-    <div class="lumi-card">
-      <div style="text-align: center;">
-        <span id="statusBadge" class="badge-pill">HASIL EVALUASI</span>
-        <h2 class="lumi-headline-m" style="margin: 8px 0 4px 0;" id="resultTitle">Laporan Performa Cerdas Cermat</h2>
-        <p class="lumi-body-s" style="color: var(--on-surface-variant); margin-0;" id="resultSubtitle">
-          Peserta: <strong id="resNameLabel" style="color: var(--on-surface);">---</strong>
-        </p>
-      </div>
-
-      <!-- 3D Evaluation Cards -->
-      <div class="evaluation-grid">
-        <div class="eval-card">
-          <div class="eval-score" id="scorePengetahuan" style="color: var(--chart-1);">0</div>
-          <div class="eval-title">Pengetahuan</div>
-          <div class="eval-bar-bg"><div id="barPengetahuan" class="eval-bar-fill" style="background: var(--chart-1);"></div></div>
-        </div>
-        <div class="eval-card">
-          <div class="eval-score" id="scoreAnalisis" style="color: var(--chart-3);">0</div>
-          <div class="eval-title">Analisis</div>
-          <div class="eval-bar-bg"><div id="barAnalisis" class="eval-bar-fill" style="background: var(--chart-3);"></div></div>
-        </div>
-        <div class="eval-card">
-          <div class="eval-score" id="scoreKecepatan" style="color: var(--chart-7);">0</div>
-          <div class="eval-title">Kecepatan</div>
-          <div class="eval-bar-bg"><div id="barKecepatan" class="eval-bar-fill" style="background: var(--chart-7);"></div></div>
-        </div>
-      </div>
-
-      <div style="background: var(--surface-bright); padding: 14px; border-radius: var(--r-m, 12px); border: 1px solid var(--stroke-default); text-align: center;">
-        <div class="lumi-body-s" style="color: var(--on-surface-variant);">NILAI AKHIR GABUNGAN</div>
-        <div class="lumi-display-l" style="font-weight: 800; color: var(--primary); margin: 4px 0;" id="finalScoreVal">0</div>
-        <div class="lumi-body-s" id="qualificationMessage">Passing grade kelulusan: 85</div>
-      </div>
-    </div>
-
-    <!-- CERTIFICATE SECTION (When Passed >= 85) -->
-    <div id="certificateCard" class="certificate-wrapper" style="display: none;">
-      <div class="cert-watermark">PANCASILA</div>
-      <div class="cert-header-title">SERTIFIKAT KETELADANAN PANCASILA</div>
-      <div class="cert-subtitle">KABUPATEN LUMAJANG</div>
-      <div class="cert-divider"></div>
-
-      <div class="cert-recipient-label">Diberikan secara resmi kepada:</div>
-      <div class="cert-name" id="certParticipantName">NAMA PESERTA</div>
-
-      <div class="cert-text">
-        Dinyatakan <strong>LULUS DAN KOMPETEN</strong> dalam <em>Cerdas Cermat Sejarah Kelahiran Pancasila (PPKN Kelas 7 Bab 1)</em> dengan predikat Istimewa serta meraih Nilai Akhir Evaluasi 3 Dimensi sebesar <strong id="certScoreLabel">90</strong>.
-      </div>
-
-      <div class="cert-footer-grid">
-        <div class="cert-seal">
-          <span class="cert-seal-star">★</span>
-          <span>SEAL OFFICIAL</span>
-          <span>KAB. LUMAJANG</span>
-        </div>
-        <div class="cert-signature-block">
-          <div class="cert-date" id="certDateLabel">Kab. Lumajang, 18 Agustus 2024</div>
-          <div class="cert-signer-name">Moh. Joharul Yusuf, S. Pd.</div>
-          <div class="cert-signer-title">Ketua Panitia Cerdas Cermat</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- REMEDIAL NOTICE (When < 85) -->
-    <div id="remedialCard" class="remedial-card" style="display: none; margin-top: 16px;">
-      <div class="remedial-title">Belum Memenuhi Passing Grade (85)</div>
-      <p class="lumi-body-m" style="margin: 0 0 12px 0; color: var(--on-surface-variant);">
-        Jangan berkecil hati! Pelajari kembali materi Sejarah Kelahiran Pancasila Bab 1 dan coba lagi untuk mendapatkan Sertifikat Resmi.
-      </p>
-    </div>
-
-    <!-- BUTTONS -->
-    <div class="print-btn-group" style="margin-top: 16px; display: flex; gap: 10px;">
-      <button id="retryBtn" class="action-btn btn-secondary" style="flex: 1;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-        <span>Coba Lagi / Remidial</span>
-      </button>
-      <button id="printBtn" class="action-btn" style="flex: 1; display: none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-        <span>Cetak Sertifikat</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-  // 20 SOAL PENDIDIKAN PANCASILA KELAS 7 BAB 1
-  const QUESTION_BANK = [
-    {
-      type: "pengetahuan",
-      category: "BPUPKI & Tokoh",
-      question: "Siapakah tokoh pendiri bangsa yang menjabat sebagai Ketua BPUPKI (Dokuritsu Junbi Cosakai)?",
-      options: ["Ir. Soekarno", "Dr. K.R.T. Radjiman Wedyodiningrat", "Drs. Mohammad Hatta", "Mr. Muhammad Yamin"],
-      answer: 1,
-      explanation: "BPUPKI dipimpin oleh Dr. K.R.T. Radjiman Wedyodiningrat didampingi oleh Icibangase Yosio (Jepang) dan R.P. Soeroso."
-    },
-    {
-      type: "pengetahuan",
-      category: "Sejarah Pembentukan",
-      question: "BPUPKI secara resmi dilantik pada tanggal 29 April 1945. Kapan sidang pertama BPUPKI dilaksanakan?",
-      options: ["29 Mei – 1 Juni 1945", "10 – 17 Juli 1945", "22 Juni 1945", "18 Agustus 1945"],
-      answer: 0,
-      explanation: "Sidang pertama BPUPKI berlangsung dari 29 Mei hingga 1 Juni 1945 khusus untuk membahas rumusan Dasar Negara."
-    },
-    {
-      type: "pengetahuan",
-      category: "Perumusan Dasar Negara",
-      question: "Tokoh yang pertama kali menyampaikan pidato gagasan dasar negara pada tanggal 29 Mei 1945 adalah...",
-      options: ["Mr. Soepomo", "Ir. Soekarno", "Mr. Muhammad Yamin", "Drs. Mohammad Hatta"],
-      answer: 2,
-      explanation: "Mr. Muhammad Yamin menyampaikan lima asas dasar negara secara lisan pada sidang BPUPKI tanggal 29 Mei 1945."
-    },
-    {
-      type: "pengetahuan",
-      category: "Teori Negara",
-      question: "Mr. Soepomo menyampaikan usulan dasar negara pada tanggal 31 Mei 1945 dengan menekankan gagasan...",
-      options: ["Negara Kekeluargaan / Integralistik", "Negara Khilafah", "Negara Individualisme", "Negara Liberal"],
-      answer: 0,
-      explanation: "Mr. Soepomo mengemukakan paham Negara Integralistik/Kekeluargaan yang menyatukan seluruh elemen bangsa."
-    },
-    {
-      type: "pengetahuan",
-      category: "Hari Lahir Pancasila",
-      question: "Pidato Ir. Soekarno pada 1 Juni 1945 yang mengusulkan lima prinsip dasar negara menjadi cikal bakal diperingatinya...",
-      options: ["Hari Kemerdekaan RI", "Hari Lahir Pancasila", "Hari Kesaktian Pancasila", "Hari Sumpah Pemuda"],
-      answer: 1,
-      explanation: "Tanggal 1 Juni diperingati sebagai Hari Lahir Pancasila berdasarkan moment pidato Ir. Soekarno mengenalkan nama Pancasila."
-    },
-    {
-      type: "pengetahuan",
-      category: "Istilah Pancasila",
-      question: "Menurut Ir. Soekarno, nama 'Pancasila' diberikan atas saran dari seorang ahli...",
-      options: ["Sejarah", "Hukum", "Bahasa", "Agama"],
-      answer: 2,
-      explanation: "Ir. Soekarno menyatakan bahwa nama 'Pancasila' diperoleh dari saran seorang teman ahli bahasa."
-    },
-    {
-      type: "pengetahuan",
-      category: "Panitia Sembilan",
-      question: "Tugas utama dari Panitia Sembilan yang dibentuk setelah Sidang Pertama BPUPKI adalah...",
-      options: ["Menyusun Teks Proklamasi", "Merumuskan kembali usulan-usulan dasar negara", "Memilih Presiden dan Wakil Presiden", "Membentuk tentara keamanan"],
-      answer: 1,
-      explanation: "Panitia Sembilan bertugas mengolah dan menyelaraskan berbagai masukan gagasan dasar negara dari anggota BPUPKI."
-    },
-    {
-      type: "pengetahuan",
-      category: "Piagam Jakarta",
-      question: "Dokumen kompromi perumusan dasar negara yang disepakati Panitia Sembilan pada 22 Juni 1945 dinamakan...",
-      options: ["Dasa Sila Bandung", "Piagam Jakarta (Jakarta Charter)", "Dekrit Presiden", "Trisila"],
-      answer: 1,
-      explanation: "Sutan Takdir Alisjahbana/Muhammad Yamin menamai rancangan Pembukaan UUD tersebut sebagai Piagam Jakarta."
-    },
-    {
-      type: "analisis",
-      category: "Kompromi Bangsa",
-      question: "Mengapa rumusan Sila Pertama pada Piagam Jakarta '...dengan kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya' akhirnya diubah?",
-      options: [
-        "Karena ditolak oleh pemerintah Jepang",
-        "Demi menjaga persatuan dan kesatuan bangsa Indonesia yang majemuk",
-        "Karena tidak disetujui oleh Ir. Soekarno",
-        "Karena adanya desakan dari negara luar"
-      ],
-      answer: 1,
-      explanation: "Para tokoh pendiri bangsa berjiwa besar mengubah kalimat tersebut agar wakil-wakil dari Indonesia Timur merasa terayomi dalam Negara Kesatuan RI."
-    },
-    {
-      type: "pengetahuan",
-      category: "Tokoh Negosiator",
-      question: "Tokoh bangsa yang memprakarsai pertemuan mendadak untuk membahas perubahan Sila Pertama Piagam Jakarta pada pagi 18 Agustus 1945 adalah...",
-      options: ["Drs. Mohammad Hatta", "Sutan Sjahrir", "K.H. Wahid Hasjim", "Ki Bagus Hadikusumo"],
-      answer: 0,
-      explanation: "Bung Hatta menemui beberapa tokoh Islam (Ki Bagus Hadikusumo, Wahid Hasjim, Kasman Singodimedjo) untuk menyepakati perubahan Sila 1."
-    },
-    {
-      type: "pengetahuan",
-      category: "PPKI",
-      question: "Lembaga yang melanjutkan tugas BPUPKI dan secara resmi mengesahkan Pancasila serta UUD 1945 pada 18 Agustus 1945 adalah...",
-      options: ["KNPI", "PPKI (Dokuritsu Junbi Inkai)", "Mprs", "DPA"],
-      answer: 1,
-      explanation: "PPKI dibentuk pada 7 Agustus 1945 dan mengambil keputusan penting pengesahan UUD 1945 & Pancasila pada 18 Agustus 1945."
-    },
-    {
-      type: "analisis",
-      category: "Filsafat Dasar",
-      question: "Apa arti Pancasila sebagai 'Philosofische Grondslag' sebagaimana dijelaskan oleh Bung Karno?",
-      options: [
-        "Pancasila sebagai lambang kebudayaan kuno",
-        "Pondasi, filsafat, dan jiwa yang sedalam-dalamnya untuk mendirikan bangunan Indonesia Merdeka",
-        "Aturan hukum internasional yang mengikat",
-        "Semboyan perang melawan penjajah"
-      ],
-      answer: 1,
-      explanation: "Philosofische Grondslag berarti norma/filsafat dasar yang menjadi tempat bertumpunya seluruh bangunan negara Indonesia."
-    },
-    {
-      type: "pengetahuan",
-      category: "Konstitusi",
-      question: "Rumusan Pancasila yang sah dan berlaku secara hukum nasional hingga saat ini tercantum dalam...",
-      options: ["Batang Tubuh UUD 1945", "Pembukaan UUD 1945 Alinea IV", "Teks Proklamasi Kemerdekaan", "Piagam Jakarta"],
-      answer: 1,
-      explanation: "Rumusan Pancasila yang sah tertuang dalam Pembukaan UUD 1945 Alinea IV yang disahkan PPKI 18 Agustus 1945."
-    },
-    {
-      type: "analisis",
-      category: "Sikap Keteladanan",
-      question: "Nilai luhur utama yang ditunjukkan oleh Ki Bagus Hadikusumo dan para tokoh Islam saat menyetujui perubahan Sila Pertama adalah...",
-      options: [
-        "Mendahulukan kepentingan pribadi",
-        "Sikap toleransi, tenggang rasa, dan jiwa besar demi keutuhan NKRI",
-        "Pasrah tanpa perlawanan",
-        "Mencari keuntungan kelompok"
-      ],
-      answer: 1,
-      explanation: "Para tokoh berjiwa besar mengorbankan aspirasi kelompok demi persatuan nasional yang jauh lebih besar."
-    },
-    {
-      type: "analisis",
-      category: "Latar Belakang Jepang",
-      question: "Mengapa Jepang membentuk BPUPKI pada awal tahun 1945?",
-      options: [
-        "Karena benar-benar ingin memerdekakan Indonesia tanpa syarat",
-        "Posisi Jepang semakin terdesak dalam Perang Dunia II sehingga membutuhkan bantuan rakyat Indonesia",
-        "Ingin memperkuat kekuasaan kolonialnya",
-        "Atas perintah perserikatan bangsa-bangsa"
-      ],
-      answer: 1,
-      explanation: "Jepang mengalami kekalahan beruntun dari Sekutu, sehingga mengumandangkan janji kemerdekaan untuk menarik simpati rakyat Indonesia."
-    },
-    {
-      type: "analisis",
-      category: "Penerapan Sila Ke-2",
-      question: "Sila 'Kemanusiaan yang Adil dan Beradab' dalam proses sejarah perumusan Pancasila tercermin dari...",
-      options: [
-        "Penghormatan hak-hak setiap warga negara tanpa membeda-bedakan suku, agama, dan ras",
-        "Pemaksaan kehendak mayoritas",
-        "Penutupan diri dari pergaulan internasional",
-        "Pengutamaan satu daerah tertentu"
-      ],
-      answer: 0,
-      explanation: "Sila kedua menegaskan kesetaraan derajat manusia dan penghormatan HAM secara adil dan beradab."
-    },
-    {
-      type: "analisis",
-      category: "Metode Keputusan",
-      question: "Mengapa keputusan dasar negara dalam sidang BPUPKI dan PPKI diambil melalui jalur musyawarah mufakat?",
-      options: [
-        "Agar tidak memerlukan waktu yang lama",
-        "Guna mencapai kebulatan kehendak bersama tanpa ada pihak yang merasa dikalahkan",
-        "Karena dilarang melakukan pemungutan suara oleh Jepang",
-        "Hanya mengikuti tradisi asing"
-      ],
-      answer: 1,
-      explanation: "Musyawarah mufakat menjamin kekeluargaan, harmoni, dan komitmen kebersamaan seluruh elemen bangsa."
-    },
-    {
-      type: "pengetahuan",
-      category: "Perubahan Nama",
-      question: "Berapakah jumlah anggota Panitia Sembilan yang berhasil merumuskan Piagam Jakarta?",
-      options: ["7 Orang", "8 Orang", "9 Orang", "12 Orang"],
-      answer: 2,
-      explanation: "Panitia Sembilan terdiri dari 9 tokoh: Soekarno, Hatta, Yamin, Maramis, Subardjo, Wahid Hasjim, Kahar Muzakir, Agus Salim, dan Abikoesno."
-    },
-    {
-      type: "analisis",
-      category: "Gotong Royong",
-      question: "Ir. Soekarno menyatakan bahwa jika lima sila Pancasila diperas menjadi satu inti (Ekasila), maka intinya adalah...",
-      options: ["Ketuhanan", "Keadilan", "Gotong Royong", "Nasionalisme"],
-      answer: 2,
-      explanation: "Bung Karno menegaskan bahwa hakikat utama kebangsaan Indonesia adalah semangatGotong Royong."
-    },
-    {
-      type: "analisis",
-      category: "Aplikasi Generasi Muda",
-      question: "Sebagai pelajar di Kabupaten Lumajang, bentuk nyata meneladani sejarah perumusan Pancasila adalah...",
-      options: [
-        "Menghafal teks Pancasila tanpa memahami artinya",
-        "Saling menghargai perbedaan pendapat di kelas dan aktif bergotong royong",
-        "Mengunggulkan daerah sendiri dan merendahkan daerah lain",
-        "Acuh tak acuh terhadap kegiatan kemasyarakatan"
-      ],
-      answer: 1,
-      explanation: "Meneladani perumusan Pancasila dilakukan dengan mengamalkan nilai toleransi, musyawarah, dan gotong royong di lingkungan sekitar."
-    }
-  ];
-
-  // STATE MANAGEMENT
-  const quizState = {
-    userName: "",
-    currentQuestionIndex: 0,
-    answers: [], // Stores: { correct: bool, timeSpent: sec, type: string }
-    questionStartTime: 0,
-    timerInterval: null,
-    timeLeft: 15,
-    maxTimePerQuestion: 15
-  };
-
-  // DOM ELEMENTS
-  const startScreen = document.getElementById('startScreen');
-  const quizScreen = document.getElementById('quizScreen');
-  const resultScreen = document.getElementById('resultScreen');
-  const userNameInput = document.getElementById('userNameInput');
-  const startBtn = document.getElementById('startBtn');
-  
-  const qCategory = document.getElementById('qCategory');
-  const qProgress = document.getElementById('qProgress');
-  const qText = document.getElementById('qText');
-  const optionsContainer = document.getElementById('optionsContainer');
-  const timerText = document.getElementById('timerText');
-  const timerProgress = document.getElementById('timerProgress');
-  const feedbackBox = document.getElementById('feedbackBox');
-  const nextBtn = document.getElementById('nextBtn');
-
-  const resNameLabel = document.getElementById('resNameLabel');
-  const scorePengetahuan = document.getElementById('scorePengetahuan');
-  const scoreAnalisis = document.getElementById('scoreAnalisis');
-  const scoreKecepatan = document.getElementById('scoreKecepatan');
-  const barPengetahuan = document.getElementById('barPengetahuan');
-  const barAnalisis = document.getElementById('barAnalisis');
-  const barKecepatan = document.getElementById('barKecepatan');
-  const finalScoreVal = document.getElementById('finalScoreVal');
-  const qualificationMessage = document.getElementById('qualificationMessage');
-  const statusBadge = document.getElementById('statusBadge');
-  const resultTitle = document.getElementById('resultTitle');
-
-  const certificateCard = document.getElementById('certificateCard');
-  const certParticipantName = document.getElementById('certParticipantName');
-  const certScoreLabel = document.getElementById('certScoreLabel');
-  const certDateLabel = document.getElementById('certDateLabel');
-  const remedialCard = document.getElementById('remedialCard');
-  const printBtn = document.getElementById('printBtn');
-  const retryBtn = document.getElementById('retryBtn');
-
-  // EVENT LISTENERS
-  startBtn.addEventListener('click', startQuiz);
-  nextBtn.addEventListener('click', nextQuestion);
-  retryBtn.addEventListener('click', resetQuiz);
-  printBtn.addEventListener('click', () => window.print());
-
-  userNameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') startQuiz();
-  });
-
-  function startQuiz() {
-    const name = userNameInput.value.trim();
-    if (!name) {
-      userNameInput.style.borderColor = getCssVar('--error');
-      userNameInput.focus();
-      return;
-    }
-    userNameInput.style.borderColor = getCssVar('--outline');
-    quizState.userName = name;
-    quizState.currentQuestionIndex = 0;
-    quizState.answers = [];
-
-    startScreen.style.display = 'none';
-    resultScreen.style.display = 'none';
-    quizScreen.style.display = 'block';
-
-    loadQuestion(0);
-  }
-
-  function loadQuestion(index) {
-    clearInterval(quizState.timerInterval);
-    const qData = QUESTION_BANK[index];
-
-    if (qCategory) qCategory.textContent = `${qData.type.toUpperCase()} • ${qData.category}`;
-    if (qProgress) qProgress.textContent = `Soal ${index + 1} dari ${QUESTION_BANK.length}`;
-    if (qText) qText.textContent = qData.question;
-
-    feedbackBox.className = 'feedback-box';
-    feedbackBox.style.display = 'none';
-    if (feedbackBox) feedbackBox.textContent = '';
-    nextBtn.style.display = 'none';
-
-    // Render Options
-    optionsContainer.innerHTML = '';
-    const keys = ['A', 'B', 'C', 'D'];
-    qData.options.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      if (btn) btn.innerHTML = `
-        <span class="option-key">${keys[idx]}</span>
-        <span>${opt}</span>
-      `;
-      btn.addEventListener('click', () => handleAnswer(idx));
-      optionsContainer.appendChild(btn);
-    });
-
-    // Start Timer
-    quizState.timeLeft = quizState.maxTimePerQuestion;
-    quizState.questionStartTime = Date.now();
-    updateTimerUI();
-
-    quizState.timerInterval = setInterval(() => {
-      quizState.timeLeft--;
-      updateTimerUI();
-      if (quizState.timeLeft <= 0) {
-        clearInterval(quizState.timerInterval);
-        handleTimeout();
-      }
-    }, 1000);
-  }
-
-  function updateTimerUI() {
-    if (timerText) timerText.textContent = quizState.timeLeft;
-    const maxOffset = 113.097; // 2 * PI * 18
-    const progress = quizState.timeLeft / quizState.maxTimePerQuestion;
-    const offset = maxOffset * (1 - progress);
-    timerProgress.style.strokeDashoffset = offset;
-
-    if (quizState.timeLeft <= 5) {
-      timerProgress.style.stroke = getCssVar('--error');
-    } else {
-      timerProgress.style.stroke = getCssVar('--primary');
-    }
-  }
-
-  function handleAnswer(selectedIndex) {
-    clearInterval(quizState.timerInterval);
-    const timeSpent = Math.min(
-      quizState.maxTimePerQuestion,
-      (Date.now() - quizState.questionStartTime) / 1000
-    );
-
-    const qData = QUESTION_BANK[quizState.currentQuestionIndex];
-    const isCorrect = (selectedIndex === qData.answer);
-
-    quizState.answers.push({
-      correct: isCorrect,
-      timeSpent: timeSpent,
-      type: qData.type
-    });
-
-    // Disable all options
-    const optionBtns = optionsContainer.querySelectorAll('.option-btn');
-    optionBtns.forEach((btn, idx) => {
-      btn.disabled = true;
-      if (idx === qData.answer) {
-        btn.classList.add('correct');
-      } else if (idx === selectedIndex && !isCorrect) {
-        btn.classList.add('wrong');
-      }
-    });
-
-    // Show Feedback
-    if (isCorrect) {
-      feedbackBox.className = 'feedback-box correct';
-      if (feedbackBox) feedbackBox.innerHTML = `<strong>Jawaban Benar!</strong> ${qData.explanation}`;
-    } else {
-      feedbackBox.className = 'feedback-box wrong';
-      if (feedbackBox) feedbackBox.innerHTML = `<strong>Jawaban Kurang Tepat.</strong> ${qData.explanation}`;
-    }
-
-    nextBtn.style.display = 'inline-flex';
-  }
-
-  function handleTimeout() {
-    const qData = QUESTION_BANK[quizState.currentQuestionIndex];
-    quizState.answers.push({
-      correct: false,
-      timeSpent: quizState.maxTimePerQuestion,
-      type: qData.type
-    });
-
-    const optionBtns = optionsContainer.querySelectorAll('.option-btn');
-    optionBtns.forEach((btn, idx) => {
-      btn.disabled = true;
-      if (idx === qData.answer) {
-        btn.classList.add('correct');
-      }
-    });
-
-    feedbackBox.className = 'feedback-box wrong';
-    if (feedbackBox) feedbackBox.innerHTML = `<strong>Waktu Habis!</strong> ${qData.explanation}`;
-    nextBtn.style.display = 'inline-flex';
-  }
-
-  function nextQuestion() {
-    quizState.currentQuestionIndex++;
-    if (quizState.currentQuestionIndex < QUESTION_BANK.length) {
-      loadQuestion(quizState.currentQuestionIndex);
-    } else {
-      finishQuiz();
-    }
-  }
-
-  function finishQuiz() {
-    quizScreen.style.display = 'none';
-    resultScreen.style.display = 'block';
-
-    // Calculate 3-Dimension Scores
-    const pengAnswers = quizState.answers.filter(a => a.type === 'pengetahuan');
-    const analAnswers = quizState.answers.filter(a => a.type === 'analisis');
-
-    const pengCorrect = pengAnswers.filter(a => a.correct).length;
-    const analCorrect = analAnswers.filter(a => a.correct).length;
-
-    const scorePeng = Math.round((pengCorrect / pengAnswers.length) * 100);
-    const scoreAnal = Math.round((analCorrect / analAnswers.length) * 100);
-
-    // Kecepatan score: Average time per question (15s = 50%, 2s = 100%)
-    const avgTime = quizState.answers.reduce((acc, curr) => acc + curr.timeSpent, 0) / quizState.answers.length;
-    let scoreKec = Math.round(100 - ((avgTime / quizState.maxTimePerQuestion) * 50));
-    scoreKec = Math.min(100, Math.max(40, scoreKec));
-
-    // Weighted Final Score
-    const finalScore = Math.round((scorePeng * 0.4) + (scoreAnal * 0.4) + (scoreKec * 0.2));
-
-    // UI Updates
-    resNameLabel.textContent = quizState.userName;
-    if (scorePengetahuan) scorePengetahuan.textContent = scorePeng;
-    if (scoreAnalisis) scoreAnalisis.textContent = scoreAnal;
-    if (scoreKecepatan) scoreKecepatan.textContent = scoreKec;
-
-    setTimeout(() => {
-      barPengetahuan.style.width = scorePeng + '%';
-      barAnalisis.style.width = scoreAnal + '%';
-      barKecepatan.style.width = scoreKec + '%';
-    }, 100);
-
-    if (finalScoreVal) finalScoreVal.textContent = finalScore;
-
-    // Qualification Logic (Passing Grade >= 85)
-    if (finalScore >= 85) {
-      if (statusBadge) statusBadge.textContent = "LULUS & KOMPETEN";
-      statusBadge.style.background = getCssVar('--positive-container');
-      statusBadge.style.color = getCssVar('--positive');
-      if (resultTitle) resultTitle.textContent = "Selamat! Anda Berhasil Lulus";
-      if (qualificationMessage) qualificationMessage.innerHTML = `<span style="color: var(--positive); font-weight: 700;">★ LULUS (Skor ${finalScore} >= 85)</span> — Sertifikat resmi diterbitkan.`;
-
-      certificateCard.style.display = 'block';
-      remedialCard.style.display = 'none';
-      printBtn.style.display = 'inline-flex';
-
-      if (certParticipantName) certParticipantName.textContent = quizState.userName.toUpperCase();
-      if (certScoreLabel) certScoreLabel.textContent = finalScore;
+  <div class="widget-container">
+    <div class="app-card">
       
-      const now = new Date();
-      const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-      if (certDateLabel) certDateLabel.textContent = `Kab. Lumajang, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      <!-- SCREEN 1: WELCOME & REGISTRATION -->
+      <div id="screen-welcome" class="screen is-active">
+        <h2 class="lumi-headline-m" style="margin-top: 0; margin-bottom: 8px;">Cerdas Cermat Kelahiran Pancasila</h2>
+        <p class="lumi-body-m" style="color: var(--on-surface-variant); margin-bottom: 20px;">
+          Evaluasi pemahaman Kurikulum Merdeka SMP Kelas 7 Bab 1. Tunjukkan kompetensi Anda untuk memperoleh Sertifikat Digital Kebangsaan (Kualifikasi Min. 85).
+        </p>
 
-      triggerConfetti();
-    } else {
-      if (statusBadge) statusBadge.textContent = "REMIDIAL";
-      statusBadge.style.background = getCssVar('--error-container');
-      statusBadge.style.color = getCssVar('--error');
-      if (resultTitle) resultTitle.textContent = "Hasil Evaluasi Belum Memenuhi";
-      if (qualificationMessage) qualificationMessage.innerHTML = `<span style="color: var(--error); font-weight: 700;">BELUM LULUS (Skor ${finalScore} < 85)</span> — Perlu remidial.`;
+        <div class="form-group">
+          <label class="lumi-label-m lumi-body-m-emphasized" for="player-name">Nama Lengkap Peserta</label>
+          <input type="text" id="player-name" class="text-input" placeholder="Masukkan nama lengkap Anda..." value="Ahmad Dian Standardi">
+        </div>
 
-      certificateCard.style.display = 'none';
-      remedialCard.style.display = 'block';
-      printBtn.style.display = 'none';
+        <div style="background: var(--surface-dim); border-radius: var(--r-m); padding: var(--spacing-m); margin-bottom: 20px;">
+          <div class="lumi-body-s-emphasized" style="margin-bottom: 6px;">Spesifikasi Kualifikasi:</div>
+          <ul class="lumi-body-s" style="margin: 0; padding-left: 20px; color: var(--on-surface-variant);">
+            <li>Jumlah Soal: 20 Butir (Pengetahuan & Analisis Sejarah)</li>
+            <li>Standar Kelulusan: Skor Rata-Rata ≥ 85</li>
+            <li>3 Dimensi Evaluasi: Pengetahuan, Analisis, & Kecepatan Respon</li>
+            <li>Penerbit Sertifikat: Panitia Cerdas Cermat Kab. Lumajang</li>
+          </ul>
+        </div>
+
+        <button type="button" class="lumi-btn" style="background: var(--accent); color: var(--on-surface); font-weight: 600; width: 100%; justify-content: center;" onclick="startQuiz()">
+          Mulai Ujian Cerdas Cermat
+        </button>
+      </div>
+
+      <!-- SCREEN 2: QUIZ INTERFACE -->
+      <div id="screen-quiz" class="screen">
+        <div class="quiz-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="quiz-progress-badge" id="q-counter">Soal 1/20</span>
+            <span id="q-category" class="question-category">Pengetahuan</span>
+          </div>
+          <div class="timer-ring-container">
+            <svg width="20" height="20" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--stroke-default)" stroke-width="3" />
+              <path id="timer-progress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="100, 100" />
+            </svg>
+            <span id="timer-text">15s</span>
+          </div>
+        </div>
+
+        <div id="q-text" class="lumi-body-l lumi-body-l-emphasized" style="min-height: 56px;">
+          Memuat pertanyaan...
+        </div>
+
+        <div id="options-container" class="options-grid">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+
+      <!-- SCREEN 3: RESULTS & EVALUATION -->
+      <div id="screen-results" class="screen">
+        <div style="text-align: center;">
+          <span id="status-chip" class="lumi-chip" style="margin-bottom: 8px;">Evaluasi Selesai</span>
+          <h2 class="lumi-headline-m" id="res-title" style="margin: 4px 0;">Hasil Evaluasi Cerdas Cermat</h2>
+          <p class="lumi-body-m" id="res-subtitle" style="color: var(--on-surface-variant); margin-top: 0;">Rincian pencapaian 3 dimensi nilai Anda.</p>
+        </div>
+
+        <div style="text-align: center; background: var(--surface-dim); border-radius: var(--r-l); padding: 20px; margin: 16px 0;">
+          <div class="lumi-caption" style="text-transform: uppercase;">Skor Akhir Gabungan</div>
+          <div class="lumi-display-l" id="total-score-val" style="color: var(--primary); font-weight: bold; margin: 4px 0;">0</div>
+          <div class="lumi-body-s" id="passing-status-text">Syarat kelulusan kualifikasi sertifikat: Minimal 85.0</div>
+        </div>
+
+        <div class="dim-grid">
+          <div class="dim-card">
+            <div class="lumi-caption">Pengetahuan</div>
+            <div class="lumi-headline-m" id="dim-know-val" style="margin: 4px 0;">0</div>
+            <div class="lumi-body-s" style="color: var(--on-surface-variant);">Bobot Kognitif</div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-caption lumi-caption">Analisis</div>
+            <div class="lumi-headline-m" id="dim-ana-val" style="margin: 4px 0;">0</div>
+            <div class="lumi-body-s" style="color: var(--on-surface-variant);">Penalaran Konteks</div>
+          </div>
+          <div class="dim-card">
+            <div class="lumi-caption">Kecepatan</div>
+            <div class="lumi-headline-m" id="dim-speed-val" style="margin: 4px 0;">0</div>
+            <div class="lumi-body-s" style="color: var(--on-surface-variant);">Efisiensi Waktu</div>
+          </div>
+        </div>
+
+        <!-- REMEDIAL VIEW -->
+        <div id="remedial-box" style="display: none; background: var(--error-container); padding: 16px; border-radius: var(--r-m); margin-top: 16px;">
+          <div class="lumi-body-m-emphasized" style="color: var(--error); margin-bottom: 4px;">Kualifikasi Belum Terpenuhi</div>
+          <div class="lumi-body-s" style="color: var(--on-surface);">
+            Nilai gabungan Anda belum mencapai batas minimal 85. Pelajari kembali materi Sejarah Kelahiran Pancasila (Pembentukan BPUPKI, Sidang 1 Juni 1945, dan Panitia Sembilan) lalu coba lagi.
+          </div>
+          <button type="button" class="lumi-btn" style="margin-top: 12px; background: var(--surface-bright);" onclick="restartQuiz()">
+            Coba Lagi (Remidial)
+          </button>
+        </div>
+
+        <!-- CERTIFICATE CONTAINER (ON SUCCESS) -->
+        <div id="cert-wrapper" style="display: none;">
+          <div class="certificate-container" id="cert-element">
+            <div class="cert-watermark">PANCASILA</div>
+            <div class="cert-header">PEMERINTAH KABUPATEN LUMAJANG</div>
+            <div class="cert-sub">PANITIA CERDAS CERMAT PENDIDIKAN PANCASILA SMP</div>
+            <div class="cert-title">SERTIFIKAT KEFANGSAAN</div>
+            <div class="cert-sub">Nomor: 800 / <span id="cert-number">CC-2023-091</span> / DISDIK.LMJ</div>
+            
+            <div style="margin-top: 16px;" class="cert-body">Diberikan secara resmi kepada:</div>
+            <div class="cert-recipient" id="cert-name-display">NAMA PESERTA</div>
+            
+            <div class="cert-body">
+              Dinyatakan <strong>LULUS DAN QUALIFIED</strong> dalam Ujian Cerdas Cermat Sejarah Kelahiran Pancasila Kurikulum Merdeka dengan Nilai Akhir <strong id="cert-score-display">92.5</strong> (Kualifikasi Unggul Tiga Dimensi).
+            </div>
+
+            <div class="cert-footer">
+              <div>
+                <div style="font-size: 12px; color: #718096;">Diterbitkan di: Kab. Lumajang</div>
+                <div style="font-size: 12px; color: #718096;">Tanggal: <span id="cert-date">17 Agustus 2023</span></div>
+                <div style="font-size: 12px; color: #718096; margin-top: 4px;">Status: Valid (Digital Verified)</div>
+              </div>
+              <div class="cert-sign">
+                <div style="font-size: 12px; color: #4a5568;">Ketua Panitia Cerdas Cermat,</div>
+                <div class="cert-sign-line"></div>
+                <div style="font-size: 12px; font-weight: bold; color: #1a202c;">Moh. Joharul Yusuf, S. Pd</div>
+                <div style="font-size: 12px; color: #718096;">NIP. 19850612 201001 1 012</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group no-print">
+            <button type="button" class="lumi-btn" style="background: var(--accent); color: var(--on-surface); font-weight: 600;" onclick="window.print()">
+              Cetak Sertifikat
+            </button>
+            <button type="button" class="lumi-btn" style="background: var(--surface-dim);" onclick="downloadCertMock()">
+              Unduh Digital (PNG/PDF)
+            </button>
+            <button type="button" class="lumi-btn" style="background: var(--surface-dim);" onclick="restartQuiz()">
+              Ulangi Ujian
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Question Bank: 20 items (Pengetahuan & Analisis) - Kurikulum Merdeka Kelas 7 Bab 1
+    const QUESTION_BANK = [
+      {
+        type: 'Pengetahuan',
+        q: 'Siapakah ketua BPUPKI (Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan Indonesia) yang dilantik pada 28 Mei 1945?',
+        options: [
+          'Ir. Soekarno',
+          'Dr. K.R.T. Radjiman Wedyodiningrat',
+          'Drs. Mohammad Hatta',
+          'Mr. Muhammad Yamin'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Pada tanggal berapakah Ir. Soekarno menyampaikan pidato bersejarah yang mengusulkan nama "Pancasila" pertama kali?',
+        options: [
+          '29 Mei 1945',
+          '31 Mei 1945',
+          '1 Juni 1945',
+          '22 Juni 1945'
+        ],
+        answer: 2
+      },
+      {
+        type: 'Analisis',
+        q: 'Mengapa pembentukan Panitia Sembilan dianggap sebagai langkah krusial dalam merumuskan dasar negara setelah Sidang Pertama BPUPKI?',
+        options: [
+          'Untuk mengambil alih wewenang pemerintah pendudukan Jepang secara sepihak.',
+          'Sebab Sidang Pertama BPUPKI belum menghasilkan kesepakatan tertulis dasar negara yang final.',
+          'Khusus untuk memilih Presiden dan Wakil Presiden pertama Republik Indonesia.',
+          'Untuk membubarkan BPUPKI dan mendirikan organisasi militer baru.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Dokumen penting hasil kompromi Panitia Sembilan pada tanggal 22 Juni 1945 dikenal dengan sebutan...',
+        options: [
+          'Teks Proklamasi',
+          'Piagam Jakarta (Jakarta Charter)',
+          'Sumpah Pemuda',
+          'Batang Tubuh UUD 1945'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Analisis',
+        q: 'Perubahan rumusan sila pertama pada Piagam Jakarta pada tanggal 18 Agustus 1945 mencerminkan sikap para pendiri bangsa yang mengutamakan...',
+        options: [
+          'Kepentingan golongan mayoritas di Pulau Jawa.',
+          'Persatuan dan kesatuan bangsa dalam wadah NKRI yang majemuk.',
+          'Tekanan militer dari sekutu yang menduduki kawasan timur Indonesia.',
+          'Keinginan untuk mempercepat pengakuan internasional dari negara barat.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Tokoh pendiri bangsa yang menyampaikan lima usulan dasar negara secara lisan pada sidang BPUPKI tanggal 29 Mei 1945 adalah...',
+        options: [
+          'Mr. Muhammad Yamin',
+          'Prof. Dr. Mr. Soepomo',
+          'K.H. Wachid Hasjim',
+          'Mr. A.A. Maramis'
+        ],
+        answer: 0
+      },
+      {
+        type: 'Analisis',
+        q: 'Prof. Dr. Mr. Soepomo menekankan paham "Paham Negara Integralistik" dalam sidang BPUPKI tanggal 31 Mei 1945. Makna utama paham tersebut adalah...',
+        options: [
+          'Negara mengutamakan hak individualistis pengusaha.',
+          'Negara berdiri di atas semua golongan dan bersatu dengan seluruh rakyatnya.',
+          'Negara membagi kekuasaan secara mutlak kepada daerah-daerah feodal.',
+          'Negara dijalankan dengan sistem diktator militer.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Lembaga yang resmi mengesahkan Pancasila sebagai dasar negara Indonesia pada tanggal 18 Agustus 1945 adalah...',
+        options: [
+          'BPUPKI',
+          'PPKI (Panitia Persiapan Kemerdekaan Indonesia)',
+          'KNIP (Komite Nasional Indonesia Pusat)',
+          'Panitia Sembilan'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Istilah "Dokuritsu Junbi Cosakai" merupakan nama lain dalam bahasa Jepang untuk lembaga...',
+        options: [
+          'PPKI',
+          'BPUPKI',
+          'Peta',
+          'Heiho'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Analisis',
+        q: 'Salah satu nilai kebangsaan yang tercermin dalam proses sidang BPUPKI dan PPKI adalah musyawarah mufakat. Contoh konkretnya adalah...',
+        options: [
+          'Mengambil keputusan dengan voting tanpa mendengarkan pendapat minoritas.',
+          'Menghargai perbedaan pendapat antar tokoh demi tercapainya konsensus bersama.',
+          'Menolak pandangan anggota lain jika berbeda agama atau suku.',
+          'Memutus keputusan secara otoriter oleh ketua sidang.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Siapakah dua tokoh pahlawan nasional yang diutus menemui Drs. Mohammad Hatta terkait keberatan tokoh Indonesia timur mengenai sila pertama Piagam Jakarta?',
+        options: [
+          'Ir. Soekarno dan Mr. Soepomo',
+          'J. Latuharhary dan tokoh perwakilan Indonesia Timur',
+          'Sutan Sjahrir dan Chaerul Saleh',
+          'Ki Hajar Dewantara dan R.M. Suryo'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Berikut yang BUKAN merupakan anggota Panitia Sembilan adalah...',
+        options: [
+          'Mr. Achmad Soebardjo',
+          'Abikoesno Tjokrosoejoso',
+          'Sutan Sjahrir',
+          'H. Agus Salim'
+        ],
+        answer: 2
+      },
+      {
+        type: 'Analisis',
+        q: 'Kedudukan Pancasila sebagai Dasar Negara Indonesia berimplikasi bahwa...',
+        options: [
+          'Pancasila hanya wajib dihafalkan oleh pelajar di sekolah.',
+          'Seluruh hukum, peraturan, dan penyelenggaraan negara harus bersumber dari Pancasila.',
+          'Pancasila dapat diganti sewaktu-waktu sesuai keinginan pimpinan eksekutif.',
+          'Pancasila hanya berlaku pada masa perjuangan kemerdekaan.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Di kota manakah Ir. Soekarno menjalani pengasingan oleh Belanda di mana beliau banyak merenungkan nilai-nilai Pancasila di bawah pohon sukun?',
+        options: [
+          'Bengkulu',
+          'Ende (Nusa Tenggara Timur)',
+          'Banda Neira',
+          'Parapat'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Analisis',
+        q: 'Pancasila disahkan bersamaan dengan pengesahan dokumen penting negara lainnya pada 18 Agustus 1945, yaitu...',
+        options: [
+          'Teks Deklarasi Juanda',
+          'Undang-Undang Dasar Negara Republik Indonesia Tahun 1945',
+          'Ketetapan MPRS',
+          'Naskah Perjanjian Linggarjati'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Kata "Pancasila" berasal dari bahasa Sanskerta, di mana "Sila" berarti...',
+        options: [
+          'Lima',
+          'Prinsip atau alas/dasar',
+          'Aturan agama',
+          'Janji'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Analisis',
+        q: 'Penyelenggaraan Cerdas Cermat Pancasila di tingkat SMP bertujuan untuk menguatkan Profil Pelajar Pancasila, khususnya pada dimensi...',
+        options: [
+          'Berkebinekaan Global dan Beriman, Bertakwa kepada Tuhan YME',
+          'Individualistis dan Konsumtif',
+          'Eksklusivitas Golongan',
+          'Persaingan Bebas Tanpa Etika'
+        ],
+        answer: 0
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Gedung tempat berlangsungnya sidang BPUPKI di Jakarta kini dikenal dengan nama...',
+        options: [
+          'Gedung Agung',
+          'Gedung Pancasila',
+          'Gedung Merdeka',
+          'Gedung Sate'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Analisis',
+        q: 'Perbedaan utama antara BPUPKI dan PPKI dari segi tugas pokoknya adalah...',
+        options: [
+          'BPUPKI bertugas menyusun strategi perang, sedangkan PPKI bertugas berunding dengan Sekutu.',
+          'BPUPKI bertugas menyelidiki syarat kemerdekaan, sedangkan PPKI bertugas mempersiapkan dan mengesahkan tata negara merdeka.',
+          'BPUPKI dibentuk oleh rakyat Indonesia, PPKI dibentuk oleh PBB.',
+          'BPUPKI hanya beranggotakan warga asing, PPKI hanya warga lokal.'
+        ],
+        answer: 1
+      },
+      {
+        type: 'Pengetahuan',
+        q: 'Semboyan yang tertulis pada pita yang dicengkeram oleh Lambang Negara Garuda Pancasila adalah...',
+        options: [
+          'Tut Wuri Handayani',
+          'Bhinneka Tunggal Ika',
+          'Satyaku Kudarmakan',
+          'Bhinneka Ika Tan Hana'
+        ],
+        answer: 1
+      }
+    ];
+
+    // State Variables
+    let playerName = '';
+    let currentQIndex = 0;
+    let timerInterval = null;
+    let timeRemaining = 15; // 15s per question
+    const TIME_PER_QUESTION = 15;
+
+    // Analytics tracking
+    let knowScore = 0; // out of 10
+    let anaScore = 0;  // out of 10
+    let timeSpentTotal = 0; // in seconds
+
+    const state = {
+      screen: 'welcome' // 'welcome' | 'quiz' | 'results'
+    };
+
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('is-active'));
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) {
+        target.classList.add('is-active');
+      }
+      state.screen = screenId;
     }
-  }
 
-  function resetQuiz() {
-    resultScreen.style.display = 'none';
-    startScreen.style.display = 'block';
-  }
+    function startQuiz() {
+      const inputEl = document.getElementById('player-name');
+      playerName = (inputEl.value || 'Peserta Cerdas Cermat').trim();
+      
+      // Reset variables
+      currentQIndex = 0;
+      knowScore = 0;
+      anaScore = 0;
+      timeSpentTotal = 0;
 
-  // CONFETTI EFFECT
-  function triggerConfetti() {
-    const canvas = document.getElementById('confettiCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = resultScreen.offsetWidth || 600;
-    canvas.height = 400;
+      switchScreen('quiz');
+      loadQuestion(0);
+    }
 
-    const particles = [];
-    const colors = ['#2575fc', '#50e389', '#f5d77f', '#ffa6d7', '#3186ff'];
+    function loadQuestion(index) {
+      if (index >= QUESTION_BANK.length) {
+        finishQuiz();
+        return;
+      }
 
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        size: Math.random() * 6 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        vy: Math.random() * 3 + 2,
-        vx: Math.random() * 2 - 1,
-        rotation: Math.random() * 360
+      const qData = QUESTION_BANK[index];
+      document.getElementById('q-counter').textContent = `Soal ${index + 1}/${QUESTION_BANK.length}`;
+      document.getElementById('q-category').textContent = qData.type;
+      document.getElementById('q-text').textContent = qData.q;
+
+      const optsContainer = document.getElementById('options-container');
+      if (optsContainer) optsContainer.innerHTML = '';
+
+      const prefixes = ['A', 'B', 'C', 'D'];
+      qData.options.forEach((optText, optIdx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        if (btn) btn.innerHTML = `
+          <span class="option-prefix">${prefixes[optIdx]}</span>
+          <span style="flex: 1;">${optText}</span>
+        `;
+        btn.onclick = () => selectAnswer(optIdx);
+        optsContainer.appendChild(btn);
       });
-    }
 
-    let animationFrame;
-    function renderConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let activeParticles = 0;
-
-      particles.forEach(p => {
-        p.y += p.vy;
-        p.x += p.vx;
-        p.rotation += 2;
-
-        if (p.y < canvas.height) {
-          activeParticles++;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-          ctx.restore();
+      // Start timer
+      timeRemaining = TIME_PER_QUESTION;
+      updateTimerUI();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        timeSpentTotal++;
+        updateTimerUI();
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          selectAnswer(-1); // Timeout/Wrong
         }
-      });
+      }, 1000);
+    }
 
-      if (activeParticles > 0) {
-        animationFrame = requestAnimationFrame(renderConfetti);
+    function updateTimerUI() {
+      const textEl = document.getElementById('timer-text');
+      const progressEl = document.getElementById('timer-progress');
+      if (textEl) textEl.textContent = `${timeRemaining}s`;
+      
+      if (progressEl) {
+        const pct = (timeRemaining / TIME_PER_QUESTION) * 100;
+        progressEl.setAttribute('stroke-dasharray', `${pct}, 100`);
       }
     }
-    renderConfetti();
-  }
 
-  // Auto-resize host frame listener
-  (function autoResize() {
-    function notifyHeight() {
-      const c = document.querySelector('.widget-container') || document.body;
-      if (!c) return;
-      const h = Math.ceil(Math.max(c.getBoundingClientRect().bottom, c.scrollHeight));
-      window.parent.postMessage({type: 'widget-resize', height: h}, '*');
+    function selectAnswer(selectedIndex) {
+      clearInterval(timerInterval);
+      const qData = QUESTION_BANK[currentQIndex];
+      const isCorrect = (selectedIndex === qData.answer);
+
+      if (isCorrect) {
+        if (qData.type === 'Pengetahuan') knowScore++;
+        else anaScore++;
+      }
+
+      currentQIndex++;
+      loadQuestion(currentQIndex);
     }
-    window.addEventListener('load', () => setTimeout(notifyHeight, 120));
-    new ResizeObserver(() => notifyHeight()).observe(document.querySelector('.widget-container') || document.body);
-  })();
-</script>
 
+    function finishQuiz() {
+      switchScreen('results');
+
+      // Total count breakdown
+      const totalKnowQuestions = QUESTION_BANK.filter(q => q.type === 'Pengetahuan').length;
+      const totalAnaQuestions = QUESTION_BANK.filter(q => q.type === 'Analisis').length;
+
+      // Dimension 1: Pengetahuan (0-100)
+      const knowPct = Math.round((knowScore / totalKnowQuestions) * 100);
+      
+      // Dimension 2: Analisis (0-100)
+      const anaPct = Math.round((anaScore / totalAnaQuestions) * 100);
+
+      // Dimension 3: Kecepatan (0-100) based on avg time per Q
+      // Max time possible: 20 * 15 = 300s. Faster response gives higher speed score.
+      const avgTimeSpent = timeSpentTotal / QUESTION_BANK.length;
+      let speedPct = Math.round(Math.max(40, 100 - (avgTimeSpent * 3.5)));
+      if (speedPct > 100) speedPct = 100;
+
+      // Composite Total Score (Weighted: 45% Pengetahuan, 45% Analisis, 10% Kecepatan)
+      const finalScore = parseFloat(((knowPct * 0.45) + (anaPct * 0.45) + (speedPct * 0.10)).toFixed(1));
+
+      // Render results UI
+      document.getElementById('dim-know-val').textContent = `${knowPct}%`;
+      document.getElementById('dim-ana-val').textContent = `${anaPct}%`;
+      document.getElementById('dim-speed-val').textContent = `${speedPct}%`;
+      document.getElementById('total-score-val').textContent = finalScore;
+
+      const certWrapper = document.getElementById('cert-wrapper');
+      const remedialBox = document.getElementById('remedial-box');
+      const statusChip = document.getElementById('status-chip');
+
+      if (finalScore >= 85.0) {
+        // QUALIFIED
+        statusChip.textContent = 'Kualifikasi: LULUS (Qualified)';
+        statusChip.style.background = getCssVar('--positive-container');
+        statusChip.style.color = getCssVar('--positive');
+        remedialBox.style.display = 'none';
+        certWrapper.style.display = 'block';
+
+        // Fill Certificate Fields
+        document.getElementById('cert-name-display').textContent = playerName.toUpperCase();
+        document.getElementById('cert-score-display').textContent = finalScore.toFixed(1);
+        
+        // Generate Unique Cert Number & Date
+        const randId = Math.floor(100 + Math.random() * 900);
+        document.getElementById('cert-number').textContent = `CC-2023-${randId}`;
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'Long', year: 'numeric' });
+        document.getElementById('cert-date').textContent = dateStr;
+
+      } else {
+        // UNQUALIFIED (REMEDIAL)
+        statusChip.textContent = 'Kualifikasi: BELUM LULUS';
+        statusChip.style.background = getCssVar('--error-container');
+        statusChip.style.color = getCssVar('--error');
+        remedialBox.style.display = 'block';
+        certWrapper.style.display = 'none';
+      }
+    }
+
+    function restartQuiz() {
+      switchScreen('welcome');
+    }
+
+    function downloadCertMock() {
+      alert('Sertifikat Digital berhasil disiapkan untuk diunduh. Anda juga dapat menggunakan tombol "Cetak Sertifikat" untuk menyimpan secara langsung sebagai PDF melalui dialog cetak browser.');
+    }
+
+    // Auto theme messaging & iframe height compliance
+    const applyTheme = t => { 
+      document.documentElement.setAttribute('data-theme', t); 
+    };
+    if (!document.documentElement.hasAttribute('data-theme') && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+      applyTheme('dark');
+    }
+    window.addEventListener('message', e => { 
+      if (e.data?.type === 'set-theme' || e.data?.type === 'APPLY_THEME') applyTheme(e.data.theme); 
+    });
+
+    (function autoResize() {
+      function notifyHeight() {
+        const c = document.querySelector('.widget-container') || document.body;
+        if (!c) return;
+        const h = Math.ceil(Math.max(c.getBoundingClientRect().bottom, c.scrollHeight));
+        window.parent.postMessage({type: 'widget-resize', height: h}, '*');
+      }
+      window.addEventListener('load', () => setTimeout(notifyHeight, 120));
+      new ResizeObserver(() => notifyHeight()).observe(document.querySelector('.widget-container') || document.body);
+    })();
+  </script>
 
 <script>/*luminous-slider-normalizer*/(function(){function f(r){if(!r||r.type!=='range')return;var mn=parseFloat(r.min||'0'),mx=parseFloat(r.max||'100'),v=parseFloat(r.value);if(isNaN(v))v=(mn+mx)/2;var p=mx>mn?((v-mn)/(mx-mn))*100:50;r.style.setProperty('--progress',p+'%');r.style.removeProperty('--slider-fill');}function all(){document.querySelectorAll('input[type="range"], .lumi-slider').forEach(f);}document.addEventListener('input',function(e){f(e.target);});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',all);else all();})();</script>
 </body>
