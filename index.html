@@ -1,1174 +1,1169 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full bg-slate-100">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sang Arsitek Bangsa - Cerdas Cermat & Simulasi Pancasila 1945</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: {
-                            100: '#fef9c3',
-                            300: '#fde047',
-                            500: '#eab308',
-                            600: '#ca8a04',
-                            700: '#a16207',
-                            800: '#854d0e',
-                            900: '#713f12',
-                        },
-                        maroon: {
-                            800: '#581c87',
-                            900: '#451a03',
-                            950: '#2a0808',
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Merriweather', 'serif'],
-                        cinzel: ['Cinzel', 'serif'],
-                        cursive: ['Great Vibes', 'cursive'],
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warung POS Pro - Kasir Digital Warung Makan</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
             }
+          }
         }
-    </script>
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom CSS for Print & Scrollbar -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    <style>
-        /* Custom Styles & CSS Animations */
-        .glass-panel {
-            background: rgba(30, 27, 75, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(234, 179, 8, 0.25);
-        }
-
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .gold-border-gradient {
-            border-image: linear-gradient(to bottom right, #bf953f, #fcf6ba, #b38728, #aa771c) 1;
-        }
-
-        /* Certificate Print CSS Optimization for A4 Landscape */
-        @page {
-            size: A4 landscape;
-            margin: 0;
-        }
-
-        @media print {
-            body {
-                background: #ffffff !important;
-                color: #000000 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .print-only-container {
-                display: flex !important;
-                justify-content: center;
-                align-items: center;
-                width: 100vw;
-                height: 100vh;
-                background: #fff;
-            }
-
-            /* Standard A4 Landscape Dimensions: 297mm x 210mm */
-            .certificate-a4-print {
-                width: 297mm !important;
-                height: 210mm !important;
-                max-width: 297mm !important;
-                max-height: 210mm !important;
-                margin: 0 auto !important;
-                padding: 10mm !important;
-                box-sizing: border-box !important;
-                page-break-after: always;
-                page-break-inside: avoid;
-                box-shadow: none !important;
-                border: 8px double #854d0e !important;
-                background: #fffdf5 !important;
-                color: #1a1a1a !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: space-between !important;
-            }
-
-            .cert-border-inner {
-                border: 2px solid #ca8a04 !important;
-                padding: 8mm !important;
-                height: 100% !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: space-between !important;
-            }
-        }
-
-        /* On-Screen Certificate Preview Frame */
-        .cert-preview-frame {
-            aspect-ratio: 297 / 210;
-            width: 100%;
-            max-width: 1000px;
-            background: #fffdf7;
-            color: #1e1b18;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border: 10px solid #713f12;
-            position: relative;
-        }
-
-        /* Timer Circular Animation */
-        .timer-circle {
-            transition: stroke-dashoffset 1s linear;
-        }
-    </style>
+    /* Thermal Print Styling */
+    @media print {
+      body * { visibility: hidden; }
+      #printableReceipt, #printableReceipt * { visibility: visible; }
+      #printableReceipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 80mm;
+        margin: 0;
+        padding: 10px;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-gold-500 selection:text-slate-950">
+<body class="h-full text-slate-800 flex flex-col antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- NAVIGATION BAR -->
-    <nav class="no-print sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-gold-600/30 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-700 to-gold-300 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
-                    <i class="fa-solid fa-monument"></i>
-                </div>
-                <div>
-                    <h1 class="font-cinzel font-bold text-lg gold-gradient-text leading-none">SANG ARSITEK BANGSA</h1>
-                    <p class="text-xs text-slate-400">Simulasi Sidang & Cerdas Cermat Pancasila 1945</p>
-                </div>
-            </div>
-
-            <!-- Navigation Links -->
-            <div class="flex items-center gap-2 overflow-x-auto py-1 text-sm font-medium">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg bg-gold-500 text-slate-950 font-semibold shadow">
-                    <i class="fa-solid fa-compass mr-1.5"></i>Beranda
-                </button>
-                <button onclick="switchTab('simulation')" id="nav-simulation" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
-                    <i class="fa-solid fa-gavel mr-1.5"></i>Simulasi Sidang
-                </button>
-                <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
-                    <i class="fa-solid fa-trophy mr-1.5"></i>Cerdas Cermat
-                </button>
-                <button onclick="switchTab('matrix')" id="nav-matrix" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
-                    <i class="fa-solid fa-scroll mr-1.5"></i>Matriks Evolusi
-                </button>
-                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
-                    <i class="fa-solid fa-users-viewfinder mr-1.5"></i>Galeri Tokoh
-                </button>
-                <button onclick="switchTab('certificate')" id="nav-certificate" class="nav-btn px-3 py-1.5 rounded-lg hover:bg-slate-800 text-slate-300 border border-gold-500/40 text-gold-400">
-                    <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikat & Rapor
-                </button>
-            </div>
+  <!-- Top Navigation Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i data-lucide="utensils-crossed" class="w-5 h-5"></i>
         </div>
-    </nav>
+        <div>
+          <h1 class="font-bold text-lg leading-none text-slate-900 flex items-center gap-1.5">
+            WarungPOS <span class="bg-brand-100 text-brand-700 text-xs font-semibold px-2 py-0.5 rounded-full">PRO</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Sistem Kasir Digital Warung Makan</p>
+        </div>
+      </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-grow container mx-auto px-4 py-6 max-w-7xl">
+      <!-- Quick Actions & Sales Badge -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-xl text-xs font-semibold">
+          <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i>
+          <span>Omset Hari Ini:</span>
+          <span id="todayOmsetBadged" class="text-emerald-800 font-bold">Rp 0</span>
+        </div>
 
-        <!-- TAB 1: DASHBOARD / BERANDA -->
-        <section id="tab-dashboard" class="tab-content space-y-8">
-            <!-- Hero Banner -->
-            <div class="relative overflow-hidden rounded-2xl glass-panel p-8 md:p-12 border border-gold-500/30">
-                <div class="absolute -right-10 -bottom-10 opacity-10 text-gold-500 text-9xl pointer-events-none">
-                    <i class="fa-solid fa-landmark"></i>
-                </div>
-                <div class="max-w-3xl relative z-10 space-y-4">
-                    <span class="px-3 py-1 bg-gold-500/10 border border-gold-500/30 text-gold-400 rounded-full text-xs font-semibold uppercase tracking-wider">
-                        Aplikasi Edukasi Kebangsaan
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-cinzel font-black gold-gradient-text leading-tight">
-                        Penyusunan & Perumusan Pancasila 1945
-                    </h2>
-                    <p class="text-slate-300 text-base md:text-lg leading-relaxed font-serif">
-                        Rasakan atmosfer historis Gedung Chuo Sangi In (BPUPKI) dan Gedung Pejambon (PPKI). Buat keputusan kritis diplomasi kebangsaan atau uji wawasan sejarah Anda dalam mode Cerdas Cermat interaktif.
-                    </p>
-                    <div class="flex flex-wrap gap-4 pt-4">
-                        <button onclick="switchTab('simulation')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-slate-950 font-bold hover:brightness-110 transition shadow-lg flex items-center gap-2">
-                            <i class="fa-solid fa-play"></i> Mulai Simulasi Sidang RPG
-                        </button>
-                        <button onclick="switchTab('quiz')" class="px-6 py-3 rounded-xl bg-slate-800 border border-gold-500/40 text-gold-300 font-bold hover:bg-slate-700 transition flex items-center gap-2">
-                            <i class="fa-solid fa-stopwatch"></i> Tantangan Cerdas Cermat
-                        </button>
-                    </div>
-                </div>
+        <button onclick="openHistoryModal()" class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition text-sm font-medium">
+          <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
+          <span class="hidden sm:inline">Riwayat</span>
+        </button>
+
+        <button onclick="openMenuManagerModal()" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition text-sm font-medium shadow-sm">
+          <i data-lucide="settings-2" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Kelola Menu</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Layout Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT PANEL: Menu Catalog & Categories (8 Columns) -->
+    <section class="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
+      
+      <!-- Search & Filters Header -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+          
+          <!-- Search Bar -->
+          <div class="relative w-full sm:w-72">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Cari nama menu..." 
+              class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+          </div>
+
+          <!-- Add Quick Menu Button -->
+          <button onclick="openMenuFormModal()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-semibold transition shadow-sm shadow-brand-500/20">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Tambah Menu</span>
+          </button>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-medium" id="categoryContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Menu Grid Cards -->
+      <div id="menuGrid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyMenuState" class="hidden flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-slate-300 text-center">
+        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+          <i data-lucide="search-x" class="w-6 h-6"></i>
+        </div>
+        <p class="font-semibold text-slate-700">Menu Tidak Ditemukan</p>
+        <p class="text-xs text-slate-400 mt-1">Coba kata kunci lain atau tambah menu baru.</p>
+      </div>
+
+    </section>
+
+    <!-- RIGHT PANEL: Order Cart & Billing (5 Columns) -->
+    <section class="lg:col-span-5 xl:col-span-4 sticky top-22">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-7rem)]">
+        
+        <!-- Cart Header -->
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             </div>
-
-            <!-- Features Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('simulation')">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
-                        <i class="fa-solid fa-gavel"></i>
-                    </div>
-                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">3 Babak Sidang Historis</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">
-                        Navigasi perdebatan BPUPKI I (29 Mei–1 Juni), Panitia Sembilan (22 Juni), dan PPKI (18 Agustus 1945). Pertahankan keseimbangan Persatuan & Akurasi Sejarah.
-                    </p>
-                </div>
-
-                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('quiz')">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">Cerdas Cermat & Lifelines</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">
-                        10 Pertanyaan berbobot dengan timer melingkar interaktif, pengganda skor (streak combo), audio efek synthesizer, serta 3 Bantuan (50:50, Petunjuk, +15s).
-                    </p>
-                </div>
-
-                <div class="glass-panel p-6 rounded-xl hover:border-gold-500/50 transition cursor-pointer" onclick="switchTab('certificate')">
-                    <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center text-gold-400 text-2xl mb-4">
-                        <i class="fa-solid fa-file-certificate"></i>
-                    </div>
-                    <h3 class="text-xl font-bold font-cinzel text-gold-300 mb-2">Sertifikat & Rapor A4</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">
-                        Dapatkan sertifikat resmi lengkap dengan Transkrip Nilai/Hasil Penilaian Evaluasi sub-kompetensi yang siap dicetak pas ukuran A4 Landscape PDF.
-                    </p>
-                </div>
+            <div>
+              <h2 class="font-bold text-slate-900 text-sm">Daftar Pesanan</h2>
+              <span id="cartCountBadge" class="text-xs text-slate-500 font-medium">0 Item terpilih</span>
             </div>
-        </section>
+          </div>
+          <button onclick="clearCart()" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-100 transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Kosongkan</span>
+          </button>
+        </div>
 
-        <!-- TAB 2: SIMULASI SIDANG HISTORIS (RPG MODE) -->
-        <section id="tab-simulation" class="tab-content hidden space-y-6">
-            <!-- Game Header Stats -->
-            <div class="glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4 border-l-4 border-l-gold-500">
-                <div class="flex items-center gap-3">
-                    <span class="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center font-bold" id="sim-step-badge">1/6</span>
-                    <div>
-                        <h3 class="font-bold text-gold-300 text-sm md:text-base" id="sim-stage-title">BABAK I: BPUPKI (29 Mei - 1 Juni 1945)</h3>
-                        <p class="text-xs text-slate-400" id="sim-stage-subtitle">Gedung Chuo Sangi In, Jakarta</p>
-                    </div>
-                </div>
+        <!-- Order Type Toggle -->
+        <div class="px-4 pt-3">
+          <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-semibold text-slate-600">
+            <button id="btnDineIn" onclick="setOrderType('Dine In')" class="py-1.5 rounded-lg bg-white shadow-sm text-slate-900 transition flex items-center justify-center gap-1.5">
+              <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Makan di Sini
+            </button>
+            <button id="btnTakeAway" onclick="setOrderType('Take Away')" class="py-1.5 rounded-lg hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+              <i data-lucide="package" class="w-3.5 h-3.5"></i> Bungkus / Bawa
+            </button>
+          </div>
+        </div>
 
-                <!-- Live Meters -->
-                <div class="flex items-center gap-6 text-sm">
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs gap-2">
-                            <span class="text-slate-400"><i class="fa-solid fa-handshake text-emerald-400 mr-1"></i>Persatuan Bangsa:</span>
-                            <span class="font-bold text-emerald-400" id="meter-unity-text">80%</span>
-                        </div>
-                        <div class="w-28 md:w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
-                            <div id="meter-unity-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 80%;"></div>
-                        </div>
-                    </div>
+        <!-- Cart Items List Scrollable -->
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <!-- Cart Items generated by JS -->
+        </div>
 
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs gap-2">
-                            <span class="text-slate-400"><i class="fa-solid fa-book-bookmark text-amber-400 mr-1"></i>Akurasi Historis:</span>
-                            <span class="font-bold text-amber-400" id="meter-accuracy-text">80%</span>
-                        </div>
-                        <div class="w-28 md:w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
-                            <div id="meter-accuracy-bar" class="h-full bg-amber-500 transition-all duration-500" style="width: 80%;"></div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Empty Cart State -->
+        <div id="emptyCartState" class="flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-400">
+          <i data-lucide="shopping-cart" class="w-12 h-12 mb-2 stroke-[1.5] text-slate-300"></i>
+          <p class="font-medium text-slate-600 text-sm">Pesanan Masih Kosong</p>
+          <p class="text-xs mt-0.5 max-w-[200px]">Klik menu di sebelah kiri untuk menambahkan ke dalam keranjang.</p>
+        </div>
+
+        <!-- Cart Financial Breakdown -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50/50 space-y-2.5 text-xs">
+          <div class="flex justify-between text-slate-600">
+            <span>Subtotal</span>
+            <span id="subtotalText" class="font-semibold text-slate-800">Rp 0</span>
+          </div>
+
+          <!-- Tax & Discount Controls -->
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60">
+            <label class="flex items-center gap-2 cursor-pointer text-slate-600">
+              <input type="checkbox" id="taxToggle" onchange="toggleTax()" class="rounded text-brand-500 focus:ring-brand-500 w-3.5 h-3.5">
+              <span>Pajak Resto (PB1 10%)</span>
+            </label>
+            <span id="taxText" class="font-semibold text-slate-800">Rp 0</span>
+          </div>
+
+          <div class="flex items-center justify-between text-slate-600">
+            <span>Diskon Rp</span>
+            <input type="number" id="discountInput" oninput="handleDiscountChange()" placeholder="0" min="0"
+              class="w-24 text-right px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+
+          <!-- Grand Total Badge -->
+          <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-base font-bold text-slate-900">
+            <span>Total Tagihan</span>
+            <span id="grandTotalText" class="text-brand-600 text-lg">Rp 0</span>
+          </div>
+
+          <!-- Checkout Button -->
+          <button id="checkoutBtn" onclick="openPaymentModal()" disabled
+            class="w-full py-3 mt-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition text-sm">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            <span>Bayar Sekarang</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL 1: Add / Edit Menu Item -->
+  <div id="menuFormModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <h3 id="menuFormTitle" class="font-bold text-slate-900 text-lg">Tambah Menu Baru</h3>
+        <button onclick="closeMenuFormModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="menuForm" onsubmit="saveMenu(event)" class="space-y-4 pt-4">
+        <input type="hidden" id="menuId">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Menu</label>
+          <input type="text" id="menuName" required placeholder="Contoh: Ayam Bakar Madu" 
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori</label>
+            <select id="menuCategory" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <option value="Makanan">Makanan</option>
+              <option value="Minuman">Minuman</option>
+              <option value="Paket">Paket</option>
+              <option value="Camilan">Camilan</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Harga (Rp)</label>
+            <input type="number" id="menuPrice" required min="0" step="500" placeholder="15000" 
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Emoji / Ikon</label>
+          <div class="grid grid-cols-6 gap-2 p-2 bg-slate-50 rounded-xl border border-slate-200 max-h-32 overflow-y-auto" id="emojiSelector">
+            <!-- Emoji options added by JS -->
+          </div>
+          <input type="hidden" id="menuIcon" value="🍱">
+        </div>
+
+        <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeMenuFormModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm shadow-md shadow-brand-500/20">Simpan Menu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Payment Checkout -->
+  <div id="paymentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 text-brand-500"></i> Pembayaran
+        </h3>
+        <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-4 space-y-4">
+        <!-- Amount Summary Card -->
+        <div class="bg-slate-900 text-white p-4 rounded-xl text-center shadow-inner">
+          <p class="text-xs text-slate-400 font-medium">Total Yang Harus Dibayar</p>
+          <p id="payModalGrandTotal" class="text-2xl font-black text-amber-400 mt-1">Rp 0</p>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Metode Pembayaran</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="payMethodCash" onclick="setPaymentMethod('Tunai')" class="py-2 border-2 border-brand-500 bg-brand-50/50 text-brand-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5">
+              <i data-lucide="banknote" class="w-4 h-4"></i> Tunai / Cash
+            </button>
+            <button id="payMethodQRIS" onclick="setPaymentMethod('QRIS')" class="py-2 border-2 border-slate-200 text-slate-600 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-slate-50">
+              <i data-lucide="qr-code" class="w-4 h-4"></i> QRIS / Digital
+            </button>
+          </div>
+        </div>
+
+        <!-- Cash Input Container -->
+        <div id="cashPayContainer" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Uang Diterima (Rp)</label>
+            <input type="number" id="cashInput" oninput="calculateChange()" placeholder="0" 
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+
+          <!-- Quick Cash Presets -->
+          <div class="grid grid-cols-4 gap-1.5" id="quickCashButtons">
+            <!-- Buttons dynamically set by JS -->
+          </div>
+
+          <!-- Change Calculation Display -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-sm">
+            <span class="font-medium text-slate-600">Kembalian:</span>
+            <span id="changeAmountText" class="font-bold text-emerald-600 text-base">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Validation Alert Message -->
+        <div id="paymentErrorMsg" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-xl font-medium">
+          Nominal uang tunai kurang dari total bayar!
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-2">
+        <button onclick="closePaymentModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50">Batal</button>
+        <button onclick="processFinalPayment()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20">Selesaikan Transaksi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Printable Receipt Struk -->
+  <div id="receiptModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 flex flex-col items-center">
+      
+      <!-- Printable Struk Paper Container -->
+      <div id="printableReceipt" class="w-full font-mono text-xs text-slate-800 bg-amber-50/30 border border-slate-200/80 p-4 rounded-xl shadow-inner space-y-3">
+        <!-- Header -->
+        <div class="text-center space-y-0.5 border-b border-dashed border-slate-300 pb-3">
+          <p class="font-bold text-sm uppercase tracking-wide text-slate-900">WARUNG MAKAN PRO</p>
+          <p class="text-[10px] text-slate-500">Jl. Kuliner Nusantara No. 88</p>
+          <p class="text-[10px] text-slate-500">Telp/WA: 0812-3456-7890</p>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="space-y-0.5 text-[11px]">
+          <div class="flex justify-between">
+            <span class="text-slate-500">No. Nota:</span>
+            <span id="receiptIdText" class="font-semibold">#ORD-000</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Tanggal:</span>
+            <span id="receiptDateText">01/01/2026 00:00</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Tipe / Bayar:</span>
+            <span id="receiptTypePayText" class="font-semibold">Dine In / Tunai</span>
+          </div>
+        </div>
+
+        <!-- Item List -->
+        <div class="border-t border-b border-dashed border-slate-300 py-2 space-y-1.5" id="receiptItemsList">
+          <!-- Items inserted by JS -->
+        </div>
+
+        <!-- Totals -->
+        <div class="space-y-1 text-[11px] pt-1">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span id="receiptSubtotal">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-slate-500" id="receiptTaxRow">
+            <span>Pajak (10%)</span>
+            <span id="receiptTax">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-slate-500" id="receiptDiscountRow">
+            <span>Diskon</span>
+            <span id="receiptDiscount">-Rp 0</span>
+          </div>
+          <div class="flex justify-between font-bold text-sm pt-1 border-t border-slate-300 text-slate-900">
+            <span>TOTAL</span>
+            <span id="receiptTotal">Rp 0</span>
+          </div>
+          <div class="flex justify-between pt-1">
+            <span>Bayar</span>
+            <span id="receiptCash">Rp 0</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Kembali</span>
+            <span id="receiptChange">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-3 border-t border-dashed border-slate-300 text-[10px] text-slate-500 space-y-0.5">
+          <p class="font-semibold text-slate-700">Terima Kasih Atas Kunjungan Anda!</p>
+          <p>Semoga Selamat & Selamat Menikmati</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 w-full mt-5 no-print">
+        <button onclick="printReceipt()" class="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+          <i data-lucide="printer" class="w-4 h-4"></i> Cetak Struk
+        </button>
+        <button onclick="finishTransaction()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i> Transaksi Baru
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 4: Sales History & Analytics -->
+  <div id="historyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] flex flex-col">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 text-lg">Riwayat Penjualan</h3>
+        </div>
+        <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Analytics Cards Header -->
+      <div class="grid grid-cols-3 gap-3 my-4">
+        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl">
+          <p class="text-[11px] text-emerald-700 font-semibold">Total Pendapatan</p>
+          <p id="histTotalRevenue" class="text-base sm:text-lg font-black text-emerald-900 mt-0.5">Rp 0</p>
+        </div>
+        <div class="bg-brand-50 border border-brand-100 p-3 rounded-xl">
+          <p class="text-[11px] text-brand-700 font-semibold">Total Transaksi</p>
+          <p id="histTotalCount" class="text-base sm:text-lg font-black text-brand-900 mt-0.5">0 Nota</p>
+        </div>
+        <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl">
+          <p class="text-[11px] text-blue-700 font-semibold">Rata-rata Transaksi</p>
+          <p id="histAvgOrder" class="text-base sm:text-lg font-black text-blue-900 mt-0.5">Rp 0</p>
+        </div>
+      </div>
+
+      <!-- Transactions Log Table -->
+      <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead class="bg-slate-50 text-slate-500 font-semibold sticky top-0 border-b border-slate-200">
+            <tr>
+              <th class="p-3">Waktu / Nota</th>
+              <th class="p-3">Item Pesanan</th>
+              <th class="p-3">Tipe & Bayar</th>
+              <th class="p-3 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-slate-100 text-slate-700">
+            <!-- Rows dynamically created by JS -->
+          </tbody>
+        </table>
+        <div id="emptyHistoryState" class="p-8 text-center text-slate-400 hidden">
+          Belum ada transaksi tercatat.
+        </div>
+      </div>
+
+      <!-- Footer Controls -->
+      <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-100">
+        <button onclick="clearHistoryLog()" class="text-xs text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus Semua Riwayat
+        </button>
+        <button onclick="closeHistoryModal()" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 5: Menu Manager (Edit/Delete Menu Catalog) -->
+  <div id="menuManagerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <h3 class="font-bold text-slate-900 text-lg">Kelola Menu Makanan & Minuman</h3>
+        <button onclick="closeMenuManagerModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto py-3 space-y-2" id="managerMenuContainer">
+        <!-- List of edit/delete items built in JS -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+        <button onclick="resetDefaultMenus()" class="text-xs text-slate-500 hover:text-brand-600 underline font-medium">Reset Ke Menu Default</button>
+        <button onclick="closeMenuManagerModal()" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium border border-slate-700">
+    <i data-lucide="info" class="w-4 h-4 text-brand-500"></i>
+    <span id="toastMsg">Pesan Notifikasi</span>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Default initial menu items if none in localStorage
+    const DEFAULT_MENUS = [
+      { id: 'm1', name: 'Ayam Geprek Sambal Korek', category: 'Makanan', price: 18000, icon: '🍗' },
+      { id: 'm2', name: 'Nasi Goreng Spesial Telur', category: 'Makanan', price: 16000, icon: '🍳' },
+      { id: 'm3', name: 'Ayam Bakar Madu', category: 'Makanan', price: 20000, icon: '🍗' },
+      { id: 'm4', name: 'Soto Ayam Kampung', category: 'Makanan', price: 15000, icon: '🍲' },
+      { id: 'm5', name: 'Tempe & Tahu Penyet', category: 'Camilan', price: 8000, icon: '🧈' },
+      { id: 'm6', name: 'Es Teh Manis Jumbo', category: 'Minuman', price: 4000, icon: '🍹' },
+      { id: 'm7', name: 'Es Jeruk Peras', category: 'Minuman', price: 5000, icon: '🍊' },
+      { id: 'm8', name: 'Beras Kencur Dingin', category: 'Minuman', price: 6000, icon: '🥛' },
+      { id: 'm9', name: 'Paket Komplit Hemat', category: 'Paket', price: 25000, icon: '🍱' }
+    ];
+
+    const EMOJI_OPTIONS = ['🍗', '🍳', '🍲', '🍚', '🍜', '🍱', '🍔', '🍟', '🧈', '🥩', '🍹', '🍊', '🥛', '☕', '🧃', '🧋'];
+    const CATEGORIES = ['Semua', 'Makanan', 'Minuman', 'Paket', 'Camilan'];
+
+    /* App Global State */
+    let menus = [];
+    let cart = [];
+    let transactions = [];
+    let activeCategory = 'Semua';
+    let searchQuery = '';
+    let orderType = 'Dine In';
+    let isTaxEnabled = false;
+    let discountAmount = 0;
+    let paymentMethod = 'Tunai';
+    let activeReceiptData = null;
+
+    // Initialize App Data
+    function initApp() {
+      const storedMenus = localStorage.getItem('warung_pos_menus');
+      menus = storedMenus ? JSON.parse(storedMenus) : [...DEFAULT_MENUS];
+      if (!storedMenus) saveMenusToStorage();
+
+      const storedHistory = localStorage.getItem('warung_pos_history');
+      transactions = storedHistory ? JSON.parse(storedHistory) : [];
+
+      renderCategories();
+      renderMenus();
+      renderCart();
+      renderEmojiSelector();
+      updateOmsetBadge();
+      lucide.createIcons();
+    }
+
+    function saveMenusToStorage() {
+      localStorage.setItem('warung_pos_menus', JSON.stringify(menus));
+    }
+
+    function saveHistoryToStorage() {
+      localStorage.setItem('warung_pos_history', JSON.stringify(transactions));
+    }
+
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // Render Category Pills
+    function renderCategories() {
+      const container = document.getElementById('categoryContainer');
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button onclick="setCategory('${cat}')" class="px-3.5 py-1.5 rounded-xl border transition whitespace-nowrap ${
+          activeCategory === cat 
+            ? 'bg-slate-900 border-slate-900 text-white font-semibold' 
+            : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+        }">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(cat) {
+      activeCategory = cat;
+      renderCategories();
+      renderMenus();
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      renderMenus();
+    }
+
+    // Render Menu Cards
+    function renderMenus() {
+      const container = document.getElementById('menuGrid');
+      const emptyState = document.getElementById('emptyMenuState');
+
+      const filtered = menus.filter(item => {
+        const matchesCategory = activeCategory === 'Semua' || item.category === activeCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      emptyState.classList.remove('flex');
+
+      container.innerHTML = filtered.map(item => {
+        const cartItem = cart.find(c => c.id === item.id);
+        const qtyInCart = cartItem ? cartItem.qty : 0;
+
+        return `
+          <div onclick="addToCart('${item.id}')" class="group bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-500/50 transition cursor-pointer flex flex-col justify-between relative overflow-hidden">
+            ${qtyInCart > 0 ? `<div class="absolute top-2 right-2 bg-brand-500 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-md">${qtyInCart}</div>` : ''}
+            <div>
+              <div class="text-3xl mb-2 bg-slate-50 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition transform">
+                ${item.icon || '🍱'}
+              </div>
+              <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${item.category}</span>
+              <h3 class="font-bold text-slate-800 text-xs sm:text-sm line-clamp-2 leading-snug mt-0.5">${item.name}</h3>
             </div>
-
-            <!-- RPG Scenario Card -->
-            <div class="glass-panel p-6 md:p-8 rounded-2xl relative space-y-6">
-                <!-- Speaker Identity -->
-                <div class="flex items-center gap-4 pb-4 border-b border-slate-700/60">
-                    <img id="sim-speaker-img" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80" alt="Tokoh" class="w-16 h-16 rounded-full border-2 border-gold-500 object-cover shadow-lg">
-                    <div>
-                        <span class="text-xs font-semibold px-2 py-0.5 bg-gold-500/20 text-gold-300 rounded" id="sim-speaker-role">Ketua BPUPKI</span>
-                        <h4 class="text-xl font-bold font-cinzel text-slate-100" id="sim-speaker-name">Dr. K.R.T. Radjiman Wedyodiningrat</h4>
-                    </div>
-                </div>
-
-                <!-- Scenario Text -->
-                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-                    <p class="text-base md:text-lg text-slate-200 leading-relaxed font-serif italic" id="sim-scenario-text">
-                        "Paduka Tuan-Tuan sekalian, kita berkumpul di sini untuk merumuskan pondasi mendasar bagi Indonesia Merdeka. Apakah 'Dasar Negara' yang hendak kita tempatkan di bawah pondasi bangunan Republik?"
-                    </p>
-                </div>
-
-                <!-- Choices -->
-                <div class="space-y-3" id="sim-choices-container">
-                    <!-- Dynamic Choices rendered via JS -->
-                </div>
-
-                <!-- Historical Context Note -->
-                <div class="p-4 bg-amber-950/30 border border-amber-600/30 rounded-xl text-xs md:text-sm text-amber-200/90 flex items-start gap-3">
-                    <i class="fa-solid fa-circle-info text-amber-400 text-lg mt-0.5"></i>
-                    <div>
-                        <strong class="block font-semibold mb-1 text-amber-300">Catatan Konteks Historis:</strong>
-                        <span id="sim-history-note">Sidang BPUPKI I mendengarkan pidato dari Mohammad Yamin, Soepomo, dan Soekarno untuk merumuskan konsep filsafat dasar negara (Philosofische Grondslag).</span>
-                    </div>
-                </div>
+            <div class="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5">
+              <span class="font-bold text-brand-600 text-xs sm:text-sm">${formatRupiah(item.price)}</span>
+              <button class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 group-hover:bg-brand-500 group-hover:text-white flex items-center justify-center transition">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+              </button>
             </div>
-        </section>
+          </div>
+        `;
+      }).join('');
 
-        <!-- TAB 3: CERDAS CERMAT (QUIZ MODE) -->
-        <section id="tab-quiz" class="tab-content hidden space-y-6">
-            <!-- Quiz Scoreboard Bar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
-                        <span class="text-xs text-slate-400 block">Soal</span>
-                        <span class="text-lg font-bold text-gold-400" id="quiz-progress">1 / 10</span>
-                    </div>
-                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
-                        <span class="text-xs text-slate-400 block">Skor</span>
-                        <span class="text-lg font-bold text-emerald-400" id="quiz-score">0</span>
-                    </div>
-                    <div class="text-center px-3 py-1 bg-slate-800 rounded-lg border border-slate-700">
-                        <span class="text-xs text-slate-400 block">Combo Multiplier</span>
-                        <span class="text-lg font-bold text-amber-400" id="quiz-streak">x1.0</span>
-                    </div>
-                </div>
+      lucide.createIcons();
+    }
 
-                <!-- Circular Timer Ring -->
-                <div class="relative w-16 h-16 flex items-center justify-center">
-                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                        <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path id="quiz-timer-ring" class="text-gold-500 timer-circle" stroke-dasharray="100, 100" stroke-dashoffset="0" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <span class="absolute font-mono font-bold text-base text-gold-300" id="quiz-timer-text">20</span>
-                </div>
+    // Cart Logic
+    function addToCart(menuId) {
+      const menu = menus.find(m => m.id === menuId);
+      if (!menu) return;
 
-                <!-- Lifelines -->
-                <div class="flex items-center gap-2">
-                    <button id="lifeline-5050" onclick="useLifeline('5050')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
-                        <i class="fa-solid fa-square-half-stroke"></i> 50:50
-                    </button>
-                    <button id="lifeline-hint" onclick="useLifeline('hint')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
-                        <i class="fa-solid fa-lightbulb"></i> Petunjuk
-                    </button>
-                    <button id="lifeline-time" onclick="useLifeline('time')" class="px-3 py-2 bg-slate-800 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-gold-300">
-                        <i class="fa-solid fa-clock-rotate-left"></i> +15s
-                    </button>
-                </div>
+      const existing = cart.find(c => c.id === menuId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id: menu.id, name: menu.name, price: menu.price, icon: menu.icon, qty: 1 });
+      }
+
+      renderCart();
+      renderMenus();
+    }
+
+    function updateCartQty(menuId, change) {
+      const item = cart.find(c => c.id === menuId);
+      if (!item) return;
+
+      item.qty += change;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.id !== menuId);
+      }
+
+      renderCart();
+      renderMenus();
+    }
+
+    function removeFromCart(menuId) {
+      cart = cart.filter(c => c.id !== menuId);
+      renderCart();
+      renderMenus();
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+      cart = [];
+      renderCart();
+      renderMenus();
+      showToast('Keranjang telah dikosongkan.');
+    }
+
+    function setOrderType(type) {
+      orderType = type;
+      const btnDineIn = document.getElementById('btnDineIn');
+      const btnTakeAway = document.getElementById('btnTakeAway');
+
+      if (type === 'Dine In') {
+        btnDineIn.className = "py-1.5 rounded-lg bg-white shadow-sm text-slate-900 transition flex items-center justify-center gap-1.5";
+        btnTakeAway.className = "py-1.5 rounded-lg hover:text-slate-900 transition flex items-center justify-center gap-1.5";
+      } else {
+        btnTakeAway.className = "py-1.5 rounded-lg bg-white shadow-sm text-slate-900 transition flex items-center justify-center gap-1.5";
+        btnDineIn.className = "py-1.5 rounded-lg hover:text-slate-900 transition flex items-center justify-center gap-1.5";
+      }
+    }
+
+    function toggleTax() {
+      isTaxEnabled = document.getElementById('taxToggle').checked;
+      renderCart();
+    }
+
+    function handleDiscountChange() {
+      const val = parseFloat(document.getElementById('discountInput').value) || 0;
+      discountAmount = Math.max(0, val);
+      renderCart();
+    }
+
+    function getSubtotal() {
+      return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    }
+
+    function getCalculatedTotals() {
+      const subtotal = getSubtotal();
+      const tax = isTaxEnabled ? Math.round(subtotal * 0.10) : 0;
+      const grandTotal = Math.max(0, subtotal + tax - discountAmount);
+      return { subtotal, tax, discount: discountAmount, grandTotal };
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const emptyCartState = document.getElementById('emptyCartState');
+      const cartCountBadge = document.getElementById('cartCountBadge');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+      cartCountBadge.innerText = `${totalItems} Item terpilih`;
+
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        emptyCartState.classList.remove('hidden');
+        emptyCartState.classList.add('flex');
+        checkoutBtn.disabled = true;
+      } else {
+        emptyCartState.classList.add('hidden');
+        emptyCartState.classList.remove('flex');
+        checkoutBtn.disabled = false;
+
+        container.innerHTML = cart.map(item => `
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs">
+            <div class="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+              <span class="text-xl">${item.icon || '🍱'}</span>
+              <div class="truncate">
+                <p class="font-bold text-slate-800 truncate">${item.name}</p>
+                <p class="text-slate-500 font-medium">${formatRupiah(item.price)}</p>
+              </div>
             </div>
-
-            <!-- Quiz Card -->
-            <div class="glass-panel p-6 md:p-8 rounded-2xl space-y-6">
-                <div class="space-y-2">
-                    <span class="text-xs font-semibold px-2.5 py-1 bg-gold-500/10 text-gold-400 border border-gold-500/30 rounded-full" id="quiz-category">
-                        Kategori: Sidang BPUPKI
-                    </span>
-                    <h3 class="text-xl md:text-2xl font-bold font-serif text-slate-100 leading-snug" id="quiz-question-text">
-                        Siapakah tokoh yang mengusulkan istilah "Pancasila" atas saran seorang ahli bahasa pada pidato tanggal 1 Juni 1945?
-                    </h3>
-                </div>
-
-                <!-- Options -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="quiz-options-container">
-                    <!-- Dynamic Options -->
-                </div>
-
-                <!-- Hint Box -->
-                <div id="quiz-hint-box" class="hidden p-4 bg-blue-950/40 border border-blue-500/40 rounded-xl text-sm text-blue-200 flex items-center gap-3">
-                    <i class="fa-solid fa-circle-question text-blue-400 text-xl"></i>
-                    <span id="quiz-hint-text">Petunjuk akan muncul di sini...</span>
-                </div>
+            
+            <div class="flex items-center gap-2">
+              <div class="flex items-center bg-white border border-slate-200 rounded-lg">
+                <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-l-lg font-bold">-</button>
+                <span class="w-6 text-center font-bold text-slate-800">${item.qty}</span>
+                <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-r-lg font-bold">+</button>
+              </div>
+              <button onclick="removeFromCart('${item.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
             </div>
-        </section>
+          </div>
+        `).join('');
+      }
 
-        <!-- TAB 4: MATRIKS EVOLUSI RUMUSAN -->
-        <section id="tab-matrix" class="tab-content hidden space-y-6">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="text-2xl md:text-3xl font-cinzel font-bold gold-gradient-text">Matriks Evolusi Rumusan Pancasila 1945</h2>
-                <p class="text-sm text-slate-400">Perbandingan pergeseran usulan rumusan dari 29 Mei 1945 hingga pengesahan final 18 Agustus 1945.</p>
-            </div>
+      // Update Financial breakdown text
+      const totals = getCalculatedTotals();
+      document.getElementById('subtotalText').innerText = formatRupiah(totals.subtotal);
+      document.getElementById('taxText').innerText = formatRupiah(totals.tax);
+      document.getElementById('grandTotalText').innerText = formatRupiah(totals.grandTotal);
 
-            <div class="glass-panel rounded-2xl overflow-x-auto p-4 border border-gold-500/30">
-                <table class="w-full text-left text-xs md:text-sm border-collapse min-w-[800px]">
-                    <thead>
-                        <tr class="border-b border-gold-500/40 text-gold-300 font-cinzel">
-                            <th class="p-3 bg-slate-900/80">Sila</th>
-                            <th class="p-3 bg-slate-900/80">29 Mei (M. Yamin)</th>
-                            <th class="p-3 bg-slate-900/80">31 Mei (Soepomo)</th>
-                            <th class="p-3 bg-slate-900/80">1 Juni (Soekarno)</th>
-                            <th class="p-3 bg-slate-900/80">22 Juni (Piagam Jkt)</th>
-                            <th class="p-3 bg-slate-900/80 text-emerald-400">18 Ags (Sah / Final)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800 text-slate-300 font-serif">
-                        <tr>
-                            <td class="p-3 font-bold text-gold-400">Sila 1</td>
-                            <td class="p-3">Peri Kebangsaan</td>
-                            <td class="p-3">Persatuan</td>
-                            <td class="p-3">Kebangsaan Indonesia</td>
-                            <td class="p-3 text-amber-300 font-sans text-xs">Ketuhanan dengan kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya</td>
-                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Ketuhanan Yang Maha Esa</td>
-                        </tr>
-                        <tr>
-                            <td class="p-3 font-bold text-gold-400">Sila 2</td>
-                            <td class="p-3">Peri Kemanusiaan</td>
-                            <td class="p-3">Kekeluargaan</td>
-                            <td class="p-3">Internasionalisme / Peri Kemanusiaan</td>
-                            <td class="p-3">Kemanusiaan yang adil dan beradab</td>
-                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Kemanusiaan yang adil dan beradab</td>
-                        </tr>
-                        <tr>
-                            <td class="p-3 font-bold text-gold-400">Sila 3</td>
-                            <td class="p-3">Peri Ketuhanan</td>
-                            <td class="p-3">Keseimbangan Lahir dan Batin</td>
-                            <td class="p-3">Mufakat atau Demokrasi</td>
-                            <td class="p-3">Persatuan Indonesia</td>
-                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Persatuan Indonesia</td>
-                        </tr>
-                        <tr>
-                            <td class="p-3 font-bold text-gold-400">Sila 4</td>
-                            <td class="p-3">Peri Kerakyatan</td>
-                            <td class="p-3">Musyawarah</td>
-                            <td class="p-3">Kesejahteraan Sosial</td>
-                            <td class="p-3">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
-                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan</td>
-                        </tr>
-                        <tr>
-                            <td class="p-3 font-bold text-gold-400">Sila 5</td>
-                            <td class="p-3">Kesejahteraan Rakyat</td>
-                            <td class="p-3">Keadilan Rakyat</td>
-                            <td class="p-3">Ketuhanan yang Berkebudayaan</td>
-                            <td class="p-3">Keadilan sosial bagi seluruh rakyat Indonesia</td>
-                            <td class="p-3 text-emerald-300 font-semibold bg-emerald-950/20">Keadilan sosial bagi seluruh rakyat Indonesia</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+      lucide.createIcons();
+    }
 
-        <!-- TAB 5: GALERI TOKOH -->
-        <section id="tab-gallery" class="tab-content hidden space-y-6">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="text-2xl md:text-3xl font-cinzel font-bold gold-gradient-text">Tokoh-Tokoh Pendiri Bangsa</h2>
-                <p class="text-sm text-slate-400">Para arsitek di balik perumusan dasar negara BPUPKI & PPKI 1945.</p>
-            </div>
+    // Payment Modal Functions
+    function openPaymentModal() {
+      if (cart.length === 0) return;
+      const totals = getCalculatedTotals();
+      document.getElementById('payModalGrandTotal').innerText = formatRupiah(totals.grandTotal);
+      
+      // Preset quick cash buttons
+      renderQuickCashButtons(totals.grandTotal);
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-cards-container">
-                <!-- Dynamic Person Cards rendered via JS -->
-            </div>
-        </section>
+      document.getElementById('cashInput').value = totals.grandTotal;
+      calculateChange();
 
-        <!-- TAB 6: SERTIFIKAT DIGITAL & RAPOR PENILAIAN LENGKAP (A4 PRINT OPTIMIZED) -->
-        <section id="tab-certificate" class="tab-content hidden space-y-6">
-            <!-- Control Bar -->
-            <div class="no-print glass-panel p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <h3 class="font-bold text-gold-300 text-lg">Pratinjau Sertifikat & Rapor Hasil Penilaian</h3>
-                    <p class="text-xs text-slate-400">Dioptimalkan secara presisi untuk pencetakan dokumen A4 Landscape (297mm x 210mm).</p>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="updateCertDataPrompt()" class="px-4 py-2 bg-slate-800 border border-gold-500/40 hover:bg-slate-700 text-gold-300 font-semibold text-xs rounded-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square"></i> Perbarui Data Sertifikat
-                    </button>
-                    <button onclick="window.print()" class="px-5 py-2 bg-gradient-to-r from-gold-600 to-gold-400 text-slate-950 font-bold text-xs rounded-lg hover:brightness-110 shadow transition flex items-center gap-2">
-                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF (A4)
-                    </button>
-                </div>
-            </div>
+      document.getElementById('paymentModal').classList.remove('hidden');
+    }
 
-            <!-- ON-SCREEN PREVIEW FRAME -->
-            <div class="flex justify-center overflow-x-auto py-4">
-                <!-- CERTIFICATE A4 CONTAINER -->
-                <div id="certificate-node" class="certificate-a4-print cert-preview-frame rounded-sm p-6 flex flex-col justify-between relative text-slate-900 font-sans border-8 border-double border-gold-800 bg-[#fffdf5]">
-                    
-                    <!-- Certificate Inner Golden Border -->
-                    <div class="cert-border-inner border-2 border-gold-600/80 p-5 h-full flex flex-col justify-between relative bg-[radial-gradient(#fef08a_1px,transparent_1px)] [background-size:16px_16px] [background-opacity:0.2]">
-                        
-                        <!-- Header Section -->
-                        <div class="text-center space-y-1 border-b-2 border-gold-700/30 pb-3">
-                            <div class="flex items-center justify-center gap-3">
-                                <i class="fa-solid fa-monument text-gold-700 text-2xl"></i>
-                                <span class="font-cinzel text-xs font-bold tracking-widest text-gold-900 uppercase">PANITIA PENYELENGGARA SIMULASI HISTORY & CERDAS CERMAT PANCASILA</span>
-                                <i class="fa-solid fa-monument text-gold-700 text-2xl"></i>
-                            </div>
-                            <h2 class="font-cinzel text-2xl font-black text-slate-900 tracking-wider">SERTIFIKAT KELULUSAN & RAPOR PENILAIAN</h2>
-                            <p class="font-serif text-xs text-slate-600 italic">Nomor Registrasi Resmi: <span id="cert-number-text" class="font-mono font-bold text-slate-800">BPUPKI-PPKI/1945/CERT-8842</span></p>
-                        </div>
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.add('hidden');
+    }
 
-                        <!-- Recipient Name Section -->
-                        <div class="text-center space-y-1 my-2">
-                            <p class="text-xs uppercase tracking-widest font-semibold text-slate-600">Diberikan Kepada Tokoh Muda Kebangsaan:</p>
-                            <h3 id="cert-user-name" class="font-cursive text-4xl font-bold text-gold-900 my-1 drop-shadow-sm">Moh. Joharul Yusuf</h3>
-                            <p class="text-xs text-slate-700 font-serif max-w-2xl mx-auto">
-                                Dinyatakan telah menyelesaikan seluruh rangkaian **Simulasi Sidang Historis BPUPKI-PPKI** serta Ujian **Cerdas Cermat Kebangsaan Perumusan Pancasila 1945** dengan hasil penilaian evaluasi sebagai berikut:
-                            </p>
-                        </div>
+    function renderQuickCashButtons(grandTotal) {
+      const container = document.getElementById('quickCashButtons');
+      const presets = [grandTotal, 20000, 50000, 100000];
+      const uniquePresets = [...new Set(presets)].filter(amt => amt >= grandTotal).slice(0, 4);
 
-                        <!-- EVALUATION / ASSESSMENT MATRIX TABLE (HASIL PENILAIAN) -->
-                        <div class="my-2 bg-amber-50/80 border border-gold-600/40 rounded-md p-3">
-                            <h4 class="font-cinzel text-xs font-bold text-gold-900 uppercase tracking-wider mb-2 border-b border-gold-300 pb-1 flex justify-between items-center">
-                                <span><i class="fa-solid fa-chart-line mr-1.5"></i> Transkrip & Matriks Penilaian Hasil Evaluasi</span>
-                                <span id="cert-predikat-badge" class="px-2 py-0.5 bg-gold-600 text-white rounded text-[10px] font-bold">PREDIKAT: SANGAT MEMUASKAN</span>
-                            </h4>
+      container.innerHTML = uniquePresets.map((amt, idx) => `
+        <button onclick="setCashAmount(${amt})" class="py-1.5 bg-slate-100 hover:bg-brand-50 hover:border-brand-300 border border-slate-200 text-slate-700 font-semibold rounded-lg text-[11px] truncate">
+          ${amt === grandTotal ? 'Pas' : formatRupiah(amt)}
+        </button>
+      `).join('');
+    }
 
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-xs mb-2">
-                                <div class="bg-white p-1.5 rounded border border-amber-200">
-                                    <span class="text-[10px] text-slate-500 block uppercase">Skor Cerdas Cermat</span>
-                                    <strong id="cert-score-quiz" class="text-sm font-bold text-gold-800">850 / 1000</strong>
-                                </div>
-                                <div class="bg-white p-1.5 rounded border border-amber-200">
-                                    <span class="text-[10px] text-slate-500 block uppercase">Akurasi Jawaban</span>
-                                    <strong id="cert-accuracy-quiz" class="text-sm font-bold text-emerald-700">90%</strong>
-                                </div>
-                                <div class="bg-white p-1.5 rounded border border-amber-200">
-                                    <span class="text-[10px] text-slate-500 block uppercase">Indeks Persatuan (Unity)</span>
-                                    <strong id="cert-unity-sim" class="text-sm font-bold text-blue-800">85%</strong>
-                                </div>
-                                <div class="bg-white p-1.5 rounded border border-amber-200">
-                                    <span class="text-[10px] text-slate-500 block uppercase">Akurasi Historis Sidang</span>
-                                    <strong id="cert-accuracy-sim" class="text-sm font-bold text-amber-800">92%</strong>
-                                </div>
-                            </div>
+    function setCashAmount(amt) {
+      document.getElementById('cashInput').value = amt;
+      calculateChange();
+    }
 
-                            <!-- Detailed Competency Breakdown Table -->
-                            <table class="w-full text-left text-[11px] border-collapse bg-white rounded border border-amber-200">
-                                <thead>
-                                    <tr class="bg-amber-100 text-slate-800 font-semibold border-b border-amber-300">
-                                        <th class="p-1.5">Bidang Evaluasi Sub-Kompetensi</th>
-                                        <th class="p-1.5 text-center">Tingkat Capaian</th>
-                                        <th class="p-1.5 text-center">Nilai Mutu</th>
-                                        <th class="p-1.5">Keterangan Evaluasi</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-amber-100 text-slate-700">
-                                    <tr>
-                                        <td class="p-1.5 font-medium">1. Pemahaman Latar Belakang & Pembentukan BPUPKI</td>
-                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-1">Sangat Baik (92)</td>
-                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-1">A</td>
-                                        <td class="p-1.5 text-[10px]" id="sub-ket-1">Menguasai konteks sejarah Janji Koiso & pembentukan Chuo Sangi In.</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-1.5 font-medium">2. Penguasaan Konsep Rumusan Sila (Yamin, Soepomo, Soekarno)</td>
-                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-2">Sangat Baik (90)</td>
-                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-2">A</td>
-                                        <td class="p-1.5 text-[10px]" id="sub-ket-2">Memahami perbedaan Philosofische Grondslag dan Pancasila 1 Juni.</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-1.5 font-medium">3. Dinamika Kompromi Kebangsaan Sidang PPKI 18 Agustus</td>
-                                        <td class="p-1.5 text-center font-bold text-emerald-700" id="sub-capaian-3">Sangat Baik (88)</td>
-                                        <td class="p-1.5 text-center font-bold" id="sub-mutu-3">A-</td>
-                                        <td class="p-1.5 text-[10px]" id="sub-ket-3">Mampu menavigasi perubahan 7 kata Piagam Jakarta demi integritas NKRI.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+    function setPaymentMethod(method) {
+      paymentMethod = method;
+      const btnCash = document.getElementById('payMethodCash');
+      const btnQRIS = document.getElementById('payMethodQRIS');
+      const cashContainer = document.getElementById('cashPayContainer');
 
-                        <!-- Footer Signatures & Official Wax Seal -->
-                        <div class="flex justify-between items-end pt-2 border-t border-gold-700/30">
-                            <!-- Left Signature -->
-                            <div class="text-center font-serif text-xs space-y-1">
-                                <p class="text-slate-500">Wakil Ketua PPKI 1945,</p>
-                                <div class="font-cursive text-2xl text-slate-800 h-8 flex items-center justify-center">M. Hatta</div>
-                                <p class="font-bold border-t border-slate-400 pt-0.5 text-slate-800">Drs. Mohammad Hatta</p>
-                            </div>
+      if (method === 'Tunai') {
+        btnCash.className = "py-2 border-2 border-brand-500 bg-brand-50/50 text-brand-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5";
+        btnQRIS.className = "py-2 border-2 border-slate-200 text-slate-600 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-slate-50";
+        cashContainer.classList.remove('hidden');
+      } else {
+        btnQRIS.className = "py-2 border-2 border-brand-500 bg-brand-50/50 text-brand-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5";
+        btnCash.className = "py-2 border-2 border-slate-200 text-slate-600 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-slate-50";
+        cashContainer.classList.add('hidden');
+        
+        // Auto set cash to total for digital payments
+        const totals = getCalculatedTotals();
+        document.getElementById('cashInput').value = totals.grandTotal;
+        calculateChange();
+      }
+    }
 
-                            <!-- Center Wax Seal Badge & QR Code -->
-                            <div class="flex items-center gap-3">
-                                <div class="w-14 h-14 rounded-full bg-red-800 border-2 border-gold-500 shadow-md flex items-center justify-center text-gold-300 font-cinzel font-black text-[9px] text-center p-1 leading-tight uppercase">
-                                    SEAL OF 1945 OFFICIAL
-                                </div>
-                                <div class="text-center">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=VALIDATED-PANCASILA-1945-CERTIFICATE" alt="QR Validation" class="w-12 h-12 border border-slate-300 p-0.5 bg-white">
-                                    <span class="text-[8px] text-slate-500 block mt-0.5">Kode Autentik</span>
-                                </div>
-                            </div>
+    function calculateChange() {
+      const totals = getCalculatedTotals();
+      const cash = parseFloat(document.getElementById('cashInput').value) || 0;
+      const change = cash - totals.grandTotal;
+      
+      const changeText = document.getElementById('changeAmountText');
+      const errorMsg = document.getElementById('paymentErrorMsg');
 
-                            <!-- Right Signature -->
-                            <div class="text-center font-serif text-xs space-y-1">
-                                <p class="text-slate-500">Jakarta, <span id="cert-date-text">18 Agustus 1945</span></p>
-                                <p class="text-slate-500">Ketua PPKI 1945,</p>
-                                <div class="font-cursive text-2xl text-slate-800 h-8 flex items-center justify-center">Ir. Soekarno</div>
-                                <p class="font-bold border-t border-slate-400 pt-0.5 text-slate-800">Ir. Soekarno</p>
-                            </div>
-                        </div>
+      if (paymentMethod === 'Tunai' && cash < totals.grandTotal) {
+        changeText.innerText = 'Rp 0';
+        changeText.className = 'font-bold text-rose-600 text-base';
+        errorMsg.classList.remove('hidden');
+      } else {
+        changeText.innerText = formatRupiah(Math.max(0, change));
+        changeText.className = 'font-bold text-emerald-600 text-base';
+        errorMsg.classList.add('hidden');
+      }
+    }
 
-                    </div>
-                </div>
-            </div>
-        </section>
+    function processFinalPayment() {
+      const totals = getCalculatedTotals();
+      const cash = parseFloat(document.getElementById('cashInput').value) || 0;
 
-    </main>
+      if (paymentMethod === 'Tunai' && cash < totals.grandTotal) {
+        showToast('Nominal uang kurang!');
+        return;
+      }
 
-    <!-- FOOTER -->
-    <footer class="no-print border-t border-gold-600/30 bg-slate-900 py-4 text-center text-xs text-slate-500">
-        <p>Aplikasi Edukasi Kebangsaan Sejarah Pancasila 1945 &copy; 2026. Dioptimalkan untuk Pembelajaran Interaktif & Cetak A4 Landscape.</p>
-    </footer>
+      const orderId = 'ORD-' + Date.now().toString().slice(-6);
+      const dateNow = new Date();
+      const formattedDate = dateNow.toLocaleDateString('id-ID') + ' ' + dateNow.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-    <!-- APPLICATION LOGIC & SOUND SYNTHESIZER SCRIPT -->
-    <script>
-        /* ------------------------------------------------------------------
-           1. AUDIO SYNTHESIZER (Web Audio API)
-           ------------------------------------------------------------------ */
-        class SoundFX {
-            constructor() {
-                this.ctx = null;
-            }
-            init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-            }
-            playGavel() { // Ketukan Palu Sidang
-                this.init();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(120, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(1, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
-            }
-            playCorrect() { // Chime Benar
-                this.init();
-                const now = this.ctx.currentTime;
-                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.1, now + idx * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + idx * 0.08);
-                    osc.stop(now + idx * 0.08 + 0.3);
-                });
-            }
-            playWrong() { // Buzzer Salah
-                this.init();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-                osc.frequency.setValueAtTime(110, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.3);
-            }
+      activeReceiptData = {
+        id: orderId,
+        date: formattedDate,
+        rawDate: dateNow.toISOString(),
+        orderType: orderType,
+        paymentMethod: paymentMethod,
+        items: [...cart],
+        subtotal: totals.subtotal,
+        tax: totals.tax,
+        discount: totals.discount,
+        total: totals.grandTotal,
+        cash: paymentMethod === 'Tunai' ? cash : totals.grandTotal,
+        change: paymentMethod === 'Tunai' ? (cash - totals.grandTotal) : 0
+      };
+
+      // Save to transaction history
+      transactions.unshift(activeReceiptData);
+      saveHistoryToStorage();
+      updateOmsetBadge();
+
+      closePaymentModal();
+      showReceiptModal();
+    }
+
+    function showReceiptModal() {
+      if (!activeReceiptData) return;
+      const r = activeReceiptData;
+
+      document.getElementById('receiptIdText').innerText = '#' + r.id;
+      document.getElementById('receiptDateText').innerText = r.date;
+      document.getElementById('receiptTypePayText').innerText = `${r.orderType} / ${r.paymentMethod}`;
+
+      // Render Item rows
+      document.getElementById('receiptItemsList').innerHTML = r.items.map(i => `
+        <div class="space-y-0.5">
+          <div class="flex justify-between font-semibold">
+            <span>${i.name}</span>
+            <span>${formatRupiah(i.price * i.qty)}</span>
+          </div>
+          <div class="text-[10px] text-slate-500">${i.qty} x ${formatRupiah(i.price)}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('receiptSubtotal').innerText = formatRupiah(r.subtotal);
+      document.getElementById('receiptTax').innerText = formatRupiah(r.tax);
+      document.getElementById('receiptDiscount').innerText = '- ' + formatRupiah(r.discount);
+      document.getElementById('receiptTotal').innerText = formatRupiah(r.total);
+      document.getElementById('receiptCash').innerText = formatRupiah(r.cash);
+      document.getElementById('receiptChange').innerText = formatRupiah(r.change);
+
+      document.getElementById('receiptModal').classList.remove('hidden');
+    }
+
+    function printReceipt() {
+      window.print();
+    }
+
+    function finishTransaction() {
+      document.getElementById('receiptModal').classList.add('hidden');
+      cart = [];
+      discountAmount = 0;
+      document.getElementById('discountInput').value = '';
+      renderCart();
+      renderMenus();
+      showToast('Transaksi Selesai!');
+    }
+
+    // History Modal Logic
+    function openHistoryModal() {
+      renderHistoryTable();
+      document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function updateOmsetBadge() {
+      const todayStr = new Date().toLocaleDateString('id-ID');
+      const todayOmset = transactions
+        .filter(t => new Date(t.rawDate).toLocaleDateString('id-ID') === todayStr)
+        .reduce((sum, t) => sum + t.total, 0);
+
+      document.getElementById('todayOmsetBadged').innerText = formatRupiah(todayOmset);
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      const emptyState = document.getElementById('emptyHistoryState');
+
+      const totalRevenue = transactions.reduce((s, t) => s + t.total, 0);
+      const totalCount = transactions.length;
+      const avgOrder = totalCount > 0 ? Math.round(totalRevenue / totalCount) : 0;
+
+      document.getElementById('histTotalRevenue').innerText = formatRupiah(totalRevenue);
+      document.getElementById('histTotalCount').innerText = `${totalCount} Nota`;
+      document.getElementById('histAvgOrder').innerText = formatRupiah(avgOrder);
+
+      if (transactions.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      tbody.innerHTML = transactions.map(t => `
+        <tr class="hover:bg-slate-50 border-b border-slate-100">
+          <td class="p-3">
+            <p class="font-bold text-slate-800">#${t.id}</p>
+            <p class="text-[10px] text-slate-400">${t.date}</p>
+          </td>
+          <td class="p-3">
+            <p class="font-medium text-slate-700 line-clamp-1">${t.items.map(i => `${i.name} (x${i.qty})`).join(', ')}</p>
+          </td>
+          <td class="p-3">
+            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${t.orderType}</span>
+            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700">${t.paymentMethod}</span>
+          </td>
+          <td class="p-3 text-right font-bold text-emerald-700">${formatRupiah(t.total)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function clearHistoryLog() {
+      if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat penjualan?')) {
+        transactions = [];
+        saveHistoryToStorage();
+        renderHistoryTable();
+        updateOmsetBadge();
+        showToast('Riwayat penjualan telah dibersihkan.');
+      }
+    }
+
+    // Menu Form (Add/Edit) Logic
+    function openMenuFormModal(editMenu = null) {
+      document.getElementById('menuForm').reset();
+      
+      if (editMenu) {
+        document.getElementById('menuFormTitle').innerText = 'Edit Menu';
+        document.getElementById('menuId').value = editMenu.id;
+        document.getElementById('menuName').value = editMenu.name;
+        document.getElementById('menuCategory').value = editMenu.category;
+        document.getElementById('menuPrice').value = editMenu.price;
+        document.getElementById('menuIcon').value = editMenu.icon || '🍱';
+      } else {
+        document.getElementById('menuFormTitle').innerText = 'Tambah Menu Baru';
+        document.getElementById('menuId').value = '';
+        document.getElementById('menuIcon').value = '🍗';
+      }
+
+      selectEmoji(document.getElementById('menuIcon').value);
+      document.getElementById('menuFormModal').classList.remove('hidden');
+    }
+
+    function closeMenuFormModal() {
+      document.getElementById('menuFormModal').classList.add('hidden');
+    }
+
+    function renderEmojiSelector() {
+      const container = document.getElementById('emojiSelector');
+      container.innerHTML = EMOJI_OPTIONS.map(emo => `
+        <button type="button" onclick="selectEmoji('${emo}')" class="emoji-btn text-xl p-2 rounded-lg hover:bg-slate-200 transition flex items-center justify-center border border-transparent">
+          ${emo}
+        </button>
+      `).join('');
+    }
+
+    function selectEmoji(emo) {
+      document.getElementById('menuIcon').value = emo;
+      document.querySelectorAll('.emoji-btn').forEach(btn => {
+        if (btn.innerText.trim() === emo) {
+          btn.classList.add('bg-brand-100', 'border-brand-500');
+        } else {
+          btn.classList.remove('bg-brand-100', 'border-brand-500');
         }
-        const sound = new SoundFX();
+      });
+    }
 
-        /* ------------------------------------------------------------------
-           2. DATA TOKOH GALERI
-           ------------------------------------------------------------------ */
-        const historicalFigures = [
-            {
-                name: "Ir. Soekarno",
-                role: "Anggota BPUPKI / Ketua PPKI",
-                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80",
-                desc: "Pengusul nama 'Pancasila' pada pidato 1 Juni 1945 serta Ketua Panitia Sembilan."
-            },
-            {
-                name: "Drs. Mohammad Hatta",
-                role: "Wakil Ketua PPKI / Panitia Sembilan",
-                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
-                desc: "Tokoh kunci penjelas rumusan Sila 1 Piagam Jakarta untuk menjaga keutuhan NKRI."
-            },
-            {
-                name: "Mr. Mohammad Yamin",
-                role: "Anggota BPUPKI / Panitia Sembilan",
-                img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
-                desc: "Penyampai 5 azas dasar negara pada hari pertama sidang BPUPKI 29 Mei 1945."
-            },
-            {
-                name: "Prof. Dr. Mr. Soepomo",
-                role: "Anggota BPUPKI / Perancang UUD",
-                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
-                desc: "Pengusul Teori Negara Integralistik/Kekeluargaan pada sidang 31 Mei 1945."
-            },
-            {
-                name: "Dr. K.R.T. Radjiman W.",
-                role: "Ketua BPUPKI",
-                img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&auto=format&fit=crop&q=80",
-                desc: "Memimpin jalannya Sidang Pertama & Kedua BPUPKI dengan bijaksana."
-            },
-            {
-                name: "KH. A. Wahid Hasjim",
-                role: "Panitia Sembilan / Tokoh Islam",
-                img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&auto=format&fit=crop&q=80",
-                desc: "Wakil kalangan Islam yang berperan penting dalam kompromi Piagam Jakarta."
-            }
-        ];
+    function saveMenu(e) {
+      e.preventDefault();
+      const id = document.getElementById('menuId').value;
+      const name = document.getElementById('menuName').value.trim();
+      const category = document.getElementById('menuCategory').value;
+      const price = parseFloat(document.getElementById('menuPrice').value);
+      const icon = document.getElementById('menuIcon').value;
 
-        /* ------------------------------------------------------------------
-           3. DATA SIMULASI SIDANG RPG (6 STEPS)
-           ------------------------------------------------------------------ */
-        const simSteps = [
-            {
-                stage: "BABAK I: BPUPKI (29 Mei 1945)",
-                subtitle: "Gedung Chuo Sangi In, Jakarta",
-                speaker: "Mr. Mohammad Yamin",
-                role: "Anggota BPUPKI",
-                img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-                text: "Paduka Tuan Ketua, saya mengusulkan 5 Azas Dasar Negara: Peri Kebangsaan, Peri Kemanusiaan, Peri Ketuhanan, Peri Kerakyatan, dan Kesejahteraan Rakyat. Bagaimana sikap Anda terhadap susunan azas ini?",
-                note: "Moh. Yamin menyampaikan pidato lisan serta naskah tertulis perancangan dasar negara.",
-                choices: [
-                    { text: "Mendukung usulan Yamin karena mencakup azas kebangsaan dan ketuhanan yang selaras.", unity: +5, accuracy: +10 },
-                    { text: "Menolak seluruhnya dan menuntut negara berdasarkan agama secara murni.", unity: -15, accuracy: -10 },
-                    { text: "Menyarankan agar konsep ketuhanan diletakkan pada urutan pertama.", unity: +0, accuracy: +5 }
-                ]
-            },
-            {
-                stage: "BABAK I: BPUPKI (31 Mei 1945)",
-                subtitle: "Gedung Chuo Sangi In, Jakarta",
-                speaker: "Prof. Dr. Mr. Soepomo",
-                role: "Pakar Hukum / BPUPKI",
-                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
-                text: "Negara Indonesia merdeka bukanlah negara individualis, bukan pula negara kelas, melainkan Negara Integralistik (Paham Negara Kesatuan) yang bersatu dengan seluruh rakyatnya.",
-                note: "Soepomo menekankan prinsip Kekeluargaan dan Keseimbangan Lahir Batin.",
-                choices: [
-                    { text: "Menyetujui paham Integralistik sebagai penangkal individualisme barat.", unity: +10, accuracy: +10 },
-                    { text: "Menuntut paham liberalisme pasar bebas diterapkan sepenuhnya.", unity: -20, accuracy: -15 }
-                ]
-            },
-            {
-                stage: "BABAK I: BPUPKI (1 Juni 1945)",
-                subtitle: "Gedung Chuo Sangi In, Jakarta",
-                speaker: "Ir. Soekarno",
-                role: "Anggota BPUPKI",
-                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80",
-                text: "Lima prinsip ini saya namakan 'Pancasila'. Jika diperas menjadi tiga (Socio-nationalisme, Socio-demokratie, Ketuhanan), dan diperas lagi menjadi satu, itulah 'Gotong Royong'!",
-                note: "1 Juni kini diperingati sebagai Hari Lahir Pancasila.",
-                choices: [
-                    { text: "Menerima nama Pancasila dan prinsip Gotong Royong dengan penuh antusias.", unity: +15, accuracy: +15 },
-                    { text: "Menolak nama Pancasila dan meminta nama lain yang lebih kebarat-baratan.", unity: -15, accuracy: -20 }
-                ]
-            },
-            {
-                stage: "BABAK II: PANITIA SEMBILAN (22 Juni 1945)",
-                subtitle: "Kediaman Pegangsaan Timur 56, Jakarta",
-                speaker: "Drs. Mohammad Hatta",
-                role: "Anggota Panitia Sembilan",
-                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-                text: "Kita telah merumuskan 'Piagam Jakarta'. Namun terdapat klausul khusus pada Sila Pertama tentang 'kewajiban menjalankan syariat Islam bagi pemeluk-pemeluknya'. Bagaimana kesepakatan akhir Panitia Sembilan?",
-                note: "Konsensus Piagam Jakarta menjadi jembatan antara Golongan Kebangsaan & Golongan Islam.",
-                choices: [
-                    { text: "Menandatangani Piagam Jakarta sebagai kompromi kebangsaan yang bersejarah.", unity: +10, accuracy: +15 },
-                    { text: "Membatalkan sidang dan menolak jalan kompromi.", unity: -25, accuracy: -20 }
-                ]
-            },
-            {
-                stage: "BABAK III: SIDANG PPKI (18 Agustus 1945)",
-                subtitle: "Gedung Pejambon, Jakarta",
-                speaker: "Drs. Mohammad Hatta",
-                role: "Wakil Ketua PPKI",
-                img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-                text: "Utusan dari Indonesia Timur menyatakan keberatan atas 7 kata Sila 1 Piagam Jakarta. Demi menjaga keutuhan Republik yang baru merdeka kemarin, bisakah kita mengubahnya menjadi 'Ketuhanan Yang Maha Esa'?",
-                note: "Keputusan diplomasi paling krusial demi mencegah perpecahan integritas wilayah NKRI.",
-                choices: [
-                    { text: "Setuju mengubah Sila 1 menjadi 'Ketuhanan Yang Maha Esa' demi persatuan tanah air.", unity: +25, accuracy: +20 },
-                    { text: "Menolak perubahan dan membiarkan wilayah Indonesia Timur memisahkan diri.", unity: -40, accuracy: -30 }
-                ]
-            },
-            {
-                stage: "BABAK III: PENGESAHAN FINAL (18 Agustus 1945)",
-                subtitle: "Gedung Pejambon, Jakarta",
-                speaker: "Ir. Soekarno",
-                role: "Ketua PPKI",
-                img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=150&auto=format&fit=crop&q=80",
-                text: "Dengan disepakatinya UUD 1945 dan Pembukaan yang memuat Pancasila sah, serta terpilihnya Presiden & Wakil Presiden, Republik Indonesia resmi berdiri di atas fondasi yang kokoh!",
-                note: "Pancasila resmi disahkan sebagai dasar negara NKRI.",
-                choices: [
-                    { text: "Ketuk Palu Sidang dan Sahkan Pembukaan UUD 1945!", unity: +10, accuracy: +10 }
-                ]
-            }
-        ];
+      if (!name || isNaN(price)) return;
 
-        /* ------------------------------------------------------------------
-           4. DATA CERDAS CERMAT (10 QUESTIONS)
-           ------------------------------------------------------------------ */
-        const quizQuestions = [
-            {
-                category: "Sidang BPUPKI I",
-                question: "Siapakah Ketua BPUPKI (Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan Indonesia)?",
-                options: ["Dr. K.R.T. Radjiman Wedyodiningrat", "Ir. Soekarno", "Drs. Mohammad Hatta", "Mr. Kasman Singodimedjo"],
-                answer: 0,
-                hint: "Beliau adalah seorang dokter senior berpengaruh yang memimpin sidang di Gedung Chuo Sangi In."
-            },
-            {
-                category: "Hari Lahir Pancasila",
-                question: "Pada tanggal berapakah Ir. Soekarno menyampaikan pidato bersejarah yang mengusulkan nama Pancasila?",
-                options: ["29 Mei 1945", "31 Mei 1945", "1 Juni 1945", "22 Juni 1945"],
-                answer: 2,
-                hint: "Tanggal ini kini diperingati setiap tahun sebagai Hari Lahir Pancasila."
-            },
-            {
-                category: "Panitia Sembilan",
-                question: "Dokumen bersejarah apakah yang dihasilkan oleh Panitia Sembilan pada tanggal 22 Juni 1945?",
-                options: ["Naskah Proklamasi", "Piagam Jakarta (Jakarta Charter)", "Teks Dekrit Presiden", "Sumpah Pemuda"],
-                answer: 1,
-                hint: "Dokumen ini memuat rumusan awal Pancasila dengan klausul 7 kata pada Sila Pertama."
-            },
-            {
-                category: "Sidang PPKI",
-                question: "Perubahan utama pada Sila Pertama Pancasila dalam sidang PPKI 18 Agustus 1945 adalah...",
-                options: [
-                    "Menambahkan kata Gotong Royong",
-                    "Mengubah 7 kata menjadi 'Ketuhanan Yang Maha Esa'",
-                    "Menghapus sila keadilan sosial",
-                    "Mengubah urutan Sila Pertama menjadi Sila Ketiga"
-                ],
-                answer: 1,
-                hint: "Perubahan ini disepakati atas usulan Moh. Hatta demi menjaga persatuan Indonesia Timur."
-            },
-            {
-                category: "Konsep Soepomo",
-                question: "Teori paham negara yang diusulkan oleh Prof. Dr. Mr. Soepomo pada sidang 31 Mei 1945 adalah...",
-                options: ["Paham Negara Liberal", "Paham Negara Integralistik (Kekeluargaan)", "Paham Negara Monarki", "Paham Negara Komunis"],
-                answer: 1,
-                hint: "Paham ini menekankan persatuan erat antara negara dan rakyatnya dalam asas kekeluargaan."
-            },
-            {
-                category: "Anggota Panitia Sembilan",
-                question: "Berikut ini yang BUKAN merupakan anggota Panitia Sembilan adalah...",
-                options: ["A.A. Maramis", "KH. A. Wahid Hasjim", "Sutan Sjahrir", "Mr. Achmad Soebardjo"],
-                answer: 2,
-                hint: "Tokoh ini dikenal sebagai Perdana Menteri pertama Indonesia dan pemimpin Sjahrir Group."
-            },
-            {
-                category: "Istilah Istimewa",
-                question: "Istilah bahasa Sansekerta yang digunakan Soekarno untuk menamai 5 dasar negara adalah...",
-                options: ["Pancasila", "Ekasila", "Trisila", "Sastra Jendra"],
-                answer: 0,
-                hint: "'Panca' berarti lima, dan 'Sila' berarti dasar atau alas/sendi."
-            },
-            {
-                category: "Trisila Soekarno",
-                question: "Dalam pidato 1 Juni 1945, jika Pancasila diperas menjadi Trisila, rumusal mulanya terdiri dari...",
-                options: [
-                    "Socio-nationalisme, Socio-demokratie, Ketuhanan",
-                    "Ketuhanan, Kemanusiaan, Keadilan",
-                    "Persatuan, Kerakyatan, Kesejahteraan",
-                    "Nasionalisme, Agama, Komunisme"
-                ],
-                answer: 0,
-                hint: "Dua diantaranya menggunakan awalan istilah sosial 'Socio-'."
-            },
-            {
-                category: "Lokasi Sidang",
-                question: "Di gedung manakah Sidang Resmi BPUPKI I diselenggarakan?",
-                options: ["Gedung Chuo Sangi In (Gedung Pancasila)", "Gedung Pegangsaan Timur 56", "Gedung Stovia", "Gedung Museum Nasional"],
-                answer: 0,
-                hint: "Gedung yang berlokasi di Pejambon Jakarta Pusat ini kini bernama Gedung Pancasila."
-            },
-            {
-                category: "Pengesahan UUD 1945",
-                question: "Lembaga yang secara resmi mengesahkan Pancasila dalam Pembukaan UUD 1945 pada 18 Agustus 1945 adalah...",
-                options: ["BPUPKI", "PPKI", "KNIP", "MPRS"],
-                answer: 1,
-                hint: "Lembaga ini dipimpin oleh Ir. Soekarno dan Drs. Mohammad Hatta setelah Proklamasi Kemerdekaan."
-            }
-        ];
-
-        /* ------------------------------------------------------------------
-           5. APP STATE MANAGEMENT
-           ------------------------------------------------------------------ */
-        let state = {
-            simStep: 0,
-            unityMeter: 80,
-            accuracyMeter: 80,
-            quizIndex: 0,
-            quizScore: 0,
-            quizStreak: 1.0,
-            quizCorrectCount: 0,
-            timerInterval: null,
-            timeLeft: 20,
-            userName: "Moh. Joharul Yusuf",
-            certDate: "18 Agustus 1945"
+      if (id) {
+        // Edit Existing
+        const idx = menus.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          menus[idx] = { id, name, category, price, icon };
+          showToast('Menu berhasil diperbarui!');
+        }
+      } else {
+        // Add New
+        const newMenu = {
+          id: 'm-' + Date.now(),
+          name, category, price, icon
         };
+        menus.push(newMenu);
+        showToast('Menu baru berhasil ditambahkan!');
+      }
 
-        // Switch Tabs
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-gold-500', 'text-slate-950', 'font-semibold');
-                btn.classList.add('text-slate-300');
-            });
+      saveMenusToStorage();
+      renderMenus();
+      closeMenuFormModal();
+      if (!document.getElementById('menuManagerModal').classList.contains('hidden')) {
+        renderManagerMenuList();
+      }
+    }
 
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if (activeNav) {
-                activeNav.classList.add('bg-gold-500', 'text-slate-950', 'font-semibold');
-                activeNav.classList.remove('text-slate-300');
-            }
+    // Menu Manager Dialog
+    function openMenuManagerModal() {
+      renderManagerMenuList();
+      document.getElementById('menuManagerModal').classList.remove('hidden');
+    }
 
-            if (tabId === 'quiz' && state.quizIndex === 0) {
-                startQuizQuestion();
-            }
-        }
+    function closeMenuManagerModal() {
+      document.getElementById('menuManagerModal').classList.add('hidden');
+    }
 
-        /* ------------------------------------------------------------------
-           6. RPG SIMULASI SIDANG ENGINE
-           ------------------------------------------------------------------ */
-        function renderSimStep() {
-            const step = simSteps[state.simStep];
-            document.getElementById('sim-step-badge').innerText = `${state.simStep + 1}/${simSteps.length}`;
-            document.getElementById('sim-stage-title').innerText = step.stage;
-            document.getElementById('sim-stage-subtitle').innerText = step.subtitle;
-            document.getElementById('sim-speaker-name').innerText = step.speaker;
-            document.getElementById('sim-speaker-role').innerText = step.role;
-            document.getElementById('sim-speaker-img').src = step.img;
-            document.getElementById('sim-scenario-text').innerText = `"${step.text}"`;
-            document.getElementById('sim-history-note').innerText = step.note;
+    function renderManagerMenuList() {
+      const container = document.getElementById('managerMenuContainer');
+      container.innerHTML = menus.map(m => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">${m.icon}</span>
+            <div>
+              <p class="font-bold text-slate-800">${m.name}</p>
+              <p class="text-slate-500">${m.category} • ${formatRupiah(m.price)}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="editMenuFromManager('${m.id}')" class="p-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteMenuFromManager('${m.id}')" class="p-1.5 bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 rounded-lg">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
 
-            const choicesContainer = document.getElementById('sim-choices-container');
-            choicesContainer.innerHTML = '';
+      lucide.createIcons();
+    }
 
-            step.choices.forEach((choice, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left p-4 rounded-xl bg-slate-800/80 hover:bg-gold-500 hover:text-slate-950 border border-gold-500/30 font-medium transition duration-200 flex items-center justify-between group shadow-sm";
-                btn.innerHTML = `
-                    <span class="flex items-center gap-3">
-                        <span class="w-7 h-7 rounded-full bg-gold-500/20 text-gold-300 group-hover:bg-slate-950 group-hover:text-gold-400 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
-                        <span>${choice.text}</span>
-                    </span>
-                    <i class="fa-solid fa-chevron-right text-xs opacity-50 group-hover:translate-x-1 transition"></i>
-                `;
-                btn.onclick = () => selectSimChoice(choice);
-                choicesContainer.appendChild(btn);
-            });
+    function editMenuFromManager(id) {
+      const menu = menus.find(m => m.id === id);
+      if (menu) openMenuFormModal(menu);
+    }
 
-            updateMeters();
-        }
+    function deleteMenuFromManager(id) {
+      if (confirm('Yakin ingin menghapus menu ini dari daftar?')) {
+        menus = menus.filter(m => m.id !== id);
+        cart = cart.filter(c => c.id !== id);
+        saveMenusToStorage();
+        renderMenus();
+        renderCart();
+        renderManagerMenuList();
+        showToast('Menu berhasil dihapus.');
+      }
+    }
 
-        function selectSimChoice(choice) {
-            sound.playGavel();
-            state.unityMeter = Math.max(0, Math.min(100, state.unityMeter + choice.unity));
-            state.accuracyMeter = Math.max(0, Math.min(100, state.accuracyMeter + choice.accuracy));
+    function resetDefaultMenus() {
+      if (confirm('Kembalikan daftar menu ke bawaan awal?')) {
+        menus = [...DEFAULT_MENUS];
+        saveMenusToStorage();
+        renderMenus();
+        renderManagerMenuList();
+        showToast('Menu telah direset ke bawaan.');
+      }
+    }
 
-            if (state.simStep < simSteps.length - 1) {
-                state.simStep++;
-                renderSimStep();
-            } else {
-                alert("Selamat! Anda telah menyelesaikan seluruh Rangkaian Sidang Historis BPUPKI & PPKI 1945.");
-                updateCertificateMetrics();
-                switchTab('certificate');
-            }
-        }
-
-        function updateMeters() {
-            document.getElementById('meter-unity-text').innerText = `${state.unityMeter}%`;
-            document.getElementById('meter-unity-bar').style.width = `${state.unityMeter}%`;
-            document.getElementById('meter-accuracy-text').innerText = `${state.accuracyMeter}%`;
-            document.getElementById('meter-accuracy-bar').style.width = `${state.accuracyMeter}%`;
-        }
-
-        /* ------------------------------------------------------------------
-           7. CERDAS CERMAT (QUIZ) ENGINE
-           ------------------------------------------------------------------ */
-        function startQuizQuestion() {
-            clearInterval(state.timerInterval);
-            state.timeLeft = 20;
-
-            const q = quizQuestions[state.quizIndex];
-            document.getElementById('quiz-progress').innerText = `${state.quizIndex + 1} / ${quizQuestions.length}`;
-            document.getElementById('quiz-category').innerText = `Kategori: ${q.category}`;
-            document.getElementById('quiz-question-text').innerText = q.question;
-            document.getElementById('quiz-hint-box').classList.add('hidden');
-
-            const container = document.getElementById('quiz-options-container');
-            container.innerHTML = '';
-
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.id = `quiz-opt-${idx}`;
-                btn.className = "p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-left font-medium transition flex items-start gap-3";
-                btn.innerHTML = `
-                    <span class="w-6 h-6 rounded-full bg-slate-700 text-gold-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
-                    <span class="text-slate-200 text-sm">${opt}</span>
-                `;
-                btn.onclick = () => answerQuiz(idx);
-                container.appendChild(btn);
-            });
-
-            startTimer();
-        }
-
-        function startTimer() {
-            updateTimerUI();
-            state.timerInterval = setInterval(() => {
-                state.timeLeft--;
-                updateTimerUI();
-                if (state.timeLeft <= 0) {
-                    clearInterval(state.timerInterval);
-                    sound.playWrong();
-                    answerQuiz(-1); // Timeout
-                }
-            }, 1000);
-        }
-
-        function updateTimerUI() {
-            document.getElementById('quiz-timer-text').innerText = state.timeLeft;
-            const pct = (state.timeLeft / 20) * 100;
-            const ring = document.getElementById('quiz-timer-ring');
-            ring.style.strokeDashoffset = 100 - pct;
-        }
-
-        function answerQuiz(selectedIndex) {
-            clearInterval(state.timerInterval);
-            const q = quizQuestions[state.quizIndex];
-            const isCorrect = selectedIndex === q.answer;
-
-            if (isCorrect) {
-                sound.playCorrect();
-                state.quizCorrectCount++;
-                const basePoin = 100;
-                const timeBonus = state.timeLeft * 2;
-                const totalGained = Math.round((basePoin + timeBonus) * state.quizStreak);
-                state.quizScore += totalGained;
-                state.quizStreak = parseFloat((state.quizStreak + 0.2).toFixed(1));
-
-                if (selectedIndex >= 0) {
-                    const btn = document.getElementById(`quiz-opt-${selectedIndex}`);
-                    if (btn) btn.classList.add('bg-emerald-950', 'border-emerald-500', 'text-emerald-300');
-                }
-            } else {
-                sound.playWrong();
-                state.quizStreak = 1.0;
-                if (selectedIndex >= 0) {
-                    const btn = document.getElementById(`quiz-opt-${selectedIndex}`);
-                    if (btn) btn.classList.add('bg-rose-950', 'border-rose-500', 'text-rose-300');
-                }
-                const correctBtn = document.getElementById(`quiz-opt-${q.answer}`);
-                if (correctBtn) correctBtn.classList.add('bg-emerald-950', 'border-emerald-500');
-            }
-
-            document.getElementById('quiz-score').innerText = state.quizScore;
-            document.getElementById('quiz-streak').innerText = `x${state.quizStreak}`;
-
-            setTimeout(() => {
-                if (state.quizIndex < quizQuestions.length - 1) {
-                    state.quizIndex++;
-                    startQuizQuestion();
-                } else {
-                    alert(`Tantangan Cerdas Cermat Selesai!\nSkor Akhir: ${state.quizScore}`);
-                    updateCertificateMetrics();
-                    switchTab('certificate');
-                }
-            }, 1500);
-        }
-
-        function useLifeline(type) {
-            const q = quizQuestions[state.quizIndex];
-            if (type === '5050') {
-                let removed = 0;
-                q.options.forEach((_, idx) => {
-                    if (idx !== q.answer && removed < 2) {
-                        const btn = document.getElementById(`quiz-opt-${idx}`);
-                        if (btn) btn.style.opacity = '0.2';
-                        removed++;
-                    }
-                });
-                document.getElementById('lifeline-5050').disabled = true;
-                document.getElementById('lifeline-5050').classList.add('opacity-40');
-            } else if (type === 'hint') {
-                const hintBox = document.getElementById('quiz-hint-box');
-                document.getElementById('quiz-hint-text').innerText = q.hint;
-                hintBox.classList.remove('hidden');
-                document.getElementById('lifeline-hint').disabled = true;
-                document.getElementById('lifeline-hint').classList.add('opacity-40');
-            } else if (type === 'time') {
-                state.timeLeft += 15;
-                updateTimerUI();
-                document.getElementById('lifeline-time').disabled = true;
-                document.getElementById('lifeline-time').classList.add('opacity-40');
-            }
-        }
-
-        /* ------------------------------------------------------------------
-           8. CERTIFICATE & ASSESSMENT BREAKDOWN ENGINE
-           ------------------------------------------------------------------ */
-        function updateCertificateMetrics() {
-            // Update Core Score Values
-            const totalQuizQuestions = quizQuestions.length;
-            const accuracyPct = Math.round((state.quizCorrectCount / totalQuizQuestions) * 100) || 85;
-
-            document.getElementById('cert-user-name').innerText = state.userName;
-            document.getElementById('cert-score-quiz').innerText = `${state.quizScore} Poin`;
-            document.getElementById('cert-accuracy-quiz').innerText = `${accuracyPct}%`;
-            document.getElementById('cert-unity-sim').innerText = `${state.unityMeter}%`;
-            document.getElementById('cert-accuracy-sim').innerText = `${state.accuracyMeter}%`;
-
-            // Calculate Predikat
-            const finalAvg = Math.round((accuracyPct + state.unityMeter + state.accuracyMeter) / 3);
-            let predikatText = "PREDIKAT: CUKUP (MEMUASKAN)";
-            let badgeBg = "bg-amber-600";
-
-            if (finalAvg >= 88) {
-                predikatText = "PREDIKAT: SANGAT MEMUASKAN (CUM LAUDE)";
-                badgeBg = "bg-emerald-700";
-            } else if (finalAvg >= 75) {
-                predikatText = "PREDIKAT: MEMUASKAN";
-                badgeBg = "bg-gold-700";
-            }
-
-            const predikatBadge = document.getElementById('cert-predikat-badge');
-            predikatBadge.innerText = predikatText;
-            predikatBadge.className = `px-2 py-0.5 text-white rounded text-[10px] font-bold ${badgeBg}`;
-
-            // Update Sub-Competency Matrix Details based on metrics
-            document.getElementById('sub-capaian-1').innerText = `${state.accuracyMeter >= 80 ? 'Sangat Baik' : 'Baik'} (${state.accuracyMeter})`;
-            document.getElementById('sub-mutu-1').innerText = state.accuracyMeter >= 85 ? 'A' : 'B+';
-
-            document.getElementById('sub-capaian-2').innerText = `${accuracyPct >= 80 ? 'Sangat Baik' : 'Cukup'} (${accuracyPct})`;
-            document.getElementById('sub-mutu-2').innerText = accuracyPct >= 85 ? 'A' : 'B';
-
-            document.getElementById('sub-capaian-3').innerText = `${state.unityMeter >= 80 ? 'Sangat Baik' : 'Baik'} (${state.unityMeter})`;
-            document.getElementById('sub-mutu-3').innerText = state.unityMeter >= 85 ? 'A' : 'B+';
-        }
-
-        function updateCertDataPrompt() {
-            const name = prompt("Masukkan Nama Lengkap untuk Sertifikat:", state.userName);
-            if (name) {
-                state.userName = name;
-                updateCertificateMetrics();
-            }
-        }
-
-        /* ------------------------------------------------------------------
-           9. GALERI TOKOH RENDERER
-           ------------------------------------------------------------------ */
-        function renderGallery() {
-            const container = document.getElementById('gallery-cards-container');
-            container.innerHTML = '';
-            historicalFigures.forEach(fig => {
-                const card = document.createElement('div');
-                card.className = "glass-panel rounded-xl overflow-hidden p-5 flex items-start gap-4 hover:border-gold-500/50 transition";
-                card.innerHTML = `
-                    <img src="${fig.img}" alt="${fig.name}" class="w-16 h-16 rounded-lg object-cover border border-gold-500/40 shrink-0">
-                    <div class="space-y-1">
-                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 bg-gold-500/20 text-gold-300 rounded">${fig.role}</span>
-                        <h4 class="font-bold font-cinzel text-slate-100 text-base">${fig.name}</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed font-serif">${fig.desc}</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        /* ------------------------------------------------------------------
-           10. INITIALIZATION
-           ------------------------------------------------------------------ */
-        window.addEventListener('DOMContentLoaded', () => {
-            renderSimStep();
-            renderGallery();
-            updateCertificateMetrics();
-        });
-    </script>
+    // Initialize on Page Load
+    window.onload = function() {
+      initApp();
+    };
+  </script>
 </body>
 </html>
